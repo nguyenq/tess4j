@@ -1,0 +1,107 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Tess4J - Java Wrapper for Tesseract OCR API</title>
+</head>
+<body>
+    <div class="Section1">
+        <h2 align="center">
+            Tess4J</h2>
+        <h3>
+            DESCRIPTION</h3>
+        <p>
+            Tess4J is a JNA wrapper for <a href="http://code.google.com/p/tesseract-ocr/">Tesseract
+                OCR API</a>; it provides character recognition support for common image formats, and multi-page images. The library has been developed and tested on Windows and Linux.</p>
+        <p>
+            Tess4J is released and distributed under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">
+                Apache License, v2.0</a>. Its official homepage is at <a href="http://tess4j.sourceforge.net/">
+                    http://tess4j.sourceforge.net</a>.</p>
+        <h3>
+            SOFTWARE REQUIREMENTS</h3>
+        <p>
+            <a href="http://java.oracle.com/">Java Runtime Environment</a>, 
+            <a href="https://github.com/twall/jna">JNA</a>, and
+            <a href="https://java.net/projects/jai-imageio">JAI-ImageIO</a> are required. <a href="http://ant.apache.org/">Apache Ant</a> and <a href="http://www.junit.org/">
+                JUnit</a> are used for program building and unit testing.</p>
+        <h3>
+            INSTRUCTIONS</h3>
+        <p>
+            Tesseract and Leptonica 32- and 64-bit DLLs, language data for English, and sample images are bundled
+            with the library. <a href="http://code.google.com/p/tesseract-ocr/downloads/list">Language
+                data packs</a> for Tesseract should be decompressed and placed into the <code>tessdata</code>
+            folder.</p>
+        <p>
+            The Linux shared object library (<code>libtesseract.so</code>) equivalent to the DLL is available in Tesseract 3.02, which can be built from the 
+            <a href="http://code.google.com/p/tesseract-ocr/source/checkout" target="_blank">source</a> with the instructions given in
+            <a href="http://code.google.com/p/tesseract-ocr/wiki/Compiling" target="_blank">
+            Tesseract Wiki</a>.</p>
+        <p>
+            PDF support is possible via <a href="http://sourceforge.net/projects/ghostscript/">GPL
+                Ghostscript</a>. After installation of GS, ensure its shared library
+            object (<code>gsdll32.dll</code> or <code>gsdll64.dll</code>) is in the search path by setting the appropriate environment
+            variable. On Windows, append the following to <code>Path</code> value (accessible through
+            Control Panel &gt; System &gt; Advanced &gt; Environment Variables) for GS version
+            9.14:</p>
+        <blockquote>
+            <p>
+                <code>;C:\Program Files\gs\gs9.14\bin</code></p>
+        </blockquote>
+        <p>
+            To unit test, at the command line, execute:</p>
+        <blockquote>
+            <p>
+                <code>ant test</code></p>
+        </blockquote>
+        <p>
+            Images to be OCRed should be scanned at resolution from at least 200 DPI (dot per
+            inch) to 400 DPI in monochrome (black&amp;white) or grayscale. Scanning at higher
+            resolutions will not necessarily result in better recognition accuracy. The actual
+            success rates depend greatly on the quality of the scanned image. The typical settings
+            for scanning are 300 DPI and 1 bpp (bit per pixel) black&amp;white or 8 bpp grayscale
+            uncompressed TIFF or PNG format. PNG is usually smaller in size than other image
+            formats and still keeps high quality due to its employing lossless data compression
+            algorithms; TIFF has the advantage of the ability to contain multiple images (pages)
+            in a file.</p>
+        <p>
+            Several built-in functions are also provided for merging several images or PDF files
+            into a single one for convenient OCR operations, or for splitting a PDF file into
+            smaller ones if it is too large, which can cause out-of-memory exceptions.</p>
+        <h3>
+            CODE EXAMPLES</h3>
+        <p>
+            The following code example shows common usage of the library. Make sure <code>libtesseract302.dll</code>, <code>liblept168.dll</code>,
+            and <code>tessdata</code> folder are in the same directory and in the search 
+            path, and the <code>.jar</code> files
+            are in the classpath.</p>
+        <blockquote>
+            <pre>
+package net.sourceforge.tess4j.example;
+
+import java.io.File;
+import net.sourceforge.tess4j.*;
+
+public class TesseractExample {
+
+    public static void main(String[] args) {
+        File imageFile = new File("eurotext.tif");
+        Tesseract instance = Tesseract.getInstance(); // JNA Interface Mapping
+        // Tesseract1 instance = new Tesseract1(); // JNA Direct Mapping
+
+        try {
+            String result = instance.doOCR(imageFile);
+            System.out.println(result);
+        } catch (TesseractException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+}
+</pre>
+        </blockquote>
+        <h3>
+            DOCUMENTATIONS</h3>
+        <p>
+            Please visit the website for the library's <a href="http://tess4j.sf.net/docs/">documentations</a></p>
+        <hr />
+    </div>
+</body>
+</html>

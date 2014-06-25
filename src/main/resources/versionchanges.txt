@@ -1,0 +1,45 @@
+﻿﻿Tess4J Change Summary
+
+Version 0.1 - initial release (14 Aug 2010):
+- Java JNA-based wrapper for Tesseract OCR DLL 2.04
+- Support uncompressed, binary TIFF images
+
+Version 0.2 (16 Aug 2010):
+- Add support for more image formats (PNG, BMP, GIF, PDF, JPEG)
+- Add support for compressed, grayscale and colored images
+
+Version 0.3 (22 Aug 2010):
+- Include API support for BufferedImage
+- Clean up codes. Remove unsupported API and files
+- Document the API
+
+Version 0.3.1 (26 Aug 2010):
+- Send only pixel data, not whole image data, to Tesseract engine, to fix a bug that has erroneously put some words at beginning of line towards end of line
+
+Version 0.4 (1 Nov 2010):
+- Add JNA Direct Mapping calls, which can provide performance near that of custom JNI
+
+Version 1.0 (30 October 2012):
+- Upgrade to Tesseract 3.02 (r798), which is not backward compatible with Tesseract 2.04. 
+- Implement a new JNA wrapper for the new Tesseract OCR API
+- Add more unit test cases
+- Update documentation
+
+Version 1.1 (3 March 2013)
+- Update Tesseract DLL to r828
+- Additional API methods, image helper methods, and unit test cases
+- Improve handling of Unicode character encoding
+- Fix memory leaks
+- Add support for determining skew angle and image rotation
+
+Version 1.2 (22 September 2013)
+- Update Tesseract DLL to r866
+- More efficient OCR of multiple images
+- Various minor improvements
+- Update JNA to v4.0
+
+Version 1.3 (31 May 2014)
+- Update JNA to v4.1.0
+- Update Ghost4J to v0.5.1
+- Refactoring
+- Bundle Tesseract and Leptonica 64-bit DLLs
