@@ -21,8 +21,8 @@ import java.lang.reflect.Modifier;
 public class Utils {
 
     /**
-     * Gets user-friendly name of the public static final constant defined in a class or an
-     * interface for display purpose.
+     * Gets user-friendly name of the public static final constant defined in a
+     * class or an interface for display purpose.
      *
      * @param value the constant value
      * @param c type of class or interface

@@ -15,30 +15,37 @@
  */
 package net.sourceforge.tess4j;
 
-import net.sourceforge.vietocr.ImageHelper;
-import net.sourceforge.vietocr.ImageIOHelper;
-import com.recognition.software.jdeskew.ImageDeskew;
-import com.sun.jna.Pointer;
-import javax.imageio.ImageIO;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+
+import net.sourceforge.tess4j.util.Utils;
+import net.sourceforge.vietocr.ImageHelper;
+import net.sourceforge.vietocr.ImageIOHelper;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import com.recognition.software.jdeskew.ImageDeskew;
+import com.sun.jna.Pointer;
 
 public class Tesseract1Test {
 
     static final double MINIMUM_DESKEW_THRESHOLD = 0.05d;
     Tesseract1 instance;
-    
+
     private final String datapath = "src/main/resources";
     private final String testResourcesDataPath = "src/test/resources/test-data";
 
@@ -65,6 +72,8 @@ public class Tesseract1Test {
 
     /**
      * Test of doOCR method, of class Tesseract1.
+     *
+     * @throws Exception while processing image.
      */
     @Test
     public void testDoOCR_File() throws Exception {
@@ -79,6 +88,8 @@ public class Tesseract1Test {
 
     /**
      * Test of doOCR method, of class Tesseract1.
+     *
+     * @throws Exception while processing image.
      */
     @Test
     public void testDoOCR_File_Rectangle() throws Exception {
@@ -94,6 +105,8 @@ public class Tesseract1Test {
 
     /**
      * Test of doOCR method, of class Tesseract1.
+     *
+     * @throws Exception while processing image.
      */
     @Test
     public void testDoOCR_List_Rectangle() throws Exception {
@@ -109,6 +122,8 @@ public class Tesseract1Test {
 
     /**
      * Test of doOCR method, of class Tesseract1.
+     *
+     * @throws Exception while processing image.
      */
     @Test
     public void testDoOCR_BufferedImage() throws Exception {
@@ -124,6 +139,8 @@ public class Tesseract1Test {
 
     /**
      * Test of deskew algorithm.
+     *
+     * @throws Exception while processing image.
      */
     @Test
     public void testDoOCR_SkewedImage() throws Exception {
@@ -145,6 +162,8 @@ public class Tesseract1Test {
 
     /**
      * Test of extending Tesseract1.
+     *
+     * @throws Exception while processing image.
      */
     @Test
     public void testExtendingTesseract1() throws Exception {
@@ -154,27 +173,30 @@ public class Tesseract1Test {
 
         String expResult = "The (quick) [brown] {fox} jumps!\nOver the $43,456.78 <lazy> #90 dog";
         String[] expResults = expResult.split("\\s");
-        
+
         Tess1Extension instance1 = new Tess1Extension();
         instance1.setDatapath(this.datapath);
-        List<Word> result = instance1.getWords(imageFile);
-        
-        //print the complete result
+        int pageIteratorLevel = TessAPI1.TessPageIteratorLevel.RIL_WORD;
+        System.out.println("PageIteratorLevel: "
+                + Utils.getConstantName(pageIteratorLevel, TessAPI1.TessPageIteratorLevel.class));
+        List<Word> result = instance1.getWords(imageFile, pageIteratorLevel);
+
+        // print the complete result
         for (Word word : result) {
             System.out.println(word);
         }
-        
+
         List<String> text = new ArrayList<String>();
         for (Word word : result.subList(0, expResults.length)) {
             text.add(word.getText());
         }
-        
+
         assertArrayEquals(expResults, text.toArray());
     }
 
     class Tess1Extension extends Tesseract1 {
 
-        public List<Word> getWords(File file) {
+        public List<Word> getWords(File file, int pageIteratorLevel) {
             this.init();
             this.setTessVariables();
 
@@ -189,22 +211,22 @@ public class Tesseract1Test {
                 TessAPI1.TessPageIteratorBegin(pi);
 
                 do {
-                    Pointer ptr = TessAPI1.TessResultIteratorGetUTF8Text(ri, TessAPI1.TessPageIteratorLevel.RIL_WORD);
+                    Pointer ptr = TessAPI1.TessResultIteratorGetUTF8Text(ri, pageIteratorLevel);
                     String text = ptr.getString(0);
                     TessAPI1.TessDeleteText(ptr);
-                    float confidence = TessAPI1.TessResultIteratorConfidence(ri, TessAPI1.TessPageIteratorLevel.RIL_WORD);
+                    float confidence = TessAPI1.TessResultIteratorConfidence(ri, pageIteratorLevel);
                     IntBuffer leftB = IntBuffer.allocate(1);
                     IntBuffer topB = IntBuffer.allocate(1);
                     IntBuffer rightB = IntBuffer.allocate(1);
                     IntBuffer bottomB = IntBuffer.allocate(1);
-                    TessAPI1.TessPageIteratorBoundingBox(pi, TessAPI1.TessPageIteratorLevel.RIL_WORD, leftB, topB, rightB, bottomB);
+                    TessAPI1.TessPageIteratorBoundingBox(pi, pageIteratorLevel, leftB, topB, rightB, bottomB);
                     int left = leftB.get();
                     int top = topB.get();
                     int right = rightB.get();
                     int bottom = bottomB.get();
                     Word word = new Word(text, confidence, new Rectangle(left, top, right - left, bottom - top));
                     words.add(word);
-                } while (TessAPI1.TessPageIteratorNext(pi, TessAPI1.TessPageIteratorLevel.RIL_WORD) == TessAPI1.TRUE);
+                } while (TessAPI1.TessPageIteratorNext(pi, pageIteratorLevel) == TessAPI1.TRUE);
 
                 return words;
             } catch (Exception e) {
@@ -215,11 +237,14 @@ public class Tesseract1Test {
         }
     }
 
+    /**
+     * Encapsulates results.
+     */
     class Word {
 
-        private String text;
-        private float confidence;
-        private Rectangle rect;
+        private final String text;
+        private final float confidence;
+        private final Rectangle rect;
 
         public Word(String text, float confidence, Rectangle rect) {
             this.text = text;
@@ -247,10 +272,11 @@ public class Tesseract1Test {
         public Rectangle getRect() {
             return rect;
         }
-        
+
         @Override
         public String toString() {
-            return String.format("%s\t[Confidence: %f Bounding box: %d %d %d %d]", text, confidence, rect.x, rect.y, rect.width, rect.height);
-        }        
+            return String.format("%s\t[Confidence: %f Bounding box: %d %d %d %d]", text, confidence, rect.x, rect.y,
+                    rect.width, rect.height);
+        }
     }
 }

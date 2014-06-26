@@ -43,3 +43,7 @@ Version 1.3 (31 May 2014)
 - Update Ghost4J to v0.5.1
 - Refactoring
 - Bundle Tesseract and Leptonica 64-bit DLLs
+
+Version 1.4 (25 June 2014)
+- Make Maven-enabled
+- Additional documentation

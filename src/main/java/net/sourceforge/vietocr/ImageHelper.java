@@ -47,8 +47,8 @@ public class ImageHelper {
     }
 
     /**
-     * A replacement for the standard
-     * <code>BufferedImage.getSubimage</code> method.
+     * A replacement for the standard <code>BufferedImage.getSubimage</code>
+     * method.
      *
      * @param image
      * @param x the X coordinate of the upper-left corner of the specified
@@ -82,19 +82,20 @@ public class ImageHelper {
         g2.dispose();
         return tmp;
     }
-    
+
     /**
      * A simple method to convert an image to binary or B/W image.
      *
      * @param image input image
      * @return a monochrome image
-     * @deprecated  As of release 1.1, renamed to {@link #convertImageToBinary(BufferedImage image)}
+     * @deprecated As of release 1.1, renamed to
+     * {@link #convertImageToBinary(BufferedImage image)}
      */
     @Deprecated
     public static BufferedImage convertImage2Binary(BufferedImage image) {
         return convertImageToBinary(image);
     }
-    
+
     /**
      * A simple method to convert an image to gray scale.
      *
@@ -108,7 +109,7 @@ public class ImageHelper {
         g2.dispose();
         return tmp;
     }
-    
+
     private static final short[] invertTable;
 
     static {
@@ -117,10 +118,10 @@ public class ImageHelper {
             invertTable[i] = (short) (255 - i);
         }
     }
-    
+
     /**
      * Inverts image color.
-     * 
+     *
      * @param image input image
      * @return an inverted-color image
      */
@@ -132,7 +133,7 @@ public class ImageHelper {
 
     /**
      * Rotates an image.
-     * 
+     *
      * @param image the original image
      * @param angle the degree of rotation
      * @return a rotated image
@@ -145,7 +146,7 @@ public class ImageHelper {
         int h = image.getHeight();
         int newW = (int) Math.floor(w * cos + h * sin);
         int newH = (int) Math.floor(h * cos + w * sin);
-        
+
         BufferedImage tmp = new BufferedImage(newW, newH, image.getType());
         Graphics2D g2d = tmp.createGraphics();
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,

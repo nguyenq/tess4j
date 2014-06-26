@@ -1,24 +1,33 @@
 /**
  * Copyright @ 2009 Quan Nguyen
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package net.sourceforge.vietocr;
 
-import java.io.*;
-import java.util.*;
-import java.util.logging.*;
-import org.ghost4j.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.ghost4j.Ghostscript;
+import org.ghost4j.GhostscriptException;
 
 public class PdfUtilities {
 
@@ -31,8 +40,9 @@ public class PdfUtilities {
      *
      * @param inputPdfFile
      * @return a multi-page TIFF image
+     * @throws IOException
      */
-    public static File convertPdf2Tiff(File inputPdfFile) throws IOException  {
+    public static File convertPdf2Tiff(File inputPdfFile) throws IOException {
         File[] pngFiles = null;
 
         try {
@@ -110,12 +120,13 @@ public class PdfUtilities {
                 return f1.getName().compareTo(f2.getName());
             }
         });
-        
+
         return workingFiles;
     }
 
     /**
      * Split PDF.
+     *
      * @param inputPdfFile
      * @param outputPdfFile
      * @param firstPage
@@ -203,7 +214,7 @@ public class PdfUtilities {
 
     /**
      * Merge PDF files.
-     * 
+     *
      * @param inputPdfFiles
      * @param outputPdfFile
      */
