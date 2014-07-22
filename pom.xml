@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.sourceforge.tess4j</groupId>
 	<artifactId>tess4j</artifactId>
-	<version>1.3.0-SNAPSHOT</version>
+	<version>1.3.0</version>
 	<packaging>jar</packaging>
 
 	<name>Tess4J - Tesseract for Java</name>
@@ -68,9 +68,9 @@
 	</repositories>
 
 	<scm>
-		<connection>scm:svn:https://github.com/nguyenq/tess4j/trunk/</connection>
-		<developerConnection>scm:svn:https://github.com/nguyenq/tess4j/trunk/</developerConnection>
-		<url>https://github.com/nguyenq/tess4j/trunk/</url>
+		<connection>scm:svn:https://github.com/nguyenq/tess4j/tags/tess4j-1.3.0</connection>
+		<developerConnection>scm:svn:https://github.com/nguyenq/tess4j/tags/tess4j-1.3.0</developerConnection>
+		<url>https://github.com/nguyenq/tess4j/tags/tess4j-1.3.0</url>
 	</scm>
 
 	<developers>
