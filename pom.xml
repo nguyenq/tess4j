@@ -67,11 +67,10 @@
 
 	</repositories>
 
-
 	<scm>
-		<connection>scm:svn:https://github.com/nguyenq/tess4j/tags/tess4j-1.3.0</connection>
-		<developerConnection>scm:svn:https://github.com/nguyenq/tess4j/tags/tess4j-1.3.0</developerConnection>
-		<url>https://github.com/nguyenq/tess4j/tags/tess4j-1.3.0</url>
+		<connection>scm:svn:https://github.com/nguyenq/tess4j/trunk/</connection>
+		<developerConnection>scm:svn:https://github.com/nguyenq/tess4j/trunk/</developerConnection>
+		<url>https://github.com/nguyenq/tess4j/trunk/</url>
 	</scm>
 
 	<developers>
