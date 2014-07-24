@@ -12,6 +12,15 @@ The library provides optical character recognition (OCR) support for:
 * Multi-page TIFF images
 * PDF document format
 
+## Maven Dependency
+```xml
+<dependency>
+    <groupId>net.sourceforge.tess4j</groupId>
+    <artifactId>tess4j</artifactId>
+    <version>1.3.0</version>
+</dependency>
+```
+
 ## Tutorial
 
 [Development with Tess4J in NetBeans, Eclipse, and Command-line](http://tess4j.sourceforge.net/tutorial/)
