@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package net.sourceforge.vietocr;
+package net.sourceforge.tess4j.util;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -23,6 +23,7 @@ import java.awt.Transparency;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.image.*;
+import javax.imageio.IIOImage;
 
 public class ImageHelper {
 
@@ -44,6 +45,28 @@ public class ImageHelper {
         g2.drawImage(image, 0, 0, targetWidth, targetHeight, null);
         g2.dispose();
         return tmp;
+    }
+
+    /**
+     * Convenience method that returns a scaled instance of the provided
+     * {@code IIOImage}.
+     *
+     * @param iioSource the original image to be scaled
+     * @param scale the desired scale
+     * @return a scaled version of the original {@code IIOImage}
+     */
+    public static IIOImage getScaledInstance(IIOImage iioSource, float scale) {
+        if (!(iioSource.getRenderedImage() instanceof BufferedImage)) {
+            throw new IllegalArgumentException("RenderedImage in IIOImage must be BufferedImage");
+        }
+
+        if (scale == 1.0) {
+            return iioSource;
+        }
+
+        BufferedImage source = (BufferedImage) iioSource.getRenderedImage();
+        BufferedImage target = getScaledInstance(source, (int) (scale * source.getWidth()), (int) (scale * source.getHeight()));
+        return new IIOImage(target, null, null);
     }
 
     /**
@@ -170,5 +193,19 @@ public class ImageHelper {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    /**
+     * Clones an image.
+     * http://stackoverflow.com/questions/3514158/how-do-you-clone-a-bufferedimage
+     *
+     * @param bi
+     * @return
+     */
+    public static BufferedImage cloneImage(BufferedImage bi) {
+        ColorModel cm = bi.getColorModel();
+        boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
+        WritableRaster raster = bi.copyData(null);
+        return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
     }
 }

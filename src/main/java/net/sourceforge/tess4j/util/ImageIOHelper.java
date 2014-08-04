@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package net.sourceforge.vietocr;
+package net.sourceforge.tess4j.util;
 
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
@@ -211,8 +211,22 @@ public class ImageIOHelper {
         dir.addTIFFField(fieldXRes);
         dir.addTIFFField(fieldYRes);
 
-        // Convert to metadata object and return.
-        return dir.getAsMetadata();
+        // Convert to metadata object.
+        IIOMetadata metadata = dir.getAsMetadata();
+
+        // Add other metadata.
+        IIOMetadataNode root = new IIOMetadataNode("javax_imageio_1.0");
+        IIOMetadataNode horiz = new IIOMetadataNode("HorizontalPixelSize");
+        horiz.setAttribute("value", Double.toString(25.4f / dpiX));
+        IIOMetadataNode vert = new IIOMetadataNode("VerticalPixelSize");
+        vert.setAttribute("value", Double.toString(25.4f / dpiY));
+        IIOMetadataNode dim = new IIOMetadataNode("Dimension");
+        dim.appendChild(horiz);
+        dim.appendChild(vert);
+        root.appendChild(dim);
+        metadata.mergeTree("javax_imageio_1.0", root);
+
+        return metadata;
     }
 
     /**
@@ -396,7 +410,7 @@ public class ImageIOHelper {
 
         //Set up the writeParam
         TIFFImageWriteParam tiffWriteParam = new TIFFImageWriteParam(Locale.US);
-        tiffWriteParam.setCompressionMode(ImageWriteParam.MODE_DISABLED);
+//        tiffWriteParam.setCompressionMode(ImageWriteParam.MODE_DISABLED); // commented out to preserve original sizes
 
         //Get the stream metadata
         IIOMetadata streamMetadata = writer.getDefaultStreamMetadata(tiffWriteParam);

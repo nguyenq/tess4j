@@ -37,8 +37,11 @@ import javax.imageio.ImageIO;
 import net.sourceforge.tess4j.TessAPI.TessOrientation;
 import net.sourceforge.tess4j.TessAPI.TessTextlineOrder;
 import net.sourceforge.tess4j.TessAPI.TessWritingDirection;
+import net.sourceforge.tess4j.TessAPI.TessResultRenderer;
 import net.sourceforge.tess4j.util.Utils;
-import net.sourceforge.vietocr.ImageIOHelper;
+import net.sourceforge.tess4j.util.ImageIOHelper;
+
+import com.ochafik.lang.jnaerator.runtime.NativeSize;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -47,6 +50,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.sun.jna.Pointer;
+import com.sun.jna.StringArray;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 
@@ -141,7 +145,7 @@ public class TessAPITest {
     @Test
     public void testTessVersion() {
         System.out.println("TessVersion");
-        String expResult = "3.02";
+        String expResult = "3.03";
         String result = api.TessVersion();
         System.out.println(result);
         assertTrue(result.startsWith(expResult));
@@ -284,6 +288,20 @@ public class TessAPITest {
     }
 
     /**
+     * Test of TessBaseAPIInit4 method, of class TessAPI.
+     */
+    @Test
+    public void testTessBaseAPIInit4() {
+        System.out.println("TessBaseAPIInit4");
+        int oem = TessAPI.TessOcrEngineMode.OEM_DEFAULT;
+        PointerByReference configs = null;
+        int configs_size = 0;
+        int expResult = 0;
+        int result = api.TessBaseAPIInit4(handle, datapath, language, oem, configs, configs_size, null, null, new NativeSize(), TessAPI.FALSE);
+        assertEquals(expResult, result);
+    }
+
+    /**
      * Test of TessBaseAPIGetInitLanguagesAsString method, of class TessAPI.
      */
     @Test
@@ -378,12 +396,11 @@ public class TessAPITest {
         String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
         String retry_config = null;
         int timeout_millisec = 0;
+        String outputbase = "target/test-classes/test-results/eurotext";
+        TessResultRenderer renderer = api.TessTextRendererCreate(outputbase);
         api.TessBaseAPIInit3(handle, datapath, language);
-        String expResult = expOCRResult;
-        Pointer utf8Text = api.TessBaseAPIProcessPages(handle, filename, retry_config, timeout_millisec);
-        String result = utf8Text.getString(0);
-        api.TessDeleteText(utf8Text);
-        assertTrue(result.startsWith(expResult));
+        int rc = api.TessBaseAPIProcessPages(handle, filename, retry_config, timeout_millisec, renderer);
+        assertEquals(TessAPI1.TRUE, rc);
     }
 
     /**
@@ -519,6 +536,116 @@ public class TessAPITest {
         } while (api.TessPageIteratorNext(pi, level) == TessAPI.TRUE);
 
         assertTrue(true);
+    }
+
+    /**
+     * Test of ChoiceIterator.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testChoiceIterator() throws Exception {
+        System.out.println("TessResultIteratorGetChoiceIterator");
+        String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
+        File tiff = new File(filename);
+        BufferedImage image = ImageIO.read(new FileInputStream(tiff)); // require jai-imageio lib to read TIFF
+        ByteBuffer buf = ImageIOHelper.convertImageData(image);
+        int bpp = image.getColorModel().getPixelSize();
+        int bytespp = bpp / 8;
+        int bytespl = (int) Math.ceil(image.getWidth() * bpp / 8.0);
+        api.TessBaseAPIInit3(handle, datapath, language);
+        api.TessBaseAPISetImage(handle, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
+        api.TessBaseAPISetVariable(handle, "save_blob_choices", "T");
+        api.TessBaseAPISetRectangle(handle, 37, 228, 548, 31);
+        api.TessBaseAPIRecognize(handle, null);
+        TessAPI.TessResultIterator ri = api.TessBaseAPIGetIterator(handle);
+        int level = TessAPI.TessPageIteratorLevel.RIL_SYMBOL;
+
+        if (ri != null) {
+            do {
+                Pointer symbol = api.TessResultIteratorGetUTF8Text(ri, level);
+                float conf = api.TessResultIteratorConfidence(ri, level);
+                if (symbol != null) {
+                    System.out.println(String.format("symbol %s, conf: %f", symbol.getString(0), conf));
+                    boolean indent = false;
+                    TessAPI.TessChoiceIterator ci = api.TessResultIteratorGetChoiceIterator(ri);
+                    do {
+                        if (indent) {
+                            System.out.print("\t");
+                        }
+                        System.out.print("\t- ");
+                        String choice = api.TessChoiceIteratorGetUTF8Text(ci);
+                        System.out.println(String.format("%s conf: %f", choice, api.TessChoiceIteratorConfidence(ci)));
+                        indent = true;
+                    } while (api.TessChoiceIteratorNext(ci) == TessAPI1.TRUE);
+                    api.TessChoiceIteratorDelete(ci);
+                }
+                System.out.println("---------------------------------------------");
+                api.TessDeleteText(symbol);
+            } while (api.TessResultIteratorNext(ri, level) == TessAPI1.TRUE);
+        }
+
+        assertTrue(true);
+    }
+
+    /**
+     * Test of ResultRenderer method, of class TessAPI.
+     * 
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testResultRenderer() throws Exception {
+        System.out.println("TessResultRenderer");
+        String image = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
+        String output = "capi-test.txt";
+        int set_only_init_params = TessAPI.FALSE;
+        int oem = TessAPI.TessOcrEngineMode.OEM_DEFAULT;
+        PointerByReference configs = null;
+        int configs_size = 0;
+
+        String confs[] = {"load_system_dawg", "tessedit_char_whitelist"};
+        String vals[] = {"F", ""}; //0123456789-.IThisalotfpnex
+        PointerByReference pbrc = new PointerByReference();
+        PointerByReference pbrv = new PointerByReference();
+        pbrc.setPointer(new StringArray(confs));
+        pbrv.setPointer(new StringArray(vals));
+        NativeSize conf_size = new NativeSize(confs.length);
+
+        api.TessBaseAPISetOutputName(handle, output);
+
+        int rc = api.TessBaseAPIInit4(handle, datapath, language,
+                oem, configs, configs_size, pbrc, pbrv, conf_size, set_only_init_params);
+
+        if (rc != 0) {
+            api.TessBaseAPIDelete(handle);
+            System.err.println("Could not initialize tesseract.");
+            return;
+        }
+
+        String outputbase = "test/test-results/outputbase";
+        TessResultRenderer renderer = api.TessHOcrRendererCreate(outputbase);
+        api.TessResultRendererInsert(renderer, api.TessBoxTextRendererCreate(outputbase));
+        api.TessResultRendererInsert(renderer, api.TessTextRendererCreate(outputbase));
+        String dataPath = api.TessBaseAPIGetDatapath(handle);
+        api.TessResultRendererInsert(renderer, api.TessPDFRendererCreate(outputbase, dataPath));
+
+        int result = api.TessBaseAPIProcessPages(handle, image, null, 0, renderer);
+
+        if (result != TessAPI.TRUE) {
+            System.err.println("Error during processing.");
+            return;
+        }
+
+        for (; renderer != null; renderer = api.TessResultRendererNext(renderer)) {
+            String ext = api.TessResultRendererExtention(renderer).getString(0);
+            System.out.println(String.format("TessResultRendererExtention: %s\nTessResultRendererTitle: %s\nTessResultRendererImageNum: %d",
+                    ext,
+                    api.TessResultRendererTitle(renderer).getString(0),
+                    api.TessResultRendererImageNum(renderer)));
+        }
+
+        api.TessDeleteResultRenderer(renderer);
+        assertTrue(new File(outputbase + ".pdf").exists());
     }
 
     /**
@@ -698,6 +825,10 @@ public class TessAPITest {
         }
 
         @Override
+        public int TessBaseAPIInit4(TessBaseAPI handle, String datapath, String language, int oem, PointerByReference configs, int configs_size, PointerByReference vars_vec, PointerByReference vars_values, NativeSize vars_vec_size, int set_only_non_debug_params) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
         public int TessBaseAPIInitLangMod(TessBaseAPI handle, String datapath, String language) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
@@ -766,12 +897,6 @@ public class TessAPITest {
 
         @Override
         public TessResultIterator TessBaseAPIGetIterator(TessBaseAPI handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public Pointer TessBaseAPIProcessPages(TessBaseAPI handle, String filename, String retry_config,
-                int timeout_millisec) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
@@ -995,6 +1120,126 @@ public class TessAPITest {
 
         @Override
         public TessMutableIterator TessBaseAPIGetMutableIterator(TessBaseAPI handle) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public TessResultRenderer TessTextRendererCreate(String outputbase) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public TessResultRenderer TessHOcrRendererCreate(String outputbase) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public TessResultRenderer TessPDFRendererCreate(String outputbase, String datadir) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public TessResultRenderer TessUnlvRendererCreate(String outputbase) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public TessResultRenderer TessBoxTextRendererCreate(String outputbase) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public void TessDeleteResultRenderer(TessResultRenderer renderer) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public void TessResultRendererInsert(TessResultRenderer renderer, TessResultRenderer next) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public TessResultRenderer TessResultRendererNext(TessResultRenderer renderer) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public int TessResultRendererBeginDocument(TessResultRenderer renderer, String title) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public int TessResultRendererAddImage(TessResultRenderer renderer, PointerByReference api) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public int TessResultRendererEndDocument(TessResultRenderer renderer) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public Pointer TessResultRendererExtention(TessResultRenderer renderer) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public Pointer TessResultRendererTitle(TessResultRenderer renderer) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public int TessResultRendererImageNum(TessResultRenderer renderer) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public String TessBaseAPIGetInputName(TessBaseAPI handle) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public int TessBaseAPIGetSourceYResolution(TessBaseAPI handle) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public String TessBaseAPIGetDatapath(TessBaseAPI handle) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public int TessBaseAPIProcessPages(TessBaseAPI handle, String filename, String retry_config, int timeout_millisec, TessResultRenderer renderer) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public int TessResultIteratorNext(TessResultIterator handle, int level) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public TessChoiceIterator TessResultIteratorGetChoiceIterator(TessResultIterator handle) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public void TessChoiceIteratorDelete(TessChoiceIterator handle) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public int TessChoiceIteratorNext(TessChoiceIterator handle) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public String TessChoiceIteratorGetUTF8Text(TessChoiceIterator handle) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public float TessChoiceIteratorConfidence(TessChoiceIterator handle) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
     }

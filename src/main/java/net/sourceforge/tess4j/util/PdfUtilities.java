@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package net.sourceforge.vietocr;
+package net.sourceforge.tess4j.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -36,7 +36,7 @@ public class PdfUtilities {
     private final static Logger logger = Logger.getLogger(PdfUtilities.class.getName());
 
     /**
-     * Convert PDF to TIFF format.
+     * Converts PDF to TIFF format.
      *
      * @param inputPdfFile
      * @return a multi-page TIFF image
@@ -67,7 +67,7 @@ public class PdfUtilities {
     }
 
     /**
-     * Convert PDF to PNG format.
+     * Converts PDF to PNG format.
      *
      * @param inputPdfFile
      * @return an array of PNG images
@@ -125,7 +125,7 @@ public class PdfUtilities {
     }
 
     /**
-     * Split PDF.
+     * Splits PDF.
      *
      * @param inputPdfFile
      * @param outputPdfFile
@@ -172,7 +172,7 @@ public class PdfUtilities {
     }
 
     /**
-     * Get PDF Page Count.
+     * Gets PDF Page Count.
      *
      * @param inputPdfFile
      * @return number of pages

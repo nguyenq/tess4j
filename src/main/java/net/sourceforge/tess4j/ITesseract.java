@@ -36,6 +36,14 @@ public interface ITesseract {
     String htmlEndTag = "</body>\n</html>\n";
 
     /**
+     * Rendered formats supported by Tesseract.
+     */
+    public enum RenderedFormat {
+
+        TEXT, HOCR, PDF, UNLV, BOX
+    }
+
+    /**
      * Performs OCR operation.
      *
      * @param imageFile an image file
@@ -144,4 +152,24 @@ public interface ITesseract {
      * "0123456789", etc.
      */
     void setTessVariable(String key, String value);
+
+    /**
+     * Creates documents for given renderers.
+     *
+     * @param filename input file
+     * @param outputbase output filename without extension
+     * @param formats types of renderers
+     * @throws TesseractException
+     */
+    void createDocuments(String filename, String outputbase, List<RenderedFormat> formats) throws TesseractException;
+
+    /**
+     * Creates documents for given renderers.
+     *
+     * @param filenames array of input files
+     * @param outputbases array of output filenames without extension
+     * @param formats types of renderers
+     * @throws TesseractException
+     */
+    void createDocuments(String[] filenames, String[] outputbases, List<RenderedFormat> formats) throws TesseractException;
 }

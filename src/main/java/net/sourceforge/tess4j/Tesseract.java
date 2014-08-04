@@ -15,7 +15,6 @@
  */
 package net.sourceforge.tess4j;
 
-import net.sourceforge.vietocr.ImageIOHelper;
 import com.sun.jna.Pointer;
 import java.awt.Rectangle;
 import java.awt.image.*;
@@ -24,6 +23,10 @@ import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.logging.*;
 import javax.imageio.IIOImage;
+
+import net.sourceforge.tess4j.TessAPI.TessResultRenderer;
+import net.sourceforge.tess4j.util.ImageIOHelper;
+import net.sourceforge.tess4j.util.PdfUtilities;
 
 /**
  * An object layer on top of <code>TessAPI</code>, provides character
@@ -34,7 +37,7 @@ import javax.imageio.IIOImage;
  * <br>
  * Support for PDF documents is available through <code>Ghost4J</code>, a
  * <code>JNA</code> wrapper for <code>GPL Ghostscript</code>, which should be
- * installed and included in system path. <br>
+ * installed and included in system path.<br>
  * <br>
  * Any program that uses the library will need to ensure that the required
  * libraries (the <code>.jar</code> files for <code>jna</code>,
@@ -46,8 +49,8 @@ public class Tesseract implements ITesseract {
     private static Tesseract instance;
     private String language = "eng";
     private String datapath = "./";
+    private RenderedFormat renderedFormat = RenderedFormat.TEXT;
     private int psm = TessAPI.TessPageSegMode.PSM_AUTO;
-    private boolean hocr;
     private int pageNum;
     private int ocrEngineMode = TessAPI.TessOcrEngineMode.OEM_DEFAULT;
     private final Properties prop = new Properties();
@@ -123,7 +126,7 @@ public class Tesseract implements ITesseract {
      * @param hocr to enable or disable hocr output
      */
     public void setHocr(boolean hocr) {
-        this.hocr = hocr;
+        this.renderedFormat = hocr ? RenderedFormat.HOCR : RenderedFormat.TEXT;
         prop.setProperty("tessedit_create_hocr", hocr ? "1" : "0");
     }
 
@@ -233,7 +236,7 @@ public class Tesseract implements ITesseract {
                 }
             }
 
-            if (hocr) {
+            if (renderedFormat == RenderedFormat.HOCR) {
                 sb.insert(0, htmlBeginTag).append(htmlEndTag);
             }
 
@@ -333,10 +336,137 @@ public class Tesseract implements ITesseract {
      * @return the recognized text
      */
     private String getOCRText() {
-        Pointer utf8Text = hocr ? api.TessBaseAPIGetHOCRText(handle, pageNum - 1) : api.TessBaseAPIGetUTF8Text(handle);
+        Pointer utf8Text = renderedFormat == RenderedFormat.HOCR ? api.TessBaseAPIGetHOCRText(handle, pageNum - 1) : api.TessBaseAPIGetUTF8Text(handle);
         String str = utf8Text.getString(0);
         api.TessDeleteText(utf8Text);
         return str;
+    }
+
+    /**
+     * Creates renderers for given formats.
+     *
+     * @param outputbase
+     * @param formats
+     * @return
+     */
+    private TessResultRenderer createRenderers(String outputbase, List<RenderedFormat> formats) {
+        TessResultRenderer renderer = null;
+
+        for (RenderedFormat format : formats) {
+            switch (format) {
+                case TEXT:
+                    if (renderer == null) {
+                        renderer = api.TessTextRendererCreate(outputbase);
+                    } else {
+                        api.TessResultRendererInsert(renderer, api.TessTextRendererCreate(outputbase));
+                    }
+                    break;
+                case HOCR:
+                    if (renderer == null) {
+                        renderer = api.TessHOcrRendererCreate(outputbase);
+                    } else {
+                        api.TessResultRendererInsert(renderer, api.TessHOcrRendererCreate(outputbase));
+                    }
+                    break;
+                case PDF:
+                    String dataPath = api.TessBaseAPIGetDatapath(handle);
+                    if (renderer == null) {
+                        renderer = api.TessPDFRendererCreate(outputbase, dataPath);
+                    } else {
+                        api.TessResultRendererInsert(renderer, api.TessPDFRendererCreate(outputbase, dataPath));
+                    }
+                    break;
+                case BOX:
+                    if (renderer == null) {
+                        renderer = api.TessBoxTextRendererCreate(outputbase);
+                    } else {
+                        api.TessResultRendererInsert(renderer, api.TessBoxTextRendererCreate(outputbase));
+                    }
+                    break;
+                case UNLV:
+                    if (renderer == null) {
+                        renderer = api.TessUnlvRendererCreate(outputbase);
+                    } else {
+                        api.TessResultRendererInsert(renderer, api.TessUnlvRendererCreate(outputbase));
+                    }
+                    break;
+            }
+        }
+
+        return renderer;
+    }
+
+    /**
+     * Creates documents for given renderers.
+     *
+     * @param filename input image
+     * @param outputbase output filename without extension
+     * @param formats types of renderers
+     * @throws TesseractException
+     */
+    @Override
+    public void createDocuments(String filename, String outputbase, List<RenderedFormat> formats) throws TesseractException {
+        createDocuments(new String[]{filename}, new String[]{outputbase}, formats);
+    }
+
+    /**
+     * Creates documents.
+     *
+     * @param filenames array of input files
+     * @param outputbases array of output filenames without extension
+     * @param formats types of renderers
+     * @throws TesseractException
+     */
+    @Override
+    public void createDocuments(String[] filenames, String[] outputbases, List<RenderedFormat> formats) throws TesseractException {
+        if (filenames.length != outputbases.length) {
+            throw new RuntimeException("The two arrays must match in length.");
+        }
+
+        init();
+        setTessVariables();
+
+        try {
+            for (int i = 0; i < filenames.length; i++) {
+                File workingTiffFile = null;
+                try {
+                    String filename = filenames[i];
+
+                    // if PDF, convert to multi-page TIFF
+                    if (filename.toLowerCase().endsWith(".pdf")) {
+                        workingTiffFile = PdfUtilities.convertPdf2Tiff(new File(filename));
+                        filename = workingTiffFile.getPath();
+                    }
+
+                    TessResultRenderer renderer = createRenderers(outputbases[i], formats);
+                    createDocuments(filename, renderer);
+                } catch (Exception e) {
+                    // skip the problematic image file
+                    logger.log(Level.SEVERE, e.getMessage(), e);
+                } finally {
+                    if (workingTiffFile != null && workingTiffFile.exists()) {
+                        workingTiffFile.delete();
+                    }
+                }
+            }
+        } finally {
+            dispose();
+        }
+    }
+
+    /**
+     * Creates documents.
+     *
+     * @param filename input file
+     * @param renderer renderer
+     * @throws TesseractException
+     */
+    private void createDocuments(String filename, TessResultRenderer renderer) throws TesseractException {
+        int result = api.TessBaseAPIProcessPages(handle, filename, null, 0, renderer);
+
+        if (result != TessAPI.TRUE) {
+            throw new TesseractException("Error during processing.");
+        }
     }
 
     /**

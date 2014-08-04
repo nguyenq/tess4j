@@ -27,6 +27,8 @@ import com.sun.jna.PointerType;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 
+import com.ochafik.lang.jnaerator.runtime.NativeSize;
+
 /**
  * A Java wrapper for <code>Tesseract OCR 3.02 API</code> using
  * <code>JNA Interface Mapping</code>.
@@ -37,7 +39,7 @@ public interface TessAPI extends Library {
     /**
      * Native library name.
      */
-    public static final String LIB_NAME = "libtesseract302";
+    public static final String LIB_NAME = "libtesseract303";
     public static final String LIB_NAME_NON_WIN = "tesseract";
     /**
      * An instance of the class library.
@@ -355,6 +357,35 @@ public interface TessAPI extends Library {
      */
     void TessDeleteIntArray(IntBuffer arr);
 
+    /* Renderer API */
+    TessAPI.TessResultRenderer TessTextRendererCreate(String outputbase);
+
+    TessAPI.TessResultRenderer TessHOcrRendererCreate(String outputbase);
+
+    TessAPI.TessResultRenderer TessPDFRendererCreate(String outputbase, String datadir);
+
+    TessAPI.TessResultRenderer TessUnlvRendererCreate(String outputbase);
+
+    TessAPI.TessResultRenderer TessBoxTextRendererCreate(String outputbase);
+
+    void TessDeleteResultRenderer(TessAPI.TessResultRenderer renderer);
+
+    void TessResultRendererInsert(TessAPI.TessResultRenderer renderer, TessAPI.TessResultRenderer next);
+
+    TessAPI.TessResultRenderer TessResultRendererNext(TessAPI.TessResultRenderer renderer);
+
+    int TessResultRendererBeginDocument(TessAPI.TessResultRenderer renderer, String title);
+
+    int TessResultRendererAddImage(TessAPI.TessResultRenderer renderer, PointerByReference api);
+
+    int TessResultRendererEndDocument(TessAPI.TessResultRenderer renderer);
+
+    Pointer TessResultRendererExtention(TessAPI.TessResultRenderer renderer);
+
+    Pointer TessResultRendererTitle(TessAPI.TessResultRenderer renderer);
+
+    int TessResultRendererImageNum(TessAPI.TessResultRenderer renderer);
+
     /**
      * Creates an instance of the base class for all Tesseract APIs.
      *
@@ -377,6 +408,19 @@ public interface TessAPI extends Library {
      * @param name name of the input file
      */
     void TessBaseAPISetInputName(TessAPI.TessBaseAPI handle, String name);
+
+    /**
+     * These functions are required for searchable PDF output. We need our hands
+     * on the input file so that we can include it in the PDF without
+     * transcoding. If that is not possible, we need the original image.
+     * Finally, resolution metadata is stored in the PDF so we need that as
+     * well.
+     */
+    String TessBaseAPIGetInputName(TessAPI.TessBaseAPI handle);
+
+    int TessBaseAPIGetSourceYResolution(TessAPI.TessBaseAPI handle);
+
+    String TessBaseAPIGetDatapath(TessAPI.TessBaseAPI handle);
 
     /**
      * Set the name of the bonus output files. Needed only for debugging.
@@ -535,6 +579,8 @@ public interface TessAPI extends Library {
      * @return 0 on success and -1 on initialization failure
      */
     int TessBaseAPIInit3(TessAPI.TessBaseAPI handle, String datapath, String language);
+
+    int TessBaseAPIInit4(TessAPI.TessBaseAPI handle, String datapath, String language, int oem, PointerByReference configs, int configs_size, PointerByReference vars_vec, PointerByReference vars_values, NativeSize vars_vec_size, int set_only_non_debug_params);
 
     /**
      * Returns the languages string used in the last valid initialization. If
@@ -812,10 +858,10 @@ public interface TessAPI extends Library {
      * @param filename multi-page tiff or list of filenames
      * @param retry_config retry config values
      * @param timeout_millisec timeout value
-     * @return the pointer to output text
+     * @param renderer result renderer
+     * @return the status
      */
-    Pointer TessBaseAPIProcessPages(TessAPI.TessBaseAPI handle, String filename, String retry_config,
-            int timeout_millisec);
+    int TessBaseAPIProcessPages(TessAPI.TessBaseAPI handle, String filename, String retry_config, int timeout_millisec, TessAPI.TessResultRenderer renderer);
 
     /**
      * The recognized text is returned as a char* which is coded as UTF-8 and
@@ -1091,6 +1137,8 @@ public interface TessAPI extends Library {
      */
     TessAPI.TessPageIterator TessResultIteratorGetPageIteratorConst(TessAPI.TessResultIterator handle);
 
+    int TessResultIteratorNext(TessAPI.TessResultIterator handle, int level);
+
     /**
      * Returns the null terminated UTF-8 encoded text string for the current
      * object at the given level. Use delete [] to free after use.
@@ -1181,6 +1229,17 @@ public interface TessAPI extends Library {
      * @return 1 if symbol is dropcap
      */
     int TessResultIteratorSymbolIsDropcap(TessAPI.TessResultIterator handle);
+
+    /* Choice iterator */
+    TessAPI.TessChoiceIterator TessResultIteratorGetChoiceIterator(TessAPI.TessResultIterator handle);
+
+    void TessChoiceIteratorDelete(TessAPI.TessChoiceIterator handle);
+
+    int TessChoiceIteratorNext(TessAPI.TessChoiceIterator handle);
+
+    String TessChoiceIteratorGetUTF8Text(TessAPI.TessChoiceIterator handle);
+
+    float TessChoiceIteratorConfidence(TessAPI.TessChoiceIterator handle);
 
     /**
      * Base class for all tesseract APIs. Specific classes can add ability to
@@ -1275,6 +1334,41 @@ public interface TessAPI extends Library {
         }
 
         public TessResultIterator() {
+            super();
+        }
+    };
+
+    public static class TessChoiceIterator extends PointerType {
+
+        public TessChoiceIterator(Pointer address) {
+            super(address);
+        }
+
+        public TessChoiceIterator() {
+            super();
+        }
+    };
+
+    /**
+     * Interface for rendering tesseract results into a document, such as text,
+     * HOCR or pdf. This class is abstract. Specific classes handle individual
+     * formats. This interface is then used to inject the renderer class into
+     * tesseract when processing images.
+     *
+     * For simplicity implementing this with tesseract version 3.01, the
+     * renderer contains document state that is cleared from document to
+     * document just as the TessBaseAPI is. This way the base API can just
+     * delegate its rendering functionality to injected renderers, and the
+     * renderers can manage the associated state needed for the specific formats
+     * in addition to the heuristics for producing it.
+     */
+    public static class TessResultRenderer extends PointerType {
+
+        public TessResultRenderer(Pointer address) {
+            super(address);
+        }
+
+        public TessResultRenderer() {
             super();
         }
     };

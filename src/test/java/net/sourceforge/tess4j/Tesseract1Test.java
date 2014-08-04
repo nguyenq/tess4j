@@ -15,22 +15,23 @@
  */
 package net.sourceforge.tess4j;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 
 import net.sourceforge.tess4j.util.Utils;
-import net.sourceforge.vietocr.ImageHelper;
-import net.sourceforge.vietocr.ImageIOHelper;
+import net.sourceforge.tess4j.util.ImageHelper;
+import net.sourceforge.tess4j.util.ImageIOHelper;
+import net.sourceforge.tess4j.ITesseract.RenderedFormat;
+
+import com.recognition.software.jdeskew.ImageDeskew;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -38,7 +39,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.recognition.software.jdeskew.ImageDeskew;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import com.sun.jna.Pointer;
 
 public class Tesseract1Test {
@@ -158,6 +162,21 @@ public class Tesseract1Test {
         String result = instance.doOCR(bi);
         System.out.println(result);
         assertEquals(expResult, result.substring(0, expResult.length()));
+    }
+
+    /**
+     * Test of createDocuments method, of class Tesseract.
+     */
+    @Test
+    public void testCreateDocuments() throws Exception {
+        System.out.println("createDocuments for an image");
+        String imageFilename1 = String.format("%s/%s", this.testResourcesDataPath, "eurotext.pdf");
+        String imageFilename2 = String.format("%s/%s", this.testResourcesDataPath, "eurotext.png");
+        String outputbase1 = "target/test-classes/test-results/docrenderer1-1";
+        String outputbase2 = "target/test-classes/test-results/docrenderer1-2";
+        List<RenderedFormat> formats = new ArrayList<RenderedFormat>(Arrays.asList(RenderedFormat.HOCR, RenderedFormat.PDF, RenderedFormat.TEXT));
+        instance.createDocuments(new String[] {imageFilename1, imageFilename2}, new String[] {outputbase1, outputbase2}, formats);
+        assertTrue(new File(outputbase1 + ".pdf").exists());
     }
 
     /**
