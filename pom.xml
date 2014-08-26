@@ -220,6 +220,7 @@
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest-integration</artifactId>
 			<version>1.2.1</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.avh4.util</groupId>
