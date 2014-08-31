@@ -35,13 +35,11 @@ import java.util.Arrays;
 import javax.imageio.ImageIO;
 
 import net.sourceforge.tess4j.TessAPI.TessOrientation;
+import net.sourceforge.tess4j.TessAPI.TessResultRenderer;
 import net.sourceforge.tess4j.TessAPI.TessTextlineOrder;
 import net.sourceforge.tess4j.TessAPI.TessWritingDirection;
-import net.sourceforge.tess4j.TessAPI.TessResultRenderer;
-import net.sourceforge.tess4j.util.Utils;
 import net.sourceforge.tess4j.util.ImageIOHelper;
-
-import com.ochafik.lang.jnaerator.runtime.NativeSize;
+import net.sourceforge.tess4j.util.Utils;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -49,6 +47,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.ochafik.lang.jnaerator.runtime.NativeSize;
 import com.sun.jna.Pointer;
 import com.sun.jna.StringArray;
 import com.sun.jna.ptr.IntByReference;
@@ -65,7 +64,6 @@ public class TessAPITest {
     TessAPI.TessBaseAPI handle;
 
     public TessAPITest() {
-        System.setProperty("jna.encoding", "UTF8");
     }
 
     @BeforeClass
@@ -829,6 +827,7 @@ public class TessAPITest {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
+        @Override
         public int TessBaseAPIInitLangMod(TessBaseAPI handle, String datapath, String language) {
             throw new UnsupportedOperationException("Not supported yet.");
         }

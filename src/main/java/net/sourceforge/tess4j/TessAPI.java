@@ -20,14 +20,14 @@ import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
+import net.sourceforge.tess4j.util.LoadLibs;
+
+import com.ochafik.lang.jnaerator.runtime.NativeSize;
 import com.sun.jna.Library;
-import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.PointerType;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
-
-import com.ochafik.lang.jnaerator.runtime.NativeSize;
 
 /**
  * A Java wrapper for <code>Tesseract OCR 3.02 API</code> using
@@ -35,17 +35,10 @@ import com.ochafik.lang.jnaerator.runtime.NativeSize;
  */
 public interface TessAPI extends Library {
 
-    static final boolean WINDOWS = System.getProperty("os.name").toLowerCase().startsWith("windows");
-    /**
-     * Native library name.
-     */
-    public static final String LIB_NAME = "libtesseract303";
-    public static final String LIB_NAME_NON_WIN = "tesseract";
     /**
      * An instance of the class library.
      */
-    public static final TessAPI INSTANCE = (TessAPI) Native.loadLibrary(WINDOWS ? LIB_NAME : LIB_NAME_NON_WIN,
-            TessAPI.class);
+    public static final TessAPI INSTANCE = LoadLibs.INSTANCE.getTessAPIInstance();
 
     /**
      * When Tesseract/Cube is initialized we can choose to instantiate/load/run
