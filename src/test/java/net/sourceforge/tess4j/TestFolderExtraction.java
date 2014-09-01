@@ -49,11 +49,12 @@ public class TestFolderExtraction {
              */
             logger.log(Level.INFO, "Loading the tessdata folder into a temporary folder.");
             File tessDataFolder = LoadLibs.INSTANCE.loadDefaultTessDataFolder();
+            System.out.println(tessDataFolder.getAbsolutePath());
+            
             /**
              * Loading tesseract instance and setting the tessdata path.
              */
             Tesseract instance = Tesseract.getInstance();
-            System.out.println(tessDataFolder.getAbsolutePath());
             instance.setDatapath(tessDataFolder.getAbsolutePath());
 
             /**
