@@ -23,7 +23,7 @@ import java.util.List;
  */
 public abstract class OSLibs {
     
-    static final String TESS4JPATH = "tess4j.tmp";
+    final String TESS4J_TEMP_PATH = String.format("%s/%s", System.getProperty("java.io.tmpdir"), "tess4j.tmp");
 
     /**
      * @return the operating system architecture folder
@@ -45,14 +45,16 @@ public abstract class OSLibs {
      */
     abstract String getLibGhostScript();
 
-    /**
-     * @return the path of the temporary folder where the libraries will be extracted to.
-     */
-    abstract String getTess4jTempFolder();
 
     /**
      * @return a list with the names of the libraries to be loaded.
      */
     abstract List<String> getLibsToLoad();
 
+    /**
+     * @return the path of the temporary folder where the libraries will be extracted to.
+     */
+    public String getTess4jArchTempFolder() {
+        return String.format("%s/%s",TESS4J_TEMP_PATH, getOsArchFolder());
+    }
 }

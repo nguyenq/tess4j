@@ -46,10 +46,6 @@ public class OSLibsWin64 extends OSLibs {
         return "gsdll64.dll";
     }
 
-    @Override
-    public String getTess4jTempFolder() {
-        return String.format("%s/%s/%s", System.getProperty("java.io.tmpdir"), TESS4JPATH, getOsArchFolder());
-    }
 
     @Override
     public List<String> getLibsToLoad() {
