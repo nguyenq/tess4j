@@ -19,6 +19,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.JarURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Enumeration;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import net.sourceforge.tess4j.TessAPI;
 
@@ -33,7 +39,7 @@ public enum LoadLibs {
 
     private TessAPI      api                     = null;
     private OSLibs       os                      = null;
-    private final String DEFAULT_TESSDATA_FOLDER = "tessdata";
+    private final String DEFAULT_TESSDATA_FOLDER = "/tessdata";
 
     private LoadLibs() {
 
@@ -68,15 +74,14 @@ public enum LoadLibs {
                     String rscFilePath = String.format("/%s/%s", os.getOsArchFolder(), fileName);
                     InputStream in = this.getClass().getResourceAsStream(rscFilePath);
 
-                    
                     /**
                      * Temporary files being set to be copied.
                      */
                     String tmpFilePath = String.format("%s/%s", os.getTess4jArchTempFolder(), fileName);
                     File tmpFile = new File(tmpFilePath);
-                    
+
                     if (!tmpFile.exists()) {
-                        
+
                         OutputStream out = FileUtils.openOutputStream(tmpFile);
                         IOUtils.copy(in, out);
                         in.close();
@@ -94,9 +99,11 @@ public enum LoadLibs {
             } catch (IOException e) {
                 // TODO add logger
                 System.out.println(e.getMessage());
+                e.printStackTrace();
             } catch (UnsatisfiedLinkError e) {
                 // TODO add logger
                 System.out.println(e.getMessage());
+                e.printStackTrace();
             }
         }
 
@@ -113,27 +120,77 @@ public enum LoadLibs {
         try {
 
             /**
-             * Tessdata folder from resources.
-             * using getContextClassLoader in order to be able to load files from the jar.
-             */
-            File tessDataFolderFile = new File(Thread.currentThread().getContextClassLoader().getResource(DEFAULT_TESSDATA_FOLDER).getFile());
-
-            /**
              * Target temporary tessdata folder.
              */
             String targetTempFolderPath = String.format("%s/%s", os.TESS4J_TEMP_PATH, DEFAULT_TESSDATA_FOLDER);
             targetTempFolder = new File(targetTempFolderPath);
 
-            /**
-             * Apache Commons rocking again and copying the folder from the jar into the temporary folder.
-             */
-            FileUtils.copyDirectory(tessDataFolderFile, targetTempFolder);
 
-        } catch (IOException e) {
+            URL tessDataFolderUrl = getClass().getResource(DEFAULT_TESSDATA_FOLDER);
+            URLConnection urlConnection = tessDataFolderUrl.openConnection();
+
+            /**
+             * Either load from resources from jar or project resource folder.
+             */
+            if (urlConnection instanceof JarURLConnection) {
+                copyJarResourceToFolder((JarURLConnection) urlConnection, targetTempFolder);
+            } else {
+                FileUtils.copyDirectory(new File(tessDataFolderUrl.getPath()), targetTempFolder);
+            }
+
+        } catch (Exception e) {
             // TODO add logger
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
 
         return targetTempFolder;
     }
+
+    /**
+     * This method will copy resources from the jar file of the current thread and extract it to the destination folder.
+     * 
+     * @param jarConnection
+     * @param destDir
+     * @throws IOException
+     */
+    public void copyJarResourceToFolder(JarURLConnection jarConnection, File destDir) {
+
+        try {
+            JarFile jarFile = jarConnection.getJarFile();
+
+            /**
+             * Iterate all entries in the jar file.
+             */
+            for (Enumeration<JarEntry> e = jarFile.entries(); e.hasMoreElements();) {
+
+                JarEntry jarEntry = e.nextElement();
+                String jarEntryName = jarEntry.getName();
+                String jarConnectionEntryName = jarConnection.getEntryName();
+
+                /**
+                 * Extract files only if they match the path.
+                 */
+                if (jarEntryName.startsWith(jarConnectionEntryName)) {
+
+                    String filename = jarEntryName.startsWith(jarConnectionEntryName) ? jarEntryName.substring(jarConnectionEntryName.length()) : jarEntryName;
+                    File currentFile = new File(destDir, filename);
+
+                    if (jarEntry.isDirectory()) {
+                        currentFile.mkdirs();
+                    } else {
+                        InputStream is = jarFile.getInputStream(jarEntry);
+                        OutputStream out = FileUtils.openOutputStream(currentFile);
+                        IOUtils.copy(is, out);
+                        is.close();
+                        out.close();
+                    }
+                }
+            }
+        } catch (IOException e) {
+            // TODO add logger
+            e.printStackTrace();
+        }
+
+    }
+
 }
