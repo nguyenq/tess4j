@@ -13,7 +13,6 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-
 package net.sourceforge.tess4j.util;
 
 import java.io.File;
@@ -32,28 +31,30 @@ public enum LoadLibs {
 
     INSTANCE;
 
-    private TessAPI api = null;
+    private TessAPI      api                     = null;
+    private OSLibs       os                      = null;
+    private final String DEFAULT_TESSDATA_FOLDER = "tessdata";
 
-    /**
-     * Native library name.
-     */
-
-    public TessAPI getTessAPIInstance() {
+    private LoadLibs() {
 
         System.setProperty("jna.encoding", "UTF8");
 
-        OSLibs os = null;
-
         if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-            
+
             if ("64".equalsIgnoreCase(System.getProperty("sun.arch.data.model"))) {
                 os = new OSLibsWin64();
             }
-            
+
             if ("32".equalsIgnoreCase(System.getProperty("sun.arch.data.model"))) {
                 os = new OSLibsWin32();
             }
         }
+    }
+
+    /**
+     * @return TessAPI instance being loaded using the Native.loadLibrary().
+     */
+    public TessAPI getTessAPIInstance() {
 
         if (null == api) {
 
@@ -61,20 +62,30 @@ public enum LoadLibs {
 
                 for (String fileName : os.getLibsToLoad()) {
 
+                    /**
+                     * OS library being loaded from resources.
+                     */
                     String rscFilePath = String.format("/%s/%s", os.getOsArchFolder(), fileName);
-                    String tmpFilePath = String.format("%s/%s", os.getTess4jTempFolder(), fileName);
-
                     InputStream in = this.getClass().getResourceAsStream(rscFilePath);
+
+                    
+                    /**
+                     * Temporary files being set to be copied.
+                     */
+                    String tmpFilePath = String.format("%s/%s", os.getTess4jArchTempFolder(), fileName);
                     File tmpFile = new File(tmpFilePath);
-
+                    
                     if (!tmpFile.exists()) {
-
+                        
                         OutputStream out = FileUtils.openOutputStream(tmpFile);
                         IOUtils.copy(in, out);
                         in.close();
                         out.close();
                     }
 
+                    /**
+                     * Making the library available to the JVM.
+                     */
                     System.load(tmpFile.getAbsolutePath());
                 }
 
@@ -90,5 +101,39 @@ public enum LoadLibs {
         }
 
         return api;
+    }
+
+    /**
+     * This method will load the tessdata folder from resources and copy it into the temporary folder.
+     */
+    public File loadDefaultTessDataFolder() {
+
+        File targetTempFolder = null;
+
+        try {
+
+            /**
+             * Tessdata folder from resources.
+             * using getContextClassLoader in order to be able to load files from the jar.
+             */
+            File tessDataFolderFile = new File(Thread.currentThread().getContextClassLoader().getResource(DEFAULT_TESSDATA_FOLDER).getFile());
+
+            /**
+             * Target temporary tessdata folder.
+             */
+            String targetTempFolderPath = String.format("%s/%s", os.TESS4J_TEMP_PATH, DEFAULT_TESSDATA_FOLDER);
+            targetTempFolder = new File(targetTempFolderPath);
+
+            /**
+             * Apache Commons rocking again and copying the folder from the jar into the temporary folder.
+             */
+            FileUtils.copyDirectory(tessDataFolderFile, targetTempFolder);
+
+        } catch (IOException e) {
+            // TODO add logger
+            System.out.println(e.getMessage());
+        }
+
+        return targetTempFolder;
     }
 }
