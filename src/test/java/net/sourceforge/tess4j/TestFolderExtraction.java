@@ -35,20 +35,22 @@ public class TestFolderExtraction {
     @Test
     public void testFolderExtraction() {
 
+        File tessDataFolder = null;
         try {
 
             /**
              * Loading the image from resources.
              */
             String filename = String.format("%s/%s", "/test-data", "eurotext.tif");
-            URL defaultImage = TestFolderExtraction.class.getResource(filename);
+            URL defaultImage = getClass().getResource(filename);
             File imageFile = new File(defaultImage.toURI());
 
             /**
              * Loading the tessdata folder into a temporary folder.
+             * TODO add logger
              */
             logger.log(Level.INFO, "Loading the tessdata folder into a temporary folder.");
-            File tessDataFolder = LoadLibs.INSTANCE.loadDefaultTessDataFolder();
+            tessDataFolder = LoadLibs.INSTANCE.loadDefaultTessDataFolder();
             System.out.println(tessDataFolder.getAbsolutePath());
             
             /**
@@ -61,7 +63,6 @@ public class TestFolderExtraction {
              * Doing OCR on the image and checking if the tessdata folder exists.
              */
             instance.doOCR(imageFile);
-            assertTrue(tessDataFolder.exists());
 
         } catch (TesseractException e) {
             System.err.println(e.getMessage());
@@ -69,6 +70,8 @@ public class TestFolderExtraction {
         } catch (URISyntaxException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
         }
+        
+        assertTrue(tessDataFolder.exists());
     }
 
 }
