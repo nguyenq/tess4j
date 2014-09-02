@@ -20,6 +20,9 @@ import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
+import net.sourceforge.tess4j.util.LoadLibs;
+
+import com.ochafik.lang.jnaerator.runtime.NativeSize;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
@@ -27,23 +30,17 @@ import com.sun.jna.PointerType;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 
-import com.ochafik.lang.jnaerator.runtime.NativeSize;
-
 /**
  * A Java wrapper for <code>Tesseract OCR 3.02 API</code> using
  * <code>JNA Direct Mapping</code>.
  */
 public class TessAPI1 implements Library {
 
-    static final boolean WINDOWS = System.getProperty("os.name").toLowerCase().startsWith("windows");
     /**
-     * Native library name.
+     * The register() from the Native.class must be called from this class.
      */
-    public static final String LIB_NAME = "libtesseract303";
-    public static final String LIB_NAME_NON_WIN = "tesseract";
-
     static {
-        Native.register(WINDOWS ? LIB_NAME : LIB_NAME_NON_WIN);
+        Native.register(LoadLibs.INSTANCE.getTesseractLibName());
     }
 
     /**

@@ -55,12 +55,34 @@ public enum LoadLibs {
                 os = new OSLibsWin32();
             }
         }
+        
+        
+        loadLibs();
     }
 
     /**
+     * Will load the tesseract library using Native.loadLibrary().
      * @return TessAPI instance being loaded using the Native.loadLibrary().
      */
     public TessAPI getTessAPIInstance() {
+        api = (TessAPI) Native.loadLibrary(os.getLibTesseract(), TessAPI.class);
+        return api;
+    }
+    
+    /**
+     * 
+     * @return the name of the tesseract library to be loaded using the Native.register().
+     */
+    public String getTesseractLibName() {
+        return os.getLibTesseract();
+    }
+    
+    /**
+     * This method will, extract the libraries from the current jar into the
+     * operating system temporary folder and load the libraries making them available
+     * for the JVM.
+     */
+    private void loadLibs() {
 
         if (null == api) {
 
@@ -94,7 +116,7 @@ public enum LoadLibs {
                     System.load(tmpFile.getAbsolutePath());
                 }
 
-                api = (TessAPI) Native.loadLibrary(os.getLibTesseract(), TessAPI.class);
+                
 
             } catch (IOException e) {
                 // TODO add logger
@@ -107,9 +129,9 @@ public enum LoadLibs {
             }
         }
 
-        return api;
     }
 
+    
     /**
      * This method will load the tessdata folder from resources and copy it into the temporary folder.
      */
@@ -145,6 +167,8 @@ public enum LoadLibs {
 
         return targetTempFolder;
     }
+    
+    
 
     /**
      * This method will copy resources from the jar file of the current thread and extract it to the destination folder.
