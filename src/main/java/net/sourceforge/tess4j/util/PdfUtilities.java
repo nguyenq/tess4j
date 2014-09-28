@@ -190,7 +190,7 @@ public class PdfUtilities {
         gsArgs.add("-dQUIET");
         gsArgs.add("-dBATCH");
         gsArgs.add("-sPDFname=" + inputPdfFile);
-        gsArgs.add("lib/pdfpagecount.ps");
+        gsArgs.add("src/main/resources/pdfpagecount.ps");
 
         int pageCount = 0;
         ByteArrayOutputStream os = null;
