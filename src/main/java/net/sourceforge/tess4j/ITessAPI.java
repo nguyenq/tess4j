@@ -235,7 +235,8 @@ public interface ITessAPI {
      *  | < #######  .   c |
      *  | 3 #######      c |
      *  +------------------+
-     * </pre> Orientation Example:
+     * </pre>
+     * Orientation Example:
      * <br>
      * ====================
      * <br>
@@ -245,11 +246,9 @@ public interface ITessAPI {
      * Upright Latin characters are represented as A and a. '<' represents a
      * latin character rotated anti-clockwise 90 degrees. Upright Chinese
      * characters are represented C and c.<br> <br> NOTA BENE: enum values here
-     * should match goodoc.proto<br> <br> If you orient your head so that "up
-     * " a
-     * lig
-     * ns w ith Orientation, then the characters will appear "right side up" and
-     * readable.<br>
+     * should match goodoc.proto<br> <br> If you orient your head so that "up"
+     * aligns with Orientation, then the characters will appear "right side up" 
+     * and readable.<br>
      * <br>
      * In the example above, both the English and Chinese paragraphs are
      * oriented so their "up" is the top of the page (page up). The photo credit
