@@ -16,3 +16,9 @@ The library provides optical character recognition (OCR) support for:
 ## Tutorial
 
 [Development with Tess4J in NetBeans, Eclipse, and Command-line](http://tess4j.sourceforge.net/tutorial/)
+
+## Contributors
+
+A big thanks to GitHub and all of Tess4J's contributors:
+
+* [O.J. Sousa Rodrigues](https://github.com/4F2E4A2E) for mavenizing Tess4J and committing it to Maven Central Repositories
