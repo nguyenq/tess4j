@@ -24,7 +24,7 @@ import java.util.*;
 import java.util.logging.*;
 import javax.imageio.IIOImage;
 
-import net.sourceforge.tess4j.TessAPI.TessResultRenderer;
+import net.sourceforge.tess4j.ITessAPI.TessResultRenderer;
 import net.sourceforge.tess4j.util.ImageIOHelper;
 import net.sourceforge.tess4j.util.PdfUtilities;
 
@@ -64,7 +64,7 @@ public class Tesseract implements ITesseract {
      * Private constructor.
      */
     private Tesseract() {
-        System.setProperty("jna.encoding", "UTF8");
+//        System.setProperty("jna.encoding", "UTF8");
     }
 
     /**

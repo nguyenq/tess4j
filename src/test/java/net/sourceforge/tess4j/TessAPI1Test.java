@@ -32,12 +32,6 @@ import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 
-import net.sourceforge.tess4j.TessAPI1.TessOcrEngineMode;
-import net.sourceforge.tess4j.TessAPI1.TessOrientation;
-import net.sourceforge.tess4j.TessAPI1.TessPageSegMode;
-import net.sourceforge.tess4j.TessAPI1.TessTextlineOrder;
-import net.sourceforge.tess4j.TessAPI1.TessWritingDirection;
-import net.sourceforge.tess4j.TessAPI1.TessResultRenderer;
 import net.sourceforge.tess4j.util.Utils;
 import net.sourceforge.tess4j.util.ImageIOHelper;
 
@@ -52,6 +46,13 @@ import org.junit.Test;
 import com.sun.jna.Pointer;
 import com.sun.jna.StringArray;
 import com.sun.jna.ptr.PointerByReference;
+
+import net.sourceforge.tess4j.ITessAPI.TessOcrEngineMode;
+import net.sourceforge.tess4j.ITessAPI.TessOrientation;
+import net.sourceforge.tess4j.ITessAPI.TessPageSegMode;
+import net.sourceforge.tess4j.ITessAPI.TessResultRenderer;
+import net.sourceforge.tess4j.ITessAPI.TessTextlineOrder;
+import net.sourceforge.tess4j.ITessAPI.TessWritingDirection;
 
 
 public class TessAPI1Test {
@@ -102,7 +103,7 @@ public class TessAPI1Test {
         int bytespp = bpp / 8;
         int bytespl = (int) Math.ceil(image.getWidth() * bpp / 8.0);
         TessAPI1.TessBaseAPIInit3(handle, datapath, language);
-        TessAPI1.TessBaseAPISetPageSegMode(handle, TessAPI1.TessPageSegMode.PSM_AUTO);
+        TessAPI1.TessBaseAPISetPageSegMode(handle, TessPageSegMode.PSM_AUTO);
         Pointer utf8Text = TessAPI1.TessBaseAPIRect(handle, buf, bytespp, bytespl, 0, 0, 1024, 800);
         String result = utf8Text.getString(0);
         TessAPI1.TessDeleteText(utf8Text);
@@ -127,7 +128,7 @@ public class TessAPI1Test {
         int bytespp = bpp / 8;
         int bytespl = (int) Math.ceil(image.getWidth() * bpp / 8.0);
         TessAPI1.TessBaseAPIInit3(handle, datapath, language);
-        TessAPI1.TessBaseAPISetPageSegMode(handle, TessAPI1.TessPageSegMode.PSM_AUTO);
+        TessAPI1.TessBaseAPISetPageSegMode(handle, TessPageSegMode.PSM_AUTO);
         TessAPI1.TessBaseAPISetImage(handle, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
         TessAPI1.TessBaseAPISetRectangle(handle, 0, 0, 1024, 800);
         Pointer utf8Text = TessAPI1.TessBaseAPIGetUTF8Text(handle);
@@ -289,7 +290,7 @@ public class TessAPI1Test {
     @Test
     public void testTessBaseAPIInit4() {
         System.out.println("TessBaseAPIInit4");
-        int oem = TessAPI1.TessOcrEngineMode.OEM_DEFAULT;
+        int oem = TessOcrEngineMode.OEM_DEFAULT;
         PointerByReference configs = null;
         int configs_size = 0;
         int expResult = 0;
@@ -414,7 +415,7 @@ public class TessAPI1Test {
         int bpp = image.getColorModel().getPixelSize();
         int bytespp = bpp / 8;
         int bytespl = (int) Math.ceil(image.getWidth() * bpp / 8.0);
-        TessAPI1.TessBaseAPISetPageSegMode(handle, TessAPI1.TessPageSegMode.PSM_AUTO);
+        TessAPI1.TessBaseAPISetPageSegMode(handle, TessPageSegMode.PSM_AUTO);
         TessAPI1.TessBaseAPIInit3(handle, datapath, language);
         TessAPI1.TessBaseAPISetImage(handle, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
         int page_number = 0;
@@ -432,7 +433,7 @@ public class TessAPI1Test {
     @Test
     public void testOSD() throws Exception {
         System.out.println("OSD");
-        int expResult = TessAPI1.TessPageSegMode.PSM_AUTO_OSD;
+        int expResult = TessPageSegMode.PSM_AUTO_OSD;
         IntBuffer orientation = IntBuffer.allocate(1);
         IntBuffer direction = IntBuffer.allocate(1);
         IntBuffer order = IntBuffer.allocate(1);
@@ -447,7 +448,7 @@ public class TessAPI1Test {
         TessAPI1.TessBaseAPIInit3(handle, datapath, language);
         TessAPI1.TessBaseAPISetPageSegMode(handle, expResult);
         int actualResult = TessAPI1.TessBaseAPIGetPageSegMode(handle);
-        System.out.println("PSM: " + Utils.getConstantName(actualResult, TessAPI1.TessPageSegMode.class));
+        System.out.println("PSM: " + Utils.getConstantName(actualResult, TessPageSegMode.class));
         TessAPI1.TessBaseAPISetImage(handle, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
         int success = TessAPI1.TessBaseAPIRecognize(handle, null);
         if (success == 0) {
@@ -480,7 +481,7 @@ public class TessAPI1Test {
         int bytespp = bpp / 8;
         int bytespl = (int) Math.ceil(image.getWidth() * bpp / 8.0);
         TessAPI1.TessBaseAPIInit3(handle, datapath, language);
-        TessAPI1.TessBaseAPISetPageSegMode(handle, TessAPI1.TessPageSegMode.PSM_AUTO);
+        TessAPI1.TessBaseAPISetPageSegMode(handle, TessPageSegMode.PSM_AUTO);
         TessAPI1.TessBaseAPISetImage(handle, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
         TessAPI1.TessBaseAPIRecognize(handle, null);
         TessAPI1.TessResultIterator ri = TessAPI1.TessBaseAPIGetIterator(handle);

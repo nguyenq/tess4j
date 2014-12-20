@@ -48,5 +48,6 @@ Version 1.4 (25 June 2014)
 - Make Maven-enabled
 - Additional documentation
 
-Version 2.0 Beta (3 August 2014)
+Version 2.0 Beta (20 December 2014)
 - Upgrade to Tesseract 3.03 DLL r1127
+- Refactoring; add new interface to eliminate code duplication

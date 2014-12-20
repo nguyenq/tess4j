@@ -61,7 +61,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
      * Public constructor.
      */
     public Tesseract1() {
-        System.setProperty("jna.encoding", "UTF8");
+//        System.setProperty("jna.encoding", "UTF8");
     }
 
     /**

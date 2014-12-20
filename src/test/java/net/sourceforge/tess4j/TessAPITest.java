@@ -34,10 +34,6 @@ import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 
-import net.sourceforge.tess4j.TessAPI.TessOrientation;
-import net.sourceforge.tess4j.TessAPI.TessResultRenderer;
-import net.sourceforge.tess4j.TessAPI.TessTextlineOrder;
-import net.sourceforge.tess4j.TessAPI.TessWritingDirection;
 import net.sourceforge.tess4j.util.ImageIOHelper;
 import net.sourceforge.tess4j.util.Utils;
 
@@ -52,6 +48,13 @@ import com.sun.jna.Pointer;
 import com.sun.jna.StringArray;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
+
+import net.sourceforge.tess4j.ITessAPI.TessOcrEngineMode;
+import net.sourceforge.tess4j.ITessAPI.TessOrientation;
+import net.sourceforge.tess4j.ITessAPI.TessPageSegMode;
+import net.sourceforge.tess4j.ITessAPI.TessResultRenderer;
+import net.sourceforge.tess4j.ITessAPI.TessTextlineOrder;
+import net.sourceforge.tess4j.ITessAPI.TessWritingDirection;
 
 public class TessAPITest {
 
@@ -102,7 +105,7 @@ public class TessAPITest {
         int bytespp = bpp / 8;
         int bytespl = (int) Math.ceil(image.getWidth() * bpp / 8.0);
         api.TessBaseAPIInit3(handle, datapath, language);
-        api.TessBaseAPISetPageSegMode(handle, TessAPI.TessPageSegMode.PSM_AUTO);
+        api.TessBaseAPISetPageSegMode(handle, TessPageSegMode.PSM_AUTO);
         Pointer utf8Text = api.TessBaseAPIRect(handle, buf, bytespp, bytespl, 90, 50, 862, 614);
         String result = utf8Text.getString(0);
         api.TessDeleteText(utf8Text);
@@ -127,7 +130,7 @@ public class TessAPITest {
         int bytespp = bpp / 8;
         int bytespl = (int) Math.ceil(image.getWidth() * bpp / 8.0);
         api.TessBaseAPIInit3(handle, datapath, language);
-        api.TessBaseAPISetPageSegMode(handle, TessAPI.TessPageSegMode.PSM_AUTO);
+        api.TessBaseAPISetPageSegMode(handle, TessPageSegMode.PSM_AUTO);
         api.TessBaseAPISetImage(handle, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
         api.TessBaseAPISetRectangle(handle, 90, 50, 862, 614);
         Pointer utf8Text = api.TessBaseAPIGetUTF8Text(handle);
@@ -254,7 +257,7 @@ public class TessAPITest {
     @Test
     public void testTessBaseAPIInit1() {
         System.out.println("TessBaseAPIInit1");
-        int oem = TessAPI.TessOcrEngineMode.OEM_DEFAULT;
+        int oem = TessOcrEngineMode.OEM_DEFAULT;
         PointerByReference configs = null;
         int configs_size = 0;
         int expResult = 0;
@@ -268,7 +271,7 @@ public class TessAPITest {
     @Test
     public void testTessBaseAPIInit2() {
         System.out.println("TessBaseAPIInit2");
-        int oem = TessAPI.TessOcrEngineMode.OEM_DEFAULT;
+        int oem = TessOcrEngineMode.OEM_DEFAULT;
         int expResult = 0;
         int result = api.TessBaseAPIInit2(handle, datapath, language, oem);
         assertEquals(expResult, result);
@@ -291,7 +294,7 @@ public class TessAPITest {
     @Test
     public void testTessBaseAPIInit4() {
         System.out.println("TessBaseAPIInit4");
-        int oem = TessAPI.TessOcrEngineMode.OEM_DEFAULT;
+        int oem = TessOcrEngineMode.OEM_DEFAULT;
         PointerByReference configs = null;
         int configs_size = 0;
         int expResult = 0;
@@ -341,7 +344,7 @@ public class TessAPITest {
     @Test
     public void testTessBaseAPISetPageSegMode() {
         System.out.println("TessBaseAPISetPageSegMode");
-        int mode = TessAPI.TessPageSegMode.PSM_AUTO;
+        int mode = TessPageSegMode.PSM_AUTO;
         api.TessBaseAPISetPageSegMode(handle, mode);
     }
 
@@ -351,8 +354,8 @@ public class TessAPITest {
     @Test
     public void testTessBaseAPIGetPageSegMode() {
         System.out.println("TessBaseAPIGetPageSegMode");
-        api.TessBaseAPISetPageSegMode(handle, TessAPI.TessPageSegMode.PSM_SINGLE_CHAR);
-        int expResult = TessAPI.TessPageSegMode.PSM_SINGLE_CHAR;
+        api.TessBaseAPISetPageSegMode(handle, TessPageSegMode.PSM_SINGLE_CHAR);
+        int expResult = TessPageSegMode.PSM_SINGLE_CHAR;
         int result = api.TessBaseAPIGetPageSegMode(handle);
         assertEquals(expResult, result);
     }
@@ -416,7 +419,7 @@ public class TessAPITest {
         int bpp = image.getColorModel().getPixelSize();
         int bytespp = bpp / 8;
         int bytespl = (int) Math.ceil(image.getWidth() * bpp / 8.0);
-        api.TessBaseAPISetPageSegMode(handle, TessAPI.TessPageSegMode.PSM_AUTO);
+        api.TessBaseAPISetPageSegMode(handle, TessPageSegMode.PSM_AUTO);
         api.TessBaseAPIInit3(handle, datapath, language);
         api.TessBaseAPISetImage(handle, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
         int page_number = 0;
@@ -434,7 +437,7 @@ public class TessAPITest {
     @Test
     public void testOSD() throws Exception {
         System.out.println("OSD");
-        int expResult = TessAPI.TessPageSegMode.PSM_AUTO_OSD;
+        int expResult = TessPageSegMode.PSM_AUTO_OSD;
         IntBuffer orientation = IntBuffer.allocate(1);
         IntBuffer direction = IntBuffer.allocate(1);
         IntBuffer order = IntBuffer.allocate(1);
@@ -447,9 +450,9 @@ public class TessAPITest {
         int bytespp = bpp / 8;
         int bytespl = (int) Math.ceil(image.getWidth() * bpp / 8.0);
         api.TessBaseAPIInit3(handle, datapath, language);
-        api.TessBaseAPISetPageSegMode(handle, TessAPI.TessPageSegMode.PSM_AUTO_OSD);
+        api.TessBaseAPISetPageSegMode(handle, TessPageSegMode.PSM_AUTO_OSD);
         int actualResult = api.TessBaseAPIGetPageSegMode(handle);
-        System.out.println("PSM: " + Utils.getConstantName(actualResult, TessAPI1.TessPageSegMode.class));
+        System.out.println("PSM: " + Utils.getConstantName(actualResult, TessPageSegMode.class));
         api.TessBaseAPISetImage(handle, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
         int success = api.TessBaseAPIRecognize(handle, null);
         if (success == 0) {
@@ -482,7 +485,7 @@ public class TessAPITest {
         int bytespp = bpp / 8;
         int bytespl = (int) Math.ceil(image.getWidth() * bpp / 8.0);
         api.TessBaseAPIInit3(handle, datapath, language);
-        api.TessBaseAPISetPageSegMode(handle, TessAPI.TessPageSegMode.PSM_AUTO);
+        api.TessBaseAPISetPageSegMode(handle, TessPageSegMode.PSM_AUTO);
         api.TessBaseAPISetImage(handle, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
         api.TessBaseAPIRecognize(handle, null);
         TessAPI.TessResultIterator ri = api.TessBaseAPIGetIterator(handle);
@@ -597,7 +600,7 @@ public class TessAPITest {
         String image = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
         String output = "capi-test.txt";
         int set_only_init_params = TessAPI.FALSE;
-        int oem = TessAPI.TessOcrEngineMode.OEM_DEFAULT;
+        int oem = TessOcrEngineMode.OEM_DEFAULT;
         PointerByReference configs = null;
         int configs_size = 0;
 

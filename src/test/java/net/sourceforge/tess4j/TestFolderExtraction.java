@@ -36,33 +36,37 @@ public class TestFolderExtraction {
     public void testFolderExtraction() {
 
         File tessDataFolder = null;
+        
         try {
 
             /**
-             * Loading the image from resources.
+             * Loads the image from resources.
              */
-            String filename = String.format("%s/%s", "/test-data", "eurotext.tif");
+            String filename = String.format("%s/%s", "/test-data", "eurotext.pdf");
             URL defaultImage = getClass().getResource(filename);
             File imageFile = new File(defaultImage.toURI());
 
             /**
-             * Loading the tessdata folder into a temporary folder.
-             * TODO add logger
+             * Extracts <code>tessdata</code> folder into a temp folder.
              */
             logger.log(Level.INFO, "Loading the tessdata folder into a temporary folder.");
-            tessDataFolder = LoadLibs.INSTANCE.loadDefaultTessDataFolder();
-            System.out.println(tessDataFolder.getAbsolutePath());
+            tessDataFolder = LoadLibs.extractTessResources("tessdata");
             
             /**
-             * Loading tesseract instance and setting the tessdata path.
+             * Gets tesseract instance and sets data path.
              */
             Tesseract instance = Tesseract.getInstance();
-            instance.setDatapath(tessDataFolder.getAbsolutePath());
+            
+            if (tessDataFolder != null) {
+                System.out.println(tessDataFolder.getAbsolutePath());
+                instance.setDatapath(tessDataFolder.getAbsolutePath());
+            }
 
             /**
-             * Doing OCR on the image and checking if the tessdata folder exists.
+             * Performs OCR on the image.
              */
-            instance.doOCR(imageFile);
+            String result = instance.doOCR(imageFile);
+            System.out.println(result);
 
         } catch (TesseractException e) {
             System.err.println(e.getMessage());
@@ -71,7 +75,8 @@ public class TestFolderExtraction {
             logger.log(Level.SEVERE, e.getMessage(), e);
         }
         
-        assertTrue(tessDataFolder.exists());
+        // checks if tessdata folder exists
+        assertTrue(tessDataFolder != null && tessDataFolder.exists());
     }
 
 }

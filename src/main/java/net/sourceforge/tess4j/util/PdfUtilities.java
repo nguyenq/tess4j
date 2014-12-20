@@ -193,7 +193,7 @@ public class PdfUtilities {
         gsArgs.add("src/main/resources/pdfpagecount.ps");
 
         int pageCount = 0;
-        ByteArrayOutputStream os = null;
+        ByteArrayOutputStream os;
 
         //execute and exit interpreter
         try {

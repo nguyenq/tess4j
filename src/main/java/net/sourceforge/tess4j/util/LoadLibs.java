@@ -25,183 +25,127 @@ import java.net.URLConnection;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-
-import net.sourceforge.tess4j.TessAPI;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import com.sun.jna.Native;
+import com.sun.jna.Platform;
 
-public enum LoadLibs {
+import net.sourceforge.tess4j.TessAPI;
 
-    INSTANCE;
+/**
+ * Loads native libraries from JAR or project folder.
+ *
+ * @author O.J. Sousa Rodrigues
+ * @author Quan Nguyen
+ */
+public class LoadLibs {
 
-    private TessAPI      api                     = null;
-    private OSLibs       os                      = null;
-    private final String DEFAULT_TESSDATA_FOLDER = "/tessdata";
+    public static final String TESS4J_TEMP_DIR = new File(System.getProperty("java.io.tmpdir"), "tess4j").getPath();
 
-    private LoadLibs() {
+    /**
+     * Native library name.
+     */
+    public static final String LIB_NAME = "libtesseract303";
+    public static final String LIB_NAME_NON_WIN = "tesseract";
 
+    private final static Logger logger = Logger.getLogger(LoadLibs.class.getName());
+
+    static {
         System.setProperty("jna.encoding", "UTF8");
-
-        if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-
-            if ("64".equalsIgnoreCase(System.getProperty("sun.arch.data.model"))) {
-                os = new OSLibsWin64();
-            }
-
-            if ("32".equalsIgnoreCase(System.getProperty("sun.arch.data.model"))) {
-                os = new OSLibsWin32();
-            }
+        File targetTempFolder = extractTessResources(Platform.RESOURCE_PREFIX);
+        if (targetTempFolder != null && targetTempFolder.exists()) {
+            System.setProperty("jna.library.path", targetTempFolder.getPath());
         }
-        
-        
-        loadLibs();
     }
 
     /**
-     * Will load the tesseract library using Native.loadLibrary().
-     * @return TessAPI instance being loaded using the Native.loadLibrary().
+     * Loads Tesseract library via JNA.
+     *
+     * @return TessAPI instance being loaded using
+     * <code>Native.loadLibrary()</code>.
      */
-    public TessAPI getTessAPIInstance() {
-        api = (TessAPI) Native.loadLibrary(os.getLibTesseract(), TessAPI.class);
-        return api;
-    }
-    
-    /**
-     * 
-     * @return the name of the tesseract library to be loaded using the Native.register().
-     */
-    public String getTesseractLibName() {
-        return os.getLibTesseract();
-    }
-    
-    /**
-     * This method will, extract the libraries from the current jar into the
-     * operating system temporary folder and load the libraries making them available
-     * for the JVM.
-     */
-    private void loadLibs() {
-
-        if (null == api) {
-
-            try {
-
-                for (String fileName : os.getLibsToLoad()) {
-
-                    /**
-                     * OS library being loaded from resources.
-                     */
-                    String rscFilePath = String.format("/%s/%s", os.getOsArchFolder(), fileName);
-                    InputStream in = this.getClass().getResourceAsStream(rscFilePath);
-
-                    /**
-                     * Temporary files being set to be copied.
-                     */
-                    String tmpFilePath = String.format("%s/%s", os.getTess4jArchTempFolder(), fileName);
-                    File tmpFile = new File(tmpFilePath);
-
-                    if (!tmpFile.exists()) {
-
-                        OutputStream out = FileUtils.openOutputStream(tmpFile);
-                        IOUtils.copy(in, out);
-                        in.close();
-                        out.close();
-                    }
-
-                    /**
-                     * Making the library available to the JVM.
-                     */
-                    System.load(tmpFile.getAbsolutePath());
-                }
-
-                
-
-            } catch (IOException e) {
-                // TODO add logger
-                System.out.println(e.getMessage());
-                e.printStackTrace();
-            } catch (UnsatisfiedLinkError e) {
-                // TODO add logger
-                System.out.println(e.getMessage());
-                e.printStackTrace();
-            }
-        }
-
+    public static TessAPI getTessAPIInstance() {
+        return (TessAPI) Native.loadLibrary(getTesseractLibName(), TessAPI.class);
     }
 
-    
     /**
-     * This method will load the tessdata folder from resources and copy it into the temporary folder.
+     * Gets native library name.
+     *
+     * @return the name of the tesseract library to be loaded using the
+     * <code>Native.register()</code>.
      */
-    public File loadDefaultTessDataFolder() {
+    public static String getTesseractLibName() {
+        return Platform.isWindows() ? LIB_NAME : LIB_NAME_NON_WIN;
+    }
 
-        File targetTempFolder = null;
+    /**
+     * Extracts tesseract resources to temp folder.
+     *
+     * @param dirname resource location
+     * @return target location
+     */
+    public static File extractTessResources(String dirname) {
+        File targetTempDir = null;
 
         try {
+            targetTempDir = new File(TESS4J_TEMP_DIR, dirname);
 
-            /**
-             * Target temporary tessdata folder.
-             */
-            String targetTempFolderPath = String.format("%s/%s", os.TESS4J_TEMP_PATH, DEFAULT_TESSDATA_FOLDER);
-            targetTempFolder = new File(targetTempFolderPath);
+            URL tessResourceUrl = LoadLibs.class.getResource(dirname.startsWith("/") ? dirname : "/" + dirname);
+            if (tessResourceUrl == null) {
+                return null;
+            }
 
-
-            URL tessDataFolderUrl = getClass().getResource(DEFAULT_TESSDATA_FOLDER);
-            URLConnection urlConnection = tessDataFolderUrl.openConnection();
+            URLConnection urlConnection = tessResourceUrl.openConnection();
 
             /**
              * Either load from resources from jar or project resource folder.
              */
             if (urlConnection instanceof JarURLConnection) {
-                copyJarResourceToFolder((JarURLConnection) urlConnection, targetTempFolder);
+                copyJarResourceToDirectory((JarURLConnection) urlConnection, targetTempDir);
             } else {
-                FileUtils.copyDirectory(new File(tessDataFolderUrl.getPath()), targetTempFolder);
+                FileUtils.copyDirectory(new File(tessResourceUrl.getPath()), targetTempDir);
             }
-
         } catch (Exception e) {
-            // TODO add logger
-            e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e);
         }
 
-        return targetTempFolder;
+        return targetTempDir;
     }
-    
-    
 
     /**
-     * This method will copy resources from the jar file of the current thread and extract it to the destination folder.
-     * 
+     * Copies resources from the jar file of the current thread and extract it
+     * to the destination directory.
+     *
      * @param jarConnection
      * @param destDir
-     * @throws IOException
      */
-    public void copyJarResourceToFolder(JarURLConnection jarConnection, File destDir) {
-
+    static void copyJarResourceToDirectory(JarURLConnection jarConnection, File destDir) {
         try {
             JarFile jarFile = jarConnection.getJarFile();
+            String jarConnectionEntryName = jarConnection.getEntryName() + "/";
 
             /**
              * Iterate all entries in the jar file.
              */
             for (Enumeration<JarEntry> e = jarFile.entries(); e.hasMoreElements();) {
-
                 JarEntry jarEntry = e.nextElement();
                 String jarEntryName = jarEntry.getName();
-                String jarConnectionEntryName = jarConnection.getEntryName();
 
                 /**
                  * Extract files only if they match the path.
                  */
                 if (jarEntryName.startsWith(jarConnectionEntryName)) {
-
-                    String filename = jarEntryName.startsWith(jarConnectionEntryName) ? jarEntryName.substring(jarConnectionEntryName.length()) : jarEntryName;
+                    String filename = jarEntryName.substring(jarConnectionEntryName.length());
                     File currentFile = new File(destDir, filename);
 
                     if (jarEntry.isDirectory()) {
                         currentFile.mkdirs();
                     } else {
+                        currentFile.deleteOnExit();
                         InputStream is = jarFile.getInputStream(jarEntry);
                         OutputStream out = FileUtils.openOutputStream(currentFile);
                         IOUtils.copy(is, out);
@@ -211,10 +155,7 @@ public enum LoadLibs {
                 }
             }
         } catch (IOException e) {
-            // TODO add logger
-            e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e);
         }
-
     }
-
 }
