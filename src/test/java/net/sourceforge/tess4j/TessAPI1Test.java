@@ -15,39 +15,30 @@
  */
 package net.sourceforge.tess4j;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.util.Arrays;
-
-import javax.imageio.ImageIO;
-
-import net.sourceforge.tess4j.TessAPI1.TessOcrEngineMode;
-import net.sourceforge.tess4j.TessAPI1.TessOrientation;
-import net.sourceforge.tess4j.TessAPI1.TessPageSegMode;
-import net.sourceforge.tess4j.TessAPI1.TessTextlineOrder;
-import net.sourceforge.tess4j.TessAPI1.TessWritingDirection;
-import net.sourceforge.tess4j.util.Utils;
 import net.sourceforge.vietocr.ImageIOHelper;
+import net.sourceforge.tess4j.util.Utils;
+import com.sun.jna.Pointer;
+import com.sun.jna.ptr.PointerByReference;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.nio.*;
+import java.util.Arrays;
+import javax.imageio.ImageIO;
+import static net.sourceforge.tess4j.ITessAPI.TRUE;
+
+import net.sourceforge.tess4j.ITessAPI.TessOcrEngineMode;
+import net.sourceforge.tess4j.ITessAPI.TessOrientation;
+import net.sourceforge.tess4j.ITessAPI.TessPageIteratorLevel;
+import net.sourceforge.tess4j.ITessAPI.TessPageSegMode;
+import net.sourceforge.tess4j.ITessAPI.TessTextlineOrder;
+import net.sourceforge.tess4j.ITessAPI.TessWritingDirection;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.sun.jna.Pointer;
-import com.sun.jna.ptr.PointerByReference;
+import static org.junit.Assert.*;
 
 public class TessAPI1Test {
 
@@ -57,7 +48,7 @@ public class TessAPI1Test {
     String expOCRResult = "The (quick) [brown] {fox} jumps!\nOver the $43,456.78 <lazy> #90 dog";
 
     TessAPI1.TessBaseAPI handle;
-
+    
     public TessAPI1Test() {
         System.setProperty("jna.encoding", "UTF8");
     }
@@ -82,8 +73,6 @@ public class TessAPI1Test {
 
     /**
      * Test of TessBaseAPIRect method, of class TessDllAPI1.
-     *
-     * @throws Exception while processing the image
      */
     @Test
     public void testTessBaseAPIRect() throws Exception {
@@ -97,7 +86,7 @@ public class TessAPI1Test {
         int bytespp = bpp / 8;
         int bytespl = (int) Math.ceil(image.getWidth() * bpp / 8.0);
         TessAPI1.TessBaseAPIInit3(handle, datapath, language);
-        TessAPI1.TessBaseAPISetPageSegMode(handle, TessAPI1.TessPageSegMode.PSM_AUTO);
+        TessAPI1.TessBaseAPISetPageSegMode(handle, TessPageSegMode.PSM_AUTO);
         Pointer utf8Text = TessAPI1.TessBaseAPIRect(handle, buf, bytespp, bytespl, 0, 0, 1024, 800);
         String result = utf8Text.getString(0);
         TessAPI1.TessDeleteText(utf8Text);
@@ -107,8 +96,6 @@ public class TessAPI1Test {
 
     /**
      * Test of TessBaseAPIGetUTF8Text method, of class TessDllAPI1.
-     *
-     * @throws Exception while processing the image
      */
     @Test
     public void testTessBaseAPIGetUTF8Text() throws Exception {
@@ -122,7 +109,7 @@ public class TessAPI1Test {
         int bytespp = bpp / 8;
         int bytespl = (int) Math.ceil(image.getWidth() * bpp / 8.0);
         TessAPI1.TessBaseAPIInit3(handle, datapath, language);
-        TessAPI1.TessBaseAPISetPageSegMode(handle, TessAPI1.TessPageSegMode.PSM_AUTO);
+        TessAPI1.TessBaseAPISetPageSegMode(handle, TessPageSegMode.PSM_AUTO);
         TessAPI1.TessBaseAPISetImage(handle, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
         TessAPI1.TessBaseAPISetRectangle(handle, 0, 0, 1024, 800);
         Pointer utf8Text = TessAPI1.TessBaseAPIGetUTF8Text(handle);
@@ -208,7 +195,7 @@ public class TessAPI1Test {
         TessAPI1.TessBaseAPISetVariable(handle, name, "1");
         IntBuffer value = IntBuffer.allocate(1);
         int result = -1;
-        if (TessAPI1.TessBaseAPIGetBoolVariable(handle, "tessedit_create_hocr", value) == TessAPI1.TRUE) {
+        if (TessAPI1.TessBaseAPIGetBoolVariable(handle, "tessedit_create_hocr", value) == TRUE) {
             result = value.get(0);
         }
         int expResult = 1;
@@ -217,8 +204,6 @@ public class TessAPI1Test {
 
     /**
      * Test of TessBaseAPIPrintVariables method, of class TessAPI1.
-     *
-     * @throws Exception while persisting variables into a file.
      */
     @Test
     public void testTessBaseAPIPrintVariablesToFile() throws Exception {
@@ -296,20 +281,19 @@ public class TessAPI1Test {
     public void testTessBaseAPIGetLoadedLanguagesAsVector() {
         System.out.println("TessBaseAPIGetLoadedLanguagesAsVector");
         TessAPI1.TessBaseAPIInit3(handle, datapath, language);
-        String[] expResult = {"eng"};
+        String[] expResult = { "eng" };
         String[] result = TessAPI1.TessBaseAPIGetLoadedLanguagesAsVector(handle).getPointer().getStringArray(0);
         assertArrayEquals(expResult, result);
     }
 
     /**
-     * Test of TessBaseAPIGetAvailableLanguagesAsVector method, of class
-     * TessAPI1.
+     * Test of TessBaseAPIGetAvailableLanguagesAsVector method, of class TessAPI1.
      */
     @Test
     public void testTessBaseAPIGetAvailableLanguagesAsVector() {
         System.out.println("TessBaseAPIGetAvailableLanguagesAsVector");
         TessAPI1.TessBaseAPIInit3(handle, datapath, language);
-        String[] expResult = {"eng"};
+        String[] expResult = { "eng" };
         String[] result = TessAPI1.TessBaseAPIGetAvailableLanguagesAsVector(handle).getPointer().getStringArray(0);
         assertTrue(Arrays.asList(result).containsAll(Arrays.asList(expResult)));
     }
@@ -347,7 +331,6 @@ public class TessAPI1Test {
         int height = 0;
         int bytes_per_pixel = 0;
         int bytes_per_line = 0;
-        TessAPI1.TessBaseAPIInit3(handle, datapath, language);
         TessAPI1.TessBaseAPISetImage(handle, imagedata, width, height, bytes_per_pixel, bytes_per_line);
     }
 
@@ -383,8 +366,6 @@ public class TessAPI1Test {
 
     /**
      * Test of TessBaseAPIGetHOCRText method, of class TessAPI1.
-     *
-     * @throws Exception while getting ocr text from image.
      */
     @Test
     public void testTessBaseAPIGetHOCRText() throws Exception {
@@ -396,7 +377,7 @@ public class TessAPI1Test {
         int bpp = image.getColorModel().getPixelSize();
         int bytespp = bpp / 8;
         int bytespl = (int) Math.ceil(image.getWidth() * bpp / 8.0);
-        TessAPI1.TessBaseAPISetPageSegMode(handle, TessAPI1.TessPageSegMode.PSM_AUTO);
+        TessAPI1.TessBaseAPISetPageSegMode(handle, TessPageSegMode.PSM_AUTO);
         TessAPI1.TessBaseAPIInit3(handle, datapath, language);
         TessAPI1.TessBaseAPISetImage(handle, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
         int page_number = 0;
@@ -408,13 +389,11 @@ public class TessAPI1Test {
 
     /**
      * Test of Orientation and script detection (OSD).
-     *
-     * @throws Exception while processing the image.
      */
     @Test
     public void testOSD() throws Exception {
         System.out.println("OSD");
-        int expResult = TessAPI1.TessPageSegMode.PSM_AUTO_OSD;
+        int expResult = TessPageSegMode.PSM_AUTO_OSD;
         IntBuffer orientation = IntBuffer.allocate(1);
         IntBuffer direction = IntBuffer.allocate(1);
         IntBuffer order = IntBuffer.allocate(1);
@@ -429,20 +408,19 @@ public class TessAPI1Test {
         TessAPI1.TessBaseAPIInit3(handle, datapath, language);
         TessAPI1.TessBaseAPISetPageSegMode(handle, expResult);
         int actualResult = TessAPI1.TessBaseAPIGetPageSegMode(handle);
-        System.out.println("PSM: " + Utils.getConstantName(actualResult, TessAPI1.TessPageSegMode.class));
+        System.out.println("PSM: " + Utils.getConstantName(actualResult, TessPageSegMode.class));
         TessAPI1.TessBaseAPISetImage(handle, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
         int success = TessAPI1.TessBaseAPIRecognize(handle, null);
         if (success == 0) {
             TessAPI1.TessPageIterator pi = TessAPI1.TessBaseAPIAnalyseLayout(handle);
             TessAPI1.TessPageIteratorOrientation(pi, orientation, direction, order, deskew_angle);
-            System.out.println(String.format(
-                    "Orientation: %s\nWritingDirection: %s\nTextlineOrder: %s\nDeskew angle: %.4f\n",
-                    Utils.getConstantName(orientation.get(), TessOrientation.class),
-                    Utils.getConstantName(direction.get(), TessWritingDirection.class),
-                    Utils.getConstantName(order.get(), TessTextlineOrder.class),
-                    deskew_angle.get()));
+            System.out.println(String.format("Orientation: %s\nWritingDirection: %s\nTextlineOrder: %s\nDeskew angle: %.4f\n",
+                Utils.getConstantName(orientation.get(), TessOrientation.class), 
+                Utils.getConstantName(direction.get(), TessWritingDirection.class), 
+                Utils.getConstantName(order.get(), TessTextlineOrder.class), 
+                deskew_angle.get()));
         }
-
+        
         assertEquals(expResult, actualResult);
     }
 
@@ -462,33 +440,31 @@ public class TessAPI1Test {
         int bytespp = bpp / 8;
         int bytespl = (int) Math.ceil(image.getWidth() * bpp / 8.0);
         TessAPI1.TessBaseAPIInit3(handle, datapath, language);
-        TessAPI1.TessBaseAPISetPageSegMode(handle, TessAPI1.TessPageSegMode.PSM_AUTO);
+        TessAPI1.TessBaseAPISetPageSegMode(handle, TessPageSegMode.PSM_AUTO);
         TessAPI1.TessBaseAPISetImage(handle, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
         TessAPI1.TessBaseAPIRecognize(handle, null);
         TessAPI1.TessResultIterator ri = TessAPI1.TessBaseAPIGetIterator(handle);
         TessAPI1.TessPageIterator pi = TessAPI1.TessResultIteratorGetPageIterator(ri);
         TessAPI1.TessPageIteratorBegin(pi);
         System.out.println("Bounding boxes:\nchar(s) left top right bottom confidence font-attributes");
-        int level = TessAPI1.TessPageIteratorLevel.RIL_WORD;
 
-        // int height = image.getHeight();
+//        int height = image.getHeight();
         do {
-            Pointer ptr = TessAPI1.TessResultIteratorGetUTF8Text(ri, level);
+            Pointer ptr = TessAPI1.TessResultIteratorGetUTF8Text(ri, TessPageIteratorLevel.RIL_WORD);
             String word = ptr.getString(0);
             TessAPI1.TessDeleteText(ptr);
-            float confidence = TessAPI1.TessResultIteratorConfidence(ri, level);
+            float confidence = TessAPI1.TessResultIteratorConfidence(ri, TessPageIteratorLevel.RIL_WORD);
             IntBuffer leftB = IntBuffer.allocate(1);
             IntBuffer topB = IntBuffer.allocate(1);
             IntBuffer rightB = IntBuffer.allocate(1);
             IntBuffer bottomB = IntBuffer.allocate(1);
-            TessAPI1.TessPageIteratorBoundingBox(pi, level, leftB, topB, rightB, bottomB);
+            TessAPI1.TessPageIteratorBoundingBox(pi, TessPageIteratorLevel.RIL_WORD, leftB, topB, rightB, bottomB);
             int left = leftB.get();
             int top = topB.get();
             int right = rightB.get();
             int bottom = bottomB.get();
             System.out.print(String.format("%s %d %d %d %d %f", word, left, top, right, bottom, confidence));
-            // System.out.println(String.format("%s %d %d %d %d", str, left, height - bottom, right, height - top)); //
-            // training box coordinates
+//            System.out.println(String.format("%s %d %d %d %d", str, left, height - bottom, right, height - top)); // training box coordinates     
 
             IntBuffer boldB = IntBuffer.allocate(1);
             IntBuffer italicB = IntBuffer.allocate(1);
@@ -500,19 +476,19 @@ public class TessAPI1Test {
             IntBuffer fontIdB = IntBuffer.allocate(1);
             String fontName = TessAPI1.TessResultIteratorWordFontAttributes(ri, boldB, italicB, underlinedB,
                     monospaceB, serifB, smallcapsB, pointSizeB, fontIdB);
-            boolean bold = boldB.get() == TessAPI1.TRUE;
-            boolean italic = italicB.get() == TessAPI1.TRUE;
-            boolean underlined = underlinedB.get() == TessAPI1.TRUE;
-            boolean monospace = monospaceB.get() == TessAPI1.TRUE;
-            boolean serif = serifB.get() == TessAPI1.TRUE;
-            boolean smallcaps = smallcapsB.get() == TessAPI1.TRUE;
+            boolean bold = boldB.get() == TRUE;
+            boolean italic = italicB.get() == TRUE;
+            boolean underlined = underlinedB.get() == TRUE;
+            boolean monospace = monospaceB.get() == TRUE;
+            boolean serif = serifB.get() == TRUE;
+            boolean smallcaps = smallcapsB.get() == TRUE;
             int pointSize = pointSizeB.get();
             int fontId = fontIdB.get();
-            System.out.println(String.format("  font: %s, size: %d, font id: %d, bold: %b,"
-                    + " italic: %b, underlined: %b, monospace: %b, serif: %b, smallcap: %b", fontName, pointSize,
-                    fontId, bold, italic, underlined, monospace, serif, smallcaps));
-        } while (TessAPI1.TessPageIteratorNext(pi, level) == TessAPI1.TRUE);
-
+            System.out.println(String.format("  font: %s, size: %d, font id: %d, bold: %b," +
+                       " italic: %b, underlined: %b, monospace: %b, serif: %b, smallcap: %b", 
+                    fontName, pointSize, fontId, bold, italic, underlined, monospace, serif, smallcaps));            
+        } while (TessAPI1.TessPageIteratorNext(pi, TessPageIteratorLevel.RIL_WORD) == TRUE);
+        
         assertTrue(true);
     }
 

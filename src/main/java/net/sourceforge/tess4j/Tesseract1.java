@@ -25,6 +25,9 @@ import java.util.*;
 import java.util.logging.*;
 import javax.imageio.IIOImage;
 
+import net.sourceforge.tess4j.ITessAPI.TessOcrEngineMode;
+import net.sourceforge.tess4j.ITessAPI.TessPageSegMode;
+
 /**
  * An object layer on top of <code>TessAPI1</code>, provides character
  * recognition support for common image formats, and multi-page TIFF images
@@ -45,10 +48,10 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
 
     private String language = "eng";
     private String datapath = "./";
-    private int psm = TessAPI1.TessPageSegMode.PSM_AUTO;
+    private int psm = TessPageSegMode.PSM_AUTO;
     private boolean hocr;
     private int pageNum;
-    private int ocrEngineMode = TessAPI1.TessOcrEngineMode.OEM_DEFAULT;
+    private int ocrEngineMode = TessOcrEngineMode.OEM_DEFAULT;
     private final Properties prop = new Properties();
 
     private TessBaseAPI handle;
@@ -59,7 +62,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
      * Public constructor.
      */
     public Tesseract1() {
-        System.setProperty("jna.encoding", "UTF8");
+//        System.setProperty("jna.encoding", "UTF8");
     }
 
     /**
