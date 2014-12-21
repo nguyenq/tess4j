@@ -464,7 +464,7 @@ public interface ITessAPI {
         /**
          * time to stop if not 0
          */
-        public NativeLong end_time;
+        public TimeVal end_time;
         /**
          * character data
          */
@@ -562,4 +562,21 @@ public interface ITessAPI {
          */
         boolean invoke(Pointer cancel_this, int words);
     };
+
+    public static class TimeVal extends Structure {
+
+        /**
+         * seconds
+         */
+        public NativeLong tv_sec;
+        /**
+         * microseconds
+         */
+        public NativeLong tv_usec;
+
+        @Override
+        protected List<?> getFieldOrder() {
+            return Arrays.asList("tv_sec", "tv_usec");
+        }
+    }
 }
