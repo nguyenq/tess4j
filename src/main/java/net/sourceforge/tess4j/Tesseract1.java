@@ -16,6 +16,8 @@
 package net.sourceforge.tess4j;
 
 import com.sun.jna.Pointer;
+import com.sun.jna.StringArray;
+import com.sun.jna.ptr.PointerByReference;
 import java.awt.Rectangle;
 import java.awt.image.*;
 import java.io.*;
@@ -52,7 +54,8 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     private int pageNum;
     private int ocrEngineMode = TessAPI1.TessOcrEngineMode.OEM_DEFAULT;
     private final Properties prop = new Properties();
-
+    private final List<String> configList = new ArrayList<String>();
+    
     private TessBaseAPI handle;
 
     private final static Logger logger = Logger.getLogger(Tesseract1.class.getName());
@@ -122,7 +125,20 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     public void setTessVariable(String key, String value) {
         prop.setProperty(key, value);
     }
-
+    
+    /**
+     * Sets configs to be passed in Tesseract's <code>Init</code> method.
+     *
+     * @param configs list of config filenames
+     */
+    @Override
+    public void setConfigs(List<String> configs) {
+        configList.clear();
+        if (configs != null) {
+            configList.addAll(configs);
+        }
+    }
+    
     /**
      * Returns API handle.
      *
@@ -273,7 +289,10 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     protected void init() {
         pageNum = 0;
         handle = TessBaseAPICreate();
-        TessBaseAPIInit2(handle, datapath, language, ocrEngineMode);
+        StringArray sarray = new StringArray(configList.toArray(new String[0]));
+        PointerByReference configs = new PointerByReference();
+        configs.setPointer(sarray);
+        TessBaseAPIInit1(handle, datapath, language, ocrEngineMode, configs, configList.size());
         TessBaseAPISetPageSegMode(handle, psm);
     }
 
