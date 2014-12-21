@@ -15,8 +15,13 @@
  */
 package net.sourceforge.tess4j;
 
+import com.sun.jna.Callback;
+import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 import com.sun.jna.PointerType;
+import com.sun.jna.Structure;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * An interface represents common TessAPI classes/constants.
@@ -49,11 +54,11 @@ public interface ITessAPI {
          */
         public static final int OEM_TESSERACT_CUBE_COMBINED = 2;
         /**
-         * Specify this mode when calling init_*(), to indicate that any of the
-         * above modes should be automatically inferred from the variables in
-         * the language-specific config, command-line configs, or if not
-         * specified in any of the above should be set to the default
-         * OEM_TESSERACT_ONLY.
+         * Specify this mode when calling <code>init_*()</code>, to indicate
+         * that any of the above modes should be automatically inferred from the
+         * variables in the language-specific config, command-line configs, or
+         * if not specified in any of the above should be set to the default
+         * <code>OEM_TESSERACT_ONLY</code>.
          */
         public static final int OEM_DEFAULT = 3;
     };
@@ -235,8 +240,7 @@ public interface ITessAPI {
      *  | < #######  .   c |
      *  | 3 #######      c |
      *  +------------------+
-     * </pre>
-     * Orientation Example:
+     * </pre> Orientation Example:
      * <br>
      * ====================
      * <br>
@@ -248,7 +252,7 @@ public interface ITessAPI {
      * characters are represented C and c.<br> <br> NOTA BENE: enum values here
      * should match goodoc.proto<br>
      * <br>
-     * If you orient your head so that "up" aligns with Orientation, then the 
+     * If you orient your head so that "up" aligns with Orientation, then the
      * characters will appear "right side up" and readable.<br>
      * <br>
      * In the example above, both the English and Chinese paragraphs are
@@ -312,17 +316,6 @@ public interface ITessAPI {
         }
     };
 
-    public static class ETEXT_DESC extends PointerType {
-
-        public ETEXT_DESC(Pointer address) {
-            super(address);
-        }
-
-        public ETEXT_DESC() {
-            super();
-        }
-    };
-
     public static class TessPageIterator extends PointerType {
 
         public TessPageIterator(Pointer address) {
@@ -354,5 +347,150 @@ public interface ITessAPI {
         public TessResultIterator() {
             super();
         }
+    };
+
+    /**
+     * Description of the output of the OCR engine. This structure is used as
+     * both a progress monitor and the final output header, since it needs to be
+     * a valid progress monitor while the OCR engine is storing its output to
+     * shared memory. During progress, all the buffer info is -1. Progress
+     * starts at 0 and increases to 100 during OCR. No other constraint. Every
+     * progress callback, the OCR engine must set <code>ocr_alive</code> to 1.
+     * The HP side will set <code>ocr_alive</code> to 0. Repeated failure to
+     * reset to 1 indicates that the OCR engine is dead. If the cancel function
+     * is not null then it is called with the number of user words found. If it
+     * returns true then operation is cancelled.
+     */
+    public static class ETEXT_DESC extends Structure {
+
+        /**
+         * chars in this buffer(0). Total number of UTF-8 bytes for this run.
+         */
+        public short count;
+        /**
+         * percent complete increasing (0-100)
+         */
+        public short progress;
+        /**
+         * true if not last
+         */
+        public byte more_to_come;
+        /**
+         * ocr sets to 1, HP 0
+         */
+        public byte ocr_alive;
+        /**
+         * for errcode use
+         */
+        public byte err_code;
+        /**
+         * returns true to cancel
+         */
+        public CANCEL_FUNC cancel;
+        /**
+         * this or other data for cancel
+         */
+        public Pointer cancel_this;
+        /**
+         * time to stop if not 0
+         */
+        public NativeLong end_time;
+        /**
+         * character data
+         */
+        public EANYCODE_CHAR[] text = new EANYCODE_CHAR[1];
+
+        /**
+         * Gets Field Order.
+         *
+         * @return
+         */
+        @Override
+        protected List getFieldOrder() {
+            return Arrays.asList("count", "progress", "more_to_come", "ocr_alive", "err_code", "cancel", "cancel_this", "end_time", "text");
+        }
+    }
+
+    /**
+     * It should be noted that the format for char_code for version 2.0 and
+     * beyond is UTF-8, which means that ASCII characters will come out as one
+     * structure but other characters will be returned in two or more instances
+     * of this structure with a single byte of the UTF-8 code in each, but each
+     * will have the same bounding box.<br>
+     * <br>
+     * Programs which want to handle languages with different characters sets
+     * will need to handle extended characters appropriately, but
+     * <strong>all</strong>
+     * code needs to be prepared to receive UTF-8 coded characters for
+     * characters such as bullet and fancy quotes.
+     */
+    public static class EANYCODE_CHAR extends Structure {
+
+        /**
+         * character itself, one single UTF-8 byte long. A Unicode character may
+         * consist of one or more UTF-8 bytes. Bytes of a character will have
+         * the same bounding box.
+         */
+        public byte char_code;
+        /**
+         * left of char (-1)
+         */
+        public short left;
+        /**
+         * right of char (-1)
+         */
+        public short right;
+        /**
+         * top of char (-1)
+         */
+        public short top;
+        /**
+         * bottom of char (-1)
+         */
+        public short bottom;
+        /**
+         * what font (0)
+         */
+        public short font_index;
+        /**
+         * classification confidence: 0=perfect, 100=reject (0/100)
+         */
+        public byte confidence;
+        /**
+         * point size of char, 72 = 1 inch, (10)
+         */
+        public byte point_size;
+        /**
+         * number of spaces before this char (1)
+         */
+        public byte blanks;
+        /**
+         * char formatting (0)
+         */
+        public byte formatting;
+
+        /**
+         * Gets Field Order.
+         *
+         * @return
+         */
+        @Override
+        protected List getFieldOrder() {
+            return Arrays.asList("char_code", "left", "right", "top", "bottom", "font_index", "confidence", "point_size", "blanks", "formatting");
+        }
+    }
+
+    /**
+     * Callback for <code>cancel_func</code>.
+     */
+    interface CANCEL_FUNC extends Callback {
+
+        /**
+         *
+         * @param cancel_this
+         * @param words
+         * @return
+         */
+        boolean invoke(Pointer cancel_this, int words);
     };
 }
