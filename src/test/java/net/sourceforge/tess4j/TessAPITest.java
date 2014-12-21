@@ -15,9 +15,8 @@
  */
 package net.sourceforge.tess4j;
 
-import net.sourceforge.vietocr.ImageIOHelper;
-import net.sourceforge.tess4j.util.Utils;
 import com.sun.jna.Pointer;
+import com.sun.jna.StringArray;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 import java.awt.image.BufferedImage;
@@ -26,14 +25,11 @@ import java.awt.Image;
 import java.io.*;
 import java.nio.*;
 import java.util.Arrays;
-import static net.sourceforge.tess4j.ITessAPI.TRUE;
 
-import net.sourceforge.tess4j.ITessAPI.TessOcrEngineMode;
-import net.sourceforge.tess4j.ITessAPI.TessOrientation;
-import net.sourceforge.tess4j.ITessAPI.TessPageIteratorLevel;
-import net.sourceforge.tess4j.ITessAPI.TessPageSegMode;
-import net.sourceforge.tess4j.ITessAPI.TessTextlineOrder;
-import net.sourceforge.tess4j.ITessAPI.TessWritingDirection;
+import static net.sourceforge.tess4j.ITessAPI.TRUE;
+import net.sourceforge.vietocr.ImageIOHelper;
+import net.sourceforge.tess4j.util.Utils;
+import net.sourceforge.tess4j.ITessAPI.*;
 
 import org.junit.*;
 import static org.junit.Assert.*;
@@ -235,11 +231,22 @@ public class TessAPITest {
     public void testTessBaseAPIInit1() {
         System.out.println("TessBaseAPIInit1");
         int oem = TessOcrEngineMode.OEM_DEFAULT;
-        PointerByReference configs = null;
-        int configs_size = 0;
+        String[] args = {"hocr"};
+        StringArray sarray = new StringArray(args);
+        PointerByReference configs = new PointerByReference();
+        configs.setPointer(sarray);
+        int configs_size = args.length;
         int expResult = 0;
         int result = api.TessBaseAPIInit1(handle, datapath, language, oem, configs, configs_size);
         assertEquals(expResult, result);
+
+        String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
+        String retry_config = null;
+        int timeout_millisec = 0;
+        Pointer utf8Text = api.TessBaseAPIProcessPages(handle, filename, retry_config, timeout_millisec);
+        String html = utf8Text.getString(0);
+        api.TessDeleteText(utf8Text);
+        assertTrue(html.contains("<html"));
     }
 
     /**
