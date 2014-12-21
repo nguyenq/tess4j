@@ -43,7 +43,7 @@ public class TessAPITest {
 
     TessAPI api;
     TessAPI.TessBaseAPI handle;
-    
+
     public TessAPITest() {
         System.setProperty("jna.encoding", "UTF8");
     }
@@ -290,19 +290,20 @@ public class TessAPITest {
     public void testTessBaseAPIGetLoadedLanguagesAsVector() {
         System.out.println("TessBaseAPIGetLoadedLanguagesAsVector");
         api.TessBaseAPIInit3(handle, datapath, language);
-        String[] expResult = { "eng" };
+        String[] expResult = {"eng"};
         String[] result = api.TessBaseAPIGetLoadedLanguagesAsVector(handle).getPointer().getStringArray(0);
         assertArrayEquals(expResult, result);
     }
 
     /**
-     * Test of TessBaseAPIGetAvailableLanguagesAsVector method, of class TessAPI.
+     * Test of TessBaseAPIGetAvailableLanguagesAsVector method, of class
+     * TessAPI.
      */
     @Test
     public void testTessBaseAPIGetAvailableLanguagesAsVector() {
         System.out.println("TessBaseAPIGetAvailableLanguagesAsVector");
         api.TessBaseAPIInit3(handle, datapath, language);
-        String[] expResult = { "eng" };
+        String[] expResult = {"eng"};
         String[] result = api.TessBaseAPIGetAvailableLanguagesAsVector(handle).getPointer().getStringArray(0);
         assertTrue(Arrays.asList(result).containsAll(Arrays.asList(expResult)));
     }
@@ -419,17 +420,20 @@ public class TessAPITest {
         int actualResult = api.TessBaseAPIGetPageSegMode(handle);
         System.out.println("PSM: " + Utils.getConstantName(actualResult, TessPageSegMode.class));
         api.TessBaseAPISetImage(handle, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
-        int success = api.TessBaseAPIRecognize(handle, null);
+        ETEXT_DESC monitor = new ETEXT_DESC();
+        ProgressMonitor pmo = new ProgressMonitor(monitor);
+        pmo.start();
+        int success = api.TessBaseAPIRecognize(handle, monitor);
         if (success == 0) {
             TessAPI.TessPageIterator pi = api.TessBaseAPIAnalyseLayout(handle);
             api.TessPageIteratorOrientation(pi, orientation, direction, order, deskew_angle);
             System.out.println(String.format("Orientation: %s\nWritingDirection: %s\nTextlineOrder: %s\nDeskew angle: %.4f\n",
-                Utils.getConstantName(orientation.get(), TessOrientation.class), 
-                Utils.getConstantName(direction.get(), TessWritingDirection.class), 
-                Utils.getConstantName(order.get(), TessTextlineOrder.class), 
-                deskew_angle.get()));
+                    Utils.getConstantName(orientation.get(), TessOrientation.class),
+                    Utils.getConstantName(direction.get(), TessWritingDirection.class),
+                    Utils.getConstantName(order.get(), TessTextlineOrder.class),
+                    deskew_angle.get()));
         }
-        
+        System.out.println("Message: " + pmo.getMessage());
         assertEquals(expResult, actualResult);
     }
 
@@ -451,7 +455,11 @@ public class TessAPITest {
         api.TessBaseAPIInit3(handle, datapath, language);
         api.TessBaseAPISetPageSegMode(handle, TessPageSegMode.PSM_AUTO);
         api.TessBaseAPISetImage(handle, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
-        api.TessBaseAPIRecognize(handle, null);
+        ETEXT_DESC monitor = new ETEXT_DESC();
+        ProgressMonitor pmo = new ProgressMonitor(monitor);
+        pmo.start();
+        api.TessBaseAPIRecognize(handle, monitor);
+        System.out.println("Message: " + pmo.getMessage());
         TessAPI.TessResultIterator ri = api.TessBaseAPIGetIterator(handle);
         TessAPI.TessPageIterator pi = api.TessResultIteratorGetPageIterator(ri);
         api.TessPageIteratorBegin(pi);
@@ -474,7 +482,7 @@ public class TessAPITest {
             int bottom = bottomB.get();
             System.out.print(String.format("%s %d %d %d %d %f", word, left, top, right, bottom, confidence));
 //            System.out.println(String.format("%s %d %d %d %d", str, left, height - bottom, right, height - top)); // training box coordinates
-            
+
             IntBuffer boldB = IntBuffer.allocate(1);
             IntBuffer italicB = IntBuffer.allocate(1);
             IntBuffer underlinedB = IntBuffer.allocate(1);
@@ -493,11 +501,11 @@ public class TessAPITest {
             boolean smallcaps = smallcapsB.get() == TRUE;
             int pointSize = pointSizeB.get();
             int fontId = fontIdB.get();
-            System.out.println(String.format("  font: %s, size: %d, font id: %d, bold: %b," +
-                       " italic: %b, underlined: %b, monospace: %b, serif: %b, smallcap: %b", 
+            System.out.println(String.format("  font: %s, size: %d, font id: %d, bold: %b,"
+                    + " italic: %b, underlined: %b, monospace: %b, serif: %b, smallcap: %b",
                     fontName, pointSize, fontId, bold, italic, underlined, monospace, serif, smallcaps));
         } while (api.TessPageIteratorNext(pi, TessPageIteratorLevel.RIL_WORD) == TRUE);
-        
+
         assertTrue(true);
     }
 
