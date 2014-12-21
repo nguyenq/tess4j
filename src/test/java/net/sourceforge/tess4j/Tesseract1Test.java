@@ -25,6 +25,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.imageio.IIOImage;
 import static net.sourceforge.tess4j.ITessAPI.TRUE;
@@ -40,7 +41,7 @@ public class Tesseract1Test {
 
     static final double MINIMUM_DESKEW_THRESHOLD = 0.05d;
     Tesseract1 instance;
-    
+
     private final String datapath = "src/main/resources";
     private final String testResourcesDataPath = "src/test/resources/test-data";
 
@@ -77,6 +78,22 @@ public class Tesseract1Test {
         String result = instance.doOCR(imageFile);
         System.out.println(result);
         assertEquals(expResult, result.substring(0, expResult.length()));
+    }
+
+    /**
+     * Test of doOCR method, of class Tesseract.
+     */
+    @Test
+    public void testDoOCR_File_With_Configs() throws Exception {
+        System.out.println("doOCR with configs");
+        String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.png");
+        File imageFile = new File(filename);
+        String expResult = "[-0123456789.\n ]+";
+        List<String> configs = Arrays.asList("digits");
+        instance.setConfigs(configs);
+        String result = instance.doOCR(imageFile);
+        System.out.println(result);
+        assertTrue(result.matches(expResult));
     }
 
     /**
@@ -156,21 +173,21 @@ public class Tesseract1Test {
 
         String expResult = "The (quick) [brown] {fox} jumps!\nOver the $43,456.78 <lazy> #90 dog";
         String[] expResults = expResult.split("\\s");
-        
+
         Tess1Extension instance1 = new Tess1Extension();
         instance1.setDatapath(this.datapath);
         List<Word> result = instance1.getWords(imageFile);
-        
+
         //print the complete result
         for (Word word : result) {
             System.out.println(word);
         }
-        
+
         List<String> text = new ArrayList<String>();
         for (Word word : result.subList(0, expResults.length)) {
             text.add(word.getText());
         }
-        
+
         assertArrayEquals(expResults, text.toArray());
     }
 
@@ -249,10 +266,10 @@ public class Tesseract1Test {
         public Rectangle getRect() {
             return rect;
         }
-        
+
         @Override
         public String toString() {
             return String.format("%s\t[Confidence: %f Bounding box: %d %d %d %d]", text, confidence, rect.x, rect.y, rect.width, rect.height);
-        }        
+        }
     }
 }

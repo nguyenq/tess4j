@@ -22,18 +22,20 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.Rectangle;
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import javax.imageio.IIOImage;
 import org.junit.*;
 import static org.junit.Assert.*;
 
 public class TesseractTest {
+
     static final double MINIMUM_DESKEW_THRESHOLD = 0.05d;
     Tesseract instance;
-    
+
     private final String datapath = "src/main/resources";
     private final String testResourcesDataPath = "src/test/resources/test-data";
-    
+
     public TesseractTest() {
     }
 
@@ -67,6 +69,23 @@ public class TesseractTest {
         String result = instance.doOCR(imageFile);
         System.out.println(result);
         assertEquals(expResult, result.substring(0, expResult.length()));
+    }
+
+    /**
+     * Test of doOCR method, of class Tesseract.
+     */
+    @Test
+    public void testDoOCR_File_With_Configs() throws Exception {
+        System.out.println("doOCR with configs");
+        String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.png");
+        File imageFile = new File(filename);
+        String expResult = "[-0123456789.\n ]+";
+        List<String> configs = Arrays.asList("digits");
+        instance.setConfigs(configs);
+        String result = instance.doOCR(imageFile);
+        System.out.println(result);
+        assertTrue(result.matches(expResult));
+        instance.setConfigs(null); // since Tesseract instance is a singleton, clear configs so the effects do not carry on into subsequent runs.
     }
 
     /**

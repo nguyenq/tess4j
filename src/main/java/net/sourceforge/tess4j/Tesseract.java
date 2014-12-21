@@ -15,8 +15,9 @@
  */
 package net.sourceforge.tess4j;
 
-import net.sourceforge.vietocr.ImageIOHelper;
 import com.sun.jna.Pointer;
+import com.sun.jna.StringArray;
+import com.sun.jna.ptr.PointerByReference;
 import java.awt.Rectangle;
 import java.awt.image.*;
 import java.io.*;
@@ -28,6 +29,8 @@ import javax.imageio.IIOImage;
 import net.sourceforge.tess4j.ITessAPI.TessOcrEngineMode;
 import net.sourceforge.tess4j.ITessAPI.TessPageSegMode;
 
+import net.sourceforge.vietocr.ImageIOHelper;
+
 /**
  * An object layer on top of <code>TessAPI</code>, provides character
  * recognition support for common image formats, and multi-page TIFF images
@@ -37,7 +40,7 @@ import net.sourceforge.tess4j.ITessAPI.TessPageSegMode;
  * <br>
  * Support for PDF documents is available through <code>Ghost4J</code>, a
  * <code>JNA</code> wrapper for <code>GPL Ghostscript</code>, which should be
- * installed and included in system path. <br>
+ * installed and included in system path.<br>
  * <br>
  * Any program that uses the library will need to ensure that the required
  * libraries (the <code>.jar</code> files for <code>jna</code>,
@@ -54,6 +57,7 @@ public class Tesseract implements ITesseract {
     private int pageNum;
     private int ocrEngineMode = TessOcrEngineMode.OEM_DEFAULT;
     private final Properties prop = new Properties();
+    private final List<String> configList = new ArrayList<String>();
 
     private TessAPI api;
     private TessAPI.TessBaseAPI handle;
@@ -64,7 +68,7 @@ public class Tesseract implements ITesseract {
      * Private constructor.
      */
     private Tesseract() {
-//        System.setProperty("jna.encoding", "UTF8");
+        // TODO: Consider making constructor public.
     }
 
     /**
@@ -141,6 +145,19 @@ public class Tesseract implements ITesseract {
     @Override
     public void setTessVariable(String key, String value) {
         prop.setProperty(key, value);
+    }
+
+    /**
+     * Sets configs to be passed in Tesseract's <code>Init</code> method.
+     *
+     * @param configs list of config filenames
+     */
+    @Override
+    public void setConfigs(List<String> configs) {
+        configList.clear();
+        if (configs != null) {
+            configList.addAll(configs);
+        }
     }
 
     /**
@@ -285,7 +302,10 @@ public class Tesseract implements ITesseract {
         pageNum = 0;
         api = TessAPI.INSTANCE;
         handle = api.TessBaseAPICreate();
-        api.TessBaseAPIInit2(handle, datapath, language, ocrEngineMode);
+        StringArray sarray = new StringArray(configList.toArray(new String[0]));
+        PointerByReference configs = new PointerByReference();
+        configs.setPointer(sarray);
+        api.TessBaseAPIInit1(handle, datapath, language, ocrEngineMode, configs, configList.size());
         api.TessBaseAPISetPageSegMode(handle, psm);
     }
 
@@ -304,8 +324,7 @@ public class Tesseract implements ITesseract {
      * A wrapper for {@link #setImage(int, int, ByteBuffer, Rectangle, int)}.
      */
     private void setImage(RenderedImage image, Rectangle rect) throws IOException {
-        setImage(image.getWidth(), image.getHeight(), ImageIOHelper.getImageByteBuffer(image), rect, image
-                .getColorModel().getPixelSize());
+        setImage(image.getWidth(), image.getHeight(), ImageIOHelper.getImageByteBuffer(image), rect, image.getColorModel().getPixelSize());
     }
 
     /**

@@ -144,4 +144,11 @@ public interface ITesseract {
      * "0123456789", etc.
      */
     void setTessVariable(String key, String value);
+
+    /**
+     * Sets configs to be passed in Tesseract's <code>Init</code> method.
+     * 
+     * @param configs list of config filenames
+     */
+    void setConfigs(List<String> configs);
 }
