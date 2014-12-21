@@ -47,13 +47,13 @@ import com.sun.jna.Pointer;
 import com.sun.jna.StringArray;
 import com.sun.jna.ptr.PointerByReference;
 
+import net.sourceforge.tess4j.ITessAPI.ETEXT_DESC;
 import net.sourceforge.tess4j.ITessAPI.TessOcrEngineMode;
 import net.sourceforge.tess4j.ITessAPI.TessOrientation;
 import net.sourceforge.tess4j.ITessAPI.TessPageSegMode;
 import net.sourceforge.tess4j.ITessAPI.TessResultRenderer;
 import net.sourceforge.tess4j.ITessAPI.TessTextlineOrder;
 import net.sourceforge.tess4j.ITessAPI.TessWritingDirection;
-
 
 public class TessAPI1Test {
 
@@ -453,7 +453,10 @@ public class TessAPI1Test {
         int actualResult = TessAPI1.TessBaseAPIGetPageSegMode(handle);
         System.out.println("PSM: " + Utils.getConstantName(actualResult, TessPageSegMode.class));
         TessAPI1.TessBaseAPISetImage(handle, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
-        int success = TessAPI1.TessBaseAPIRecognize(handle, null);
+        ETEXT_DESC monitor = new ETEXT_DESC();
+        ProgressMonitor pmo = new ProgressMonitor(monitor);
+        pmo.start();
+        int success = TessAPI1.TessBaseAPIRecognize(handle, monitor);
         if (success == 0) {
             TessAPI1.TessPageIterator pi = TessAPI1.TessBaseAPIAnalyseLayout(handle);
             TessAPI1.TessPageIteratorOrientation(pi, orientation, direction, order, deskew_angle);
@@ -464,7 +467,7 @@ public class TessAPI1Test {
                     Utils.getConstantName(order.get(), TessTextlineOrder.class),
                     deskew_angle.get()));
         }
-
+        System.out.println("Message: " + pmo.getMessage());
         assertEquals(expResult, actualResult);
     }
 
@@ -486,7 +489,11 @@ public class TessAPI1Test {
         TessAPI1.TessBaseAPIInit3(handle, datapath, language);
         TessAPI1.TessBaseAPISetPageSegMode(handle, TessPageSegMode.PSM_AUTO);
         TessAPI1.TessBaseAPISetImage(handle, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
-        TessAPI1.TessBaseAPIRecognize(handle, null);
+        ETEXT_DESC monitor = new ETEXT_DESC();
+        ProgressMonitor pmo = new ProgressMonitor(monitor);
+        pmo.start();
+        TessAPI1.TessBaseAPIRecognize(handle, monitor);
+        System.out.println("Message: " + pmo.getMessage());
         TessAPI1.TessResultIterator ri = TessAPI1.TessBaseAPIGetIterator(handle);
         TessAPI1.TessPageIterator pi = TessAPI1.TessResultIteratorGetPageIterator(ri);
         TessAPI1.TessPageIteratorBegin(pi);
@@ -534,7 +541,7 @@ public class TessAPI1Test {
                     + " italic: %b, underlined: %b, monospace: %b, serif: %b, smallcap: %b", fontName, pointSize,
                     fontId, bold, italic, underlined, monospace, serif, smallcaps));
         } while (TessAPI1.TessPageIteratorNext(pi, level) == TessAPI1.TRUE);
-        
+
         assertTrue(true);
     }
 
@@ -557,7 +564,11 @@ public class TessAPI1Test {
         TessAPI1.TessBaseAPISetImage(handle, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
         TessAPI1.TessBaseAPISetVariable(handle, "save_blob_choices", "T");
         TessAPI1.TessBaseAPISetRectangle(handle, 37, 228, 548, 31);
-        TessAPI1.TessBaseAPIRecognize(handle, null);
+        ETEXT_DESC monitor = new ETEXT_DESC();
+        ProgressMonitor pmo = new ProgressMonitor(monitor);
+        pmo.start();
+        TessAPI1.TessBaseAPIRecognize(handle, monitor);
+        System.out.println("Message: " + pmo.getMessage());
         TessAPI1.TessResultIterator ri = TessAPI1.TessBaseAPIGetIterator(handle);
         int level = TessAPI1.TessPageIteratorLevel.RIL_SYMBOL;
 
@@ -570,7 +581,9 @@ public class TessAPI1Test {
                     boolean indent = false;
                     TessAPI1.TessChoiceIterator ci = TessAPI1.TessResultIteratorGetChoiceIterator(ri);
                     do {
-                        if (indent) System.out.print("\t");
+                        if (indent) {
+                            System.out.print("\t");
+                        }
                         System.out.print("\t- ");
                         String choice = TessAPI1.TessChoiceIteratorGetUTF8Text(ci);
                         System.out.println(String.format("%s conf: %f", choice, TessAPI1.TessChoiceIteratorConfidence(ci)));
@@ -582,13 +595,13 @@ public class TessAPI1Test {
                 TessAPI1.TessDeleteText(symbol);
             } while (TessAPI1.TessResultIteratorNext(ri, level) == TessAPI1.TRUE);
         }
-        
+
         assertTrue(true);
     }
 
     /**
      * Test of ResultRenderer method, of class TessAPI1.
-     * 
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -600,7 +613,7 @@ public class TessAPI1Test {
         int oem = TessAPI.TessOcrEngineMode.OEM_DEFAULT;
         PointerByReference configs = null;
         int configs_size = 0;
-        
+
         String confs[] = {"load_system_dawg", "tessedit_char_whitelist"};
         String vals[] = {"F", ""}; //0123456789-.IThisalotfpnex
         PointerByReference pbrc = new PointerByReference();
@@ -612,8 +625,8 @@ public class TessAPI1Test {
         TessAPI1.TessBaseAPISetOutputName(handle, output);
 
         int rc = TessAPI1.TessBaseAPIInit4(handle, datapath, language,
-                              oem, configs, configs_size, pbrc, pbrv, conf_size, set_only_init_params);
-        
+                oem, configs, configs_size, pbrc, pbrv, conf_size, set_only_init_params);
+
         if (rc != 0) {
             TessAPI1.TessBaseAPIDelete(handle);
             System.err.println("Could not initialize tesseract.");
@@ -628,7 +641,7 @@ public class TessAPI1Test {
         TessAPI1.TessResultRendererInsert(renderer, TessAPI1.TessPDFRendererCreate(outputbase, dataPath));
 
         int result = TessAPI1.TessBaseAPIProcessPages(handle, image, null, 0, renderer);
-        
+
         if (result != TessAPI1.TRUE) {
             System.err.println("Error during processing.");
             return;
@@ -636,11 +649,11 @@ public class TessAPI1Test {
 
         for (; renderer != null; renderer = TessAPI1.TessResultRendererNext(renderer)) {
             String ext = TessAPI1.TessResultRendererExtention(renderer).getString(0);
-            System.out.println(String.format("TessResultRendererExtention: %s\nTessResultRendererTitle: %s\nTessResultRendererImageNum: %d", 
+            System.out.println(String.format("TessResultRendererExtention: %s\nTessResultRendererTitle: %s\nTessResultRendererImageNum: %d",
                     ext,
                     TessAPI1.TessResultRendererTitle(renderer).getString(0),
                     TessAPI1.TessResultRendererImageNum(renderer)));
-           
+
         }
 
         TessAPI1.TessDeleteResultRenderer(renderer);
