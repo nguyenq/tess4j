@@ -258,8 +258,11 @@ public class TessAPITest {
     public void testTessBaseAPIInit1() {
         System.out.println("TessBaseAPIInit1");
         int oem = TessOcrEngineMode.OEM_DEFAULT;
-        PointerByReference configs = null;
-        int configs_size = 0;
+        String[] args = {"hocr"};
+        StringArray sarray = new StringArray(args);
+        PointerByReference configs = new PointerByReference();
+        configs.setPointer(sarray);
+        int configs_size = args.length;
         int expResult = 0;
         int result = api.TessBaseAPIInit1(handle, datapath, language, oem, configs, configs_size);
         assertEquals(expResult, result);

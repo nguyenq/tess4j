@@ -251,11 +251,14 @@ public class TessAPI1Test {
      * Test of TessBaseAPIInit1 method, of class TessAPI1.
      */
     @Test
-    public void testTessBaseAPIInit1() {
+    public void testTessBaseAPIInit1() throws Exception {
         System.out.println("TessBaseAPIInit1");
         int oem = TessOcrEngineMode.OEM_DEFAULT;
-        PointerByReference configs = null;
-        int configs_size = 0;
+        String[] args = {"hocr"};
+        StringArray sarray = new StringArray(args);
+        PointerByReference configs = new PointerByReference();
+        configs.setPointer(sarray);
+        int configs_size = args.length;
         int expResult = 0;
         int result = TessAPI1.TessBaseAPIInit1(handle, datapath, language, oem, configs, configs_size);
         assertEquals(expResult, result);
