@@ -91,6 +91,22 @@ public class Tesseract1Test {
     }
 
     /**
+     * Test of doOCR method, of class Tesseract.
+     */
+    @Test
+    public void testDoOCR_File_With_Configs() throws Exception {
+        System.out.println("doOCR with configs");
+        String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.png");
+        File imageFile = new File(filename);
+        String expResult = "[-0123456789.\n ]+";
+        List<String> configs = Arrays.asList("digits");
+        instance.setConfigs(configs);
+        String result = instance.doOCR(imageFile);
+        System.out.println(result);
+        assertTrue(result.matches(expResult));
+    }
+
+    /**
      * Test of doOCR method, of class Tesseract1.
      *
      * @throws Exception while processing image.
@@ -175,7 +191,7 @@ public class Tesseract1Test {
         String outputbase1 = "target/test-classes/test-results/docrenderer1-1";
         String outputbase2 = "target/test-classes/test-results/docrenderer1-2";
         List<RenderedFormat> formats = new ArrayList<RenderedFormat>(Arrays.asList(RenderedFormat.HOCR, RenderedFormat.PDF, RenderedFormat.TEXT));
-        instance.createDocuments(new String[] {imageFilename1, imageFilename2}, new String[] {outputbase1, outputbase2}, formats);
+        instance.createDocuments(new String[]{imageFilename1, imageFilename2}, new String[]{outputbase1, outputbase2}, formats);
         assertTrue(new File(outputbase1 + ".pdf").exists());
     }
 
