@@ -492,7 +492,7 @@ public class TessAPITest {
         api.TessBaseAPISetImage(handle, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
         ITessAPI.ETEXT_DESC monitor = new ITessAPI.ETEXT_DESC();
         ITessAPI.TimeVal timeout = new ITessAPI.TimeVal();
-        timeout.tv_sec = new NativeLong(10L);
+        timeout.tv_sec = new NativeLong(0L); // time > 0 causes blank ouput
         monitor.end_time = timeout;
         ProgressMonitor pmo = new ProgressMonitor(monitor);
         pmo.start();
