@@ -15,6 +15,8 @@
  */
 package net.sourceforge.tess4j;
 
+import static net.sourceforge.tess4j.ITessAPI.TRUE;
+
 class ProgressMonitor extends Thread {
 
     ITessAPI.ETEXT_DESC monitor;
@@ -31,9 +33,13 @@ class ProgressMonitor extends Thread {
     @Override
     public void run() {
         try {
-            while (monitor.ocr_alive == 0) {
-                System.out.println(monitor.progress);
+            while (true) {
+                System.err.println("ocr alive: " + (monitor.ocr_alive == TRUE));
+                System.err.println("progress: " + monitor.progress);
                 outputMessage.append(monitor.more_to_come);
+                if (monitor.progress >= 100) {
+                    break;
+                }
                 Thread.sleep(100);
             }
         } catch (Exception ioe) {

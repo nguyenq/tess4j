@@ -15,6 +15,7 @@
  */
 package net.sourceforge.tess4j;
 
+import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 import com.sun.jna.StringArray;
 import com.sun.jna.ptr.IntByReference;
@@ -420,10 +421,7 @@ public class TessAPITest {
         int actualResult = api.TessBaseAPIGetPageSegMode(handle);
         System.out.println("PSM: " + Utils.getConstantName(actualResult, TessPageSegMode.class));
         api.TessBaseAPISetImage(handle, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
-        ETEXT_DESC monitor = new ETEXT_DESC();
-        ProgressMonitor pmo = new ProgressMonitor(monitor);
-        pmo.start();
-        int success = api.TessBaseAPIRecognize(handle, monitor);
+        int success = api.TessBaseAPIRecognize(handle, null);
         if (success == 0) {
             TessAPI.TessPageIterator pi = api.TessBaseAPIAnalyseLayout(handle);
             api.TessPageIteratorOrientation(pi, orientation, direction, order, deskew_angle);
@@ -433,7 +431,6 @@ public class TessAPITest {
                     Utils.getConstantName(order.get(), TessTextlineOrder.class),
                     deskew_angle.get()));
         }
-        System.out.println("Message: " + pmo.getMessage());
         assertEquals(expResult, actualResult);
     }
 
@@ -456,10 +453,13 @@ public class TessAPITest {
         api.TessBaseAPISetPageSegMode(handle, TessPageSegMode.PSM_AUTO);
         api.TessBaseAPISetImage(handle, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
         ETEXT_DESC monitor = new ETEXT_DESC();
+        TimeVal timeout = new TimeVal();
+        timeout.tv_sec = new NativeLong(10L);
+        monitor.end_time = timeout;
         ProgressMonitor pmo = new ProgressMonitor(monitor);
         pmo.start();
         api.TessBaseAPIRecognize(handle, monitor);
-        System.out.println("Message: " + pmo.getMessage());
+        System.err.println("Message: " + pmo.getMessage());
         TessAPI.TessResultIterator ri = api.TessBaseAPIGetIterator(handle);
         TessAPI.TessPageIterator pi = api.TessResultIteratorGetPageIterator(ri);
         api.TessPageIteratorBegin(pi);
