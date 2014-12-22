@@ -36,6 +36,7 @@ import net.sourceforge.tess4j.util.Utils;
 import net.sourceforge.tess4j.util.ImageIOHelper;
 
 import com.ochafik.lang.jnaerator.runtime.NativeSize;
+import com.sun.jna.NativeLong;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -453,10 +454,7 @@ public class TessAPI1Test {
         int actualResult = TessAPI1.TessBaseAPIGetPageSegMode(handle);
         System.out.println("PSM: " + Utils.getConstantName(actualResult, TessPageSegMode.class));
         TessAPI1.TessBaseAPISetImage(handle, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
-        ETEXT_DESC monitor = new ETEXT_DESC();
-        ProgressMonitor pmo = new ProgressMonitor(monitor);
-        pmo.start();
-        int success = TessAPI1.TessBaseAPIRecognize(handle, monitor);
+        int success = TessAPI1.TessBaseAPIRecognize(handle, null);
         if (success == 0) {
             TessAPI1.TessPageIterator pi = TessAPI1.TessBaseAPIAnalyseLayout(handle);
             TessAPI1.TessPageIteratorOrientation(pi, orientation, direction, order, deskew_angle);
@@ -467,7 +465,6 @@ public class TessAPI1Test {
                     Utils.getConstantName(order.get(), TessTextlineOrder.class),
                     deskew_angle.get()));
         }
-        System.out.println("Message: " + pmo.getMessage());
         assertEquals(expResult, actualResult);
     }
 
@@ -490,10 +487,13 @@ public class TessAPI1Test {
         TessAPI1.TessBaseAPISetPageSegMode(handle, TessPageSegMode.PSM_AUTO);
         TessAPI1.TessBaseAPISetImage(handle, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
         ETEXT_DESC monitor = new ETEXT_DESC();
+        ITessAPI.TimeVal timeout = new ITessAPI.TimeVal();
+        timeout.tv_sec = new NativeLong(10L);
+        monitor.end_time = timeout;
         ProgressMonitor pmo = new ProgressMonitor(monitor);
         pmo.start();
         TessAPI1.TessBaseAPIRecognize(handle, monitor);
-        System.out.println("Message: " + pmo.getMessage());
+        System.err.println("Message: " + pmo.getMessage());
         TessAPI1.TessResultIterator ri = TessAPI1.TessBaseAPIGetIterator(handle);
         TessAPI1.TessPageIterator pi = TessAPI1.TessResultIteratorGetPageIterator(ri);
         TessAPI1.TessPageIteratorBegin(pi);
