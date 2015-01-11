@@ -70,6 +70,7 @@ public class TessAPI1Test {
 
     /**
      * Test of TessBaseAPIRect method, of class TessDllAPI1.
+     * @throws java.lang.Exception
      */
     @Test
     public void testTessBaseAPIRect() throws Exception {
@@ -93,6 +94,7 @@ public class TessAPI1Test {
 
     /**
      * Test of TessBaseAPIGetUTF8Text method, of class TessDllAPI1.
+     * @throws java.lang.Exception
      */
     @Test
     public void testTessBaseAPIGetUTF8Text() throws Exception {
@@ -201,6 +203,7 @@ public class TessAPI1Test {
 
     /**
      * Test of TessBaseAPIPrintVariables method, of class TessAPI1.
+     * @throws java.lang.Exception
      */
     @Test
     public void testTessBaseAPIPrintVariablesToFile() throws Exception {
@@ -375,6 +378,7 @@ public class TessAPI1Test {
 
     /**
      * Test of TessBaseAPIGetHOCRText method, of class TessAPI1.
+     * @throws java.lang.Exception
      */
     @Test
     public void testTessBaseAPIGetHOCRText() throws Exception {
@@ -398,6 +402,7 @@ public class TessAPI1Test {
 
     /**
      * Test of Orientation and script detection (OSD).
+     * @throws java.lang.Exception
      */
     @Test
     public void testOSD() throws Exception {

@@ -68,6 +68,7 @@ public class Tesseract1Test {
 
     /**
      * Test of doOCR method, of class Tesseract1.
+     * @throws java.lang.Exception
      */
     @Test
     public void testDoOCR_File() throws Exception {
@@ -82,6 +83,7 @@ public class Tesseract1Test {
 
     /**
      * Test of doOCR method, of class Tesseract.
+     * @throws java.lang.Exception
      */
     @Test
     public void testDoOCR_File_With_Configs() throws Exception {
@@ -98,6 +100,7 @@ public class Tesseract1Test {
 
     /**
      * Test of doOCR method, of class Tesseract1.
+     * @throws java.lang.Exception
      */
     @Test
     public void testDoOCR_File_Rectangle() throws Exception {
@@ -113,6 +116,7 @@ public class Tesseract1Test {
 
     /**
      * Test of doOCR method, of class Tesseract1.
+     * @throws java.lang.Exception
      */
     @Test
     public void testDoOCR_List_Rectangle() throws Exception {
@@ -128,6 +132,7 @@ public class Tesseract1Test {
 
     /**
      * Test of doOCR method, of class Tesseract1.
+     * @throws java.lang.Exception
      */
     @Test
     public void testDoOCR_BufferedImage() throws Exception {
@@ -143,6 +148,7 @@ public class Tesseract1Test {
 
     /**
      * Test of deskew algorithm.
+     * @throws java.lang.Exception
      */
     @Test
     public void testDoOCR_SkewedImage() throws Exception {
@@ -164,6 +170,7 @@ public class Tesseract1Test {
 
     /**
      * Test of extending Tesseract1.
+     * @throws java.lang.Exception
      */
     @Test
     public void testExtendingTesseract1() throws Exception {
@@ -236,9 +243,9 @@ public class Tesseract1Test {
 
     class Word {
 
-        private String text;
-        private float confidence;
-        private Rectangle rect;
+        private final String text;
+        private final float confidence;
+        private final Rectangle rect;
 
         public Word(String text, float confidence, Rectangle rect) {
             this.text = text;

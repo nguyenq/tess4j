@@ -59,6 +59,7 @@ public class TesseractTest {
 
     /**
      * Test of doOCR method, of class Tesseract.
+     * @throws java.lang.Exception
      */
     @Test
     public void testDoOCR_File() throws Exception {
@@ -73,6 +74,7 @@ public class TesseractTest {
 
     /**
      * Test of doOCR method, of class Tesseract.
+     * @throws java.lang.Exception
      */
     @Test
     public void testDoOCR_File_With_Configs() throws Exception {
@@ -90,6 +92,7 @@ public class TesseractTest {
 
     /**
      * Test of doOCR method, of class Tesseract.
+     * @throws java.lang.Exception
      */
     @Test
     public void testDoOCR_File_Rectangle() throws Exception {
@@ -105,6 +108,7 @@ public class TesseractTest {
 
     /**
      * Test of doOCR method, of class Tesseract.
+     * @throws java.lang.Exception
      */
     @Test
     public void testDoOCR_List_Rectangle() throws Exception {
@@ -120,6 +124,7 @@ public class TesseractTest {
 
     /**
      * Test of doOCR method, of class Tesseract.
+     * @throws java.lang.Exception
      */
     @Test
     public void testDoOCR_BufferedImage() throws Exception {
@@ -135,6 +140,7 @@ public class TesseractTest {
 
     /**
      * Test of deskew algorithm.
+     * @throws java.lang.Exception
      */
     @Test
     public void testDoOCR_SkewedImage() throws Exception {
