@@ -86,6 +86,7 @@ public class TesseractTest {
 
     /**
      * Test of doOCR method, of class Tesseract.
+     * @throws java.lang.Exception
      */
     @Test
     public void testDoOCR_File_With_Configs() throws Exception {
@@ -177,6 +178,7 @@ public class TesseractTest {
 
     /**
      * Test of createDocuments method, of class Tesseract.
+     * @throws java.lang.Exception
      */
     @Test
     public void testCreateDocuments() throws Exception {

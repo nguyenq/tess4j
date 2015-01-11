@@ -614,18 +614,18 @@ public class TessAPI1Test {
         PointerByReference configs = null;
         int configs_size = 0;
 
-        String confs[] = {"load_system_dawg", "tessedit_char_whitelist"};
+        String[] params = {"load_system_dawg", "tessedit_char_whitelist"};
         String vals[] = {"F", ""}; //0123456789-.IThisalotfpnex
-        PointerByReference pbrc = new PointerByReference();
-        PointerByReference pbrv = new PointerByReference();
-        pbrc.setPointer(new StringArray(confs));
-        pbrv.setPointer(new StringArray(vals));
-        NativeSize conf_size = new NativeSize(confs.length);
+        PointerByReference vars_vec = new PointerByReference();
+        vars_vec.setPointer(new StringArray(params));
+        PointerByReference vars_values = new PointerByReference();
+        vars_values.setPointer(new StringArray(vals));
+        NativeSize vars_vec_size = new NativeSize(params.length);
 
         TessAPI1.TessBaseAPISetOutputName(handle, output);
 
         int rc = TessAPI1.TessBaseAPIInit4(handle, datapath, language,
-                oem, configs, configs_size, pbrc, pbrv, conf_size, set_only_init_params);
+                oem, configs, configs_size, vars_vec, vars_values, vars_vec_size, set_only_init_params);
 
         if (rc != 0) {
             TessAPI1.TessBaseAPIDelete(handle);
