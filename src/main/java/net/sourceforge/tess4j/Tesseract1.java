@@ -119,9 +119,9 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     }
 
     /**
-     * Sets configs to be passed in Tesseract's <code>Init</code> method.
+     * Sets configs to be passed to Tesseract's <code>Init</code> method.
      *
-     * @param configs list of config filenames
+     * @param configs list of config filenames, e.g., "digits", "bazaar", "quiet"
      */
     @Override
     public void setConfigs(List<String> configs) {

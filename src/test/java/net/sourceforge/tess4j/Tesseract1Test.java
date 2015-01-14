@@ -87,7 +87,7 @@ public class Tesseract1Test {
      */
     @Test
     public void testDoOCR_File_With_Configs() throws Exception {
-        System.out.println("doOCR with configs");
+        System.out.println("doOCR with \"digits\" configs");
         String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.png");
         File imageFile = new File(filename);
         String expResult = "[-0123456789.\n ]+";
