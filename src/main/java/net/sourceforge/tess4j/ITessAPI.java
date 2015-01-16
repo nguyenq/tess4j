@@ -235,9 +235,9 @@ public interface ITessAPI {
      *  |                2 |
      *  |   #######  c c C |
      *  |   #######  c c c |
-     *  | < #######  c c c |
-     *  | < #######  c   c |
-     *  | < #######  .   c |
+     *  | &lt; #######  c c c |
+     *  | &lt; #######  c   c |
+     *  | &lt; #######  .   c |
      *  | 3 #######      c |
      *  +------------------+
      * </pre> Orientation Example:
@@ -247,10 +247,10 @@ public interface ITessAPI {
      * Above is a diagram of some (1) English and (2) Chinese text and a (3)
      * photo credit.<br>
      * <br>
-     * Upright Latin characters are represented as A and a. '<' represents a
+     * Upright Latin characters are represented as A and a. '&lt;' represents a
      * latin character rotated anti-clockwise 90 degrees. Upright Chinese
-     * characters are represented C and c.<br> <br> NOTA BENE: enum values here
-     * should match goodoc.proto<br>
+     * characters are represented C and c.<br>
+     * <br> NOTA BENE: enum values here should match goodoc.proto<br>
      * <br>
      * If you orient your head so that "up" aligns with Orientation, then the
      * characters will appear "right side up" and readable.<br>

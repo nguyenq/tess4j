@@ -204,11 +204,11 @@ public class TessAPI1 implements Library, ITessAPI {
      *
      * @param handle the TesseractAPI instance
      * @param datapath The <code>datapath</code> must be the name of the parent
-     * directory of <code>tessdata<code> and must end in
+     * directory of <code>tessdata</code> and must end in
      * <i>/</i>. Any name after the last <i>/</i> will be stripped.
      * @param language The language is (usually) an <code>ISO 639-3</code>
      * string or <code>NULL</code> will default to <code>eng</code>. The
-     * language may be a string of the form [~]<lang>[+[~]<lang>] indicating
+     * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;] indicating
      * that multiple languages are to be loaded. E.g., <code>hin+eng</code> will
      * load Hindi and English.
      * @param oem ocr engine mode
@@ -222,11 +222,11 @@ public class TessAPI1 implements Library, ITessAPI {
     /**
      * @param handle the TesseractAPI instance
      * @param datapath The <code>datapath</code> must be the name of the parent
-     * directory of <code>tessdata<code> and must end in
+     * directory of <code>tessdata</code> and must end in
      * <i>/</i>. Any name after the last <i>/</i> will be stripped.
      * @param language The language is (usually) an <code>ISO 639-3</code>
      * string or <code>NULL</code> will default to <code>eng</code>. The
-     * language may be a string of the form [~]<lang>[+[~]<lang>] indicating
+     * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;] indicating
      * that multiple languages are to be loaded. E.g., <code>hin+eng</code> will
      * load Hindi and English.
      * @param oem ocr engine mode
@@ -241,7 +241,7 @@ public class TessAPI1 implements Library, ITessAPI {
      * <i>/</i>. Any name after the last <i>/</i> will be stripped.
      * @param language The language is (usually) an <code>ISO 639-3</code>
      * string or <code>NULL</code> will default to <code>eng</code>. The
-     * language may be a string of the form [~]<lang>[+[~]<lang>] indicating
+     * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;] indicating
      * that multiple languages are to be loaded. E.g., <code>hin+eng</code> will
      * load Hindi and English.
      * @return 0 on success and -1 on initialization failure
@@ -291,7 +291,7 @@ public class TessAPI1 implements Library, ITessAPI {
      * <i>/</i>. Any name after the last <i>/</i> will be stripped.
      * @param language The language is (usually) an <code>ISO 639-3</code>
      * string or <code>NULL</code> will default to eng. The language may be a
-     * string of the form [~]<lang>[+[~]<lang>] indicating that multiple
+     * string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;] indicating that multiple
      * languages are to be loaded. E.g., hin+eng will load Hindi and English.
      * @return api init language mode
      */
@@ -464,7 +464,7 @@ public class TessAPI1 implements Library, ITessAPI {
      * @param monitor the result as Tesseract internal structures
      * @return 0 on success
      */
-    public static native int TessBaseAPIRecognize(TessAPI1.TessBaseAPI handle, TessAPI1.ETEXT_DESC monitor);
+    public static native int TessBaseAPIRecognize(TessAPI1.TessBaseAPI handle, ETEXT_DESC monitor);
 
     /**
      * Variant on Recognize used for testing chopper.
@@ -473,7 +473,7 @@ public class TessAPI1 implements Library, ITessAPI {
      * @param monitor the result as Tesseract internal structures
      * @return 0 on success
      */
-    public static native int TessBaseAPIRecognizeForChopTest(TessAPI1.TessBaseAPI handle, TessAPI1.ETEXT_DESC monitor);
+    public static native int TessBaseAPIRecognizeForChopTest(TessAPI1.TessBaseAPI handle, ETEXT_DESC monitor);
 
     /**
      * Get a reading-order iterator to the results of LayoutAnalysis and/or
