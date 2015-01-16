@@ -60,6 +60,8 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     private final static Logger logger = Logger.getLogger(Tesseract1.class.getName());
 
     /**
+     * Sets path to <code>tessdata</code>.
+     *
      * @param datapath the tessdata path to set
      */
     @Override

@@ -158,6 +158,12 @@ public interface ITessAPI {
         public static final int RIL_SYMBOL = 4;
     };
 
+    /**
+     * Possible types for a POLY_BLOCK or ColPartition. Must be kept in sync
+     * with <code>kPBColors</code> in polyblk.cpp and <code>PTIs*Type</code>
+     * functions below, as well as <code>kPolyBlockNames</code> in
+     * publictypes.cpp. Used extensively by ColPartition, and POLY_BLOCK.
+     */
     public static interface TessPolyBlockType {
 
         /**
@@ -258,8 +264,8 @@ public interface ITessAPI {
      * In the example above, both the English and Chinese paragraphs are
      * oriented so their "up" is the top of the page (page up). The photo credit
      * is read with one's head turned leftward ("up" is to page left).<br>
-     * <br> The values of this enum match the convention of Tesseract's
-     * osdetect.h
+     * <br>
+     * The values of this enum match the convention of Tesseract's osdetect.h
      */
     public static interface TessOrientation {
 

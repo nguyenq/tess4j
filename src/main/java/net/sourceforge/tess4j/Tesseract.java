@@ -85,7 +85,7 @@ public class Tesseract implements ITesseract {
     }
 
     /**
-     * Sets tessdata path.
+     * Sets path to <code>tessdata</code>.
      *
      * @param datapath the tessdata path to set
      */
