@@ -44,7 +44,7 @@ public class TessAPI1Test {
     String language = "eng";
     String expOCRResult = "The (quick) [brown] {fox} jumps!\nOver the $43,456.78 <lazy> #90 dog";
 
-    TessAPI1.TessBaseAPI handle;
+    TessBaseAPI handle;
 
     public TessAPI1Test() {
         System.setProperty("jna.encoding", "UTF8");

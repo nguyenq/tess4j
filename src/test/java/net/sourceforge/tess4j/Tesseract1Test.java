@@ -210,8 +210,8 @@ public class Tesseract1Test {
                 setImage(bi, null);
 
                 TessAPI1.TessBaseAPIRecognize(this.getHandle(), null);
-                TessAPI1.TessResultIterator ri = TessAPI1.TessBaseAPIGetIterator(this.getHandle());
-                TessAPI1.TessPageIterator pi = TessAPI1.TessResultIteratorGetPageIterator(ri);
+                TessResultIterator ri = TessAPI1.TessBaseAPIGetIterator(this.getHandle());
+                TessPageIterator pi = TessAPI1.TessResultIteratorGetPageIterator(ri);
                 TessAPI1.TessPageIteratorBegin(pi);
 
                 do {

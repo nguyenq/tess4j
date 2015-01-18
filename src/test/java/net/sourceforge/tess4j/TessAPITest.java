@@ -42,7 +42,7 @@ public class TessAPITest {
     String expOCRResult = "The (quick) [brown] {fox} jumps!\nOver the $43,456.78 <lazy> #90 dog";
 
     TessAPI api;
-    TessAPI.TessBaseAPI handle;
+    TessBaseAPI handle;
 
     public TessAPITest() {
         System.setProperty("jna.encoding", "UTF8");
@@ -136,7 +136,7 @@ public class TessAPITest {
     public void testTessBaseAPICreate() {
         System.out.println("TessBaseAPICreate");
         TessAPI api = new TessDllAPIImpl().getInstance();
-        TessAPI.TessBaseAPI handle = api.TessBaseAPICreate();
+        TessBaseAPI handle = api.TessBaseAPICreate();
         assertNotNull(handle);
         api.TessBaseAPIDelete(handle);
     }
@@ -148,7 +148,7 @@ public class TessAPITest {
     public void testTessBaseAPIDelete() {
         System.out.println("TessBaseAPIDelete");
         TessAPI api = new TessDllAPIImpl().getInstance();
-        TessAPI.TessBaseAPI handle = api.TessBaseAPICreate();
+        TessBaseAPI handle = api.TessBaseAPICreate();
         api.TessBaseAPIDelete(handle);
     }
 
@@ -427,7 +427,7 @@ public class TessAPITest {
         api.TessBaseAPISetImage(handle, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
         int success = api.TessBaseAPIRecognize(handle, null);
         if (success == 0) {
-            TessAPI.TessPageIterator pi = api.TessBaseAPIAnalyseLayout(handle);
+            TessPageIterator pi = api.TessBaseAPIAnalyseLayout(handle);
             api.TessPageIteratorOrientation(pi, orientation, direction, order, deskew_angle);
             System.out.println(String.format("Orientation: %s\nWritingDirection: %s\nTextlineOrder: %s\nDeskew angle: %.4f\n",
                     Utils.getConstantName(orientation.get(), TessOrientation.class),
@@ -464,8 +464,8 @@ public class TessAPITest {
         pmo.start();
         api.TessBaseAPIRecognize(handle, monitor);
         System.err.println("Message: " + pmo.getMessage());
-        TessAPI.TessResultIterator ri = api.TessBaseAPIGetIterator(handle);
-        TessAPI.TessPageIterator pi = api.TessResultIteratorGetPageIterator(ri);
+        TessResultIterator ri = api.TessBaseAPIGetIterator(handle);
+        TessPageIterator pi = api.TessResultIteratorGetPageIterator(ri);
         api.TessPageIteratorBegin(pi);
         System.out.println("Bounding boxes:\nchar(s) left top right bottom confidence font-attributes");
 
