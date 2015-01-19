@@ -26,7 +26,10 @@ import java.util.*;
 import java.util.logging.*;
 import javax.imageio.IIOImage;
 
+import net.sourceforge.tess4j.ITessAPI.TessOcrEngineMode;
+import net.sourceforge.tess4j.ITessAPI.TessPageSegMode;
 import net.sourceforge.tess4j.ITessAPI.TessResultRenderer;
+
 import net.sourceforge.tess4j.util.ImageIOHelper;
 import net.sourceforge.tess4j.util.PdfUtilities;
 
@@ -52,12 +55,12 @@ public class Tesseract implements ITesseract {
     private String language = "eng";
     private String datapath = "./";
     private RenderedFormat renderedFormat = RenderedFormat.TEXT;
-    private int psm = TessAPI.TessPageSegMode.PSM_AUTO;
+    private int psm = TessPageSegMode.PSM_AUTO;
     private int pageNum;
-    private int ocrEngineMode = TessAPI.TessOcrEngineMode.OEM_DEFAULT;
+    private int ocrEngineMode = TessOcrEngineMode.OEM_DEFAULT;
     private final Properties prop = new Properties();
     private final List<String> configList = new ArrayList<String>();
-    
+
     private TessAPI api;
     private TessAPI.TessBaseAPI handle;
 
@@ -84,7 +87,7 @@ public class Tesseract implements ITesseract {
     }
 
     /**
-     * Sets tessdata path.
+     * Sets path to <code>tessdata</code>.
      *
      * @param datapath the tessdata path to set
      */
@@ -145,11 +148,11 @@ public class Tesseract implements ITesseract {
     public void setTessVariable(String key, String value) {
         prop.setProperty(key, value);
     }
-    
+
     /**
-     * Sets configs to be passed in Tesseract's <code>Init</code> method.
+     * Sets configs to be passed to Tesseract's <code>Init</code> method.
      *
-     * @param configs list of config filenames
+     * @param configs list of config filenames, e.g., "digits", "bazaar", "quiet"
      */
     @Override
     public void setConfigs(List<String> configs) {
@@ -158,7 +161,7 @@ public class Tesseract implements ITesseract {
             configList.addAll(configs);
         }
     }
-    
+
     /**
      * Performs OCR operation.
      *
@@ -483,7 +486,7 @@ public class Tesseract implements ITesseract {
     private void createDocuments(String filename, TessResultRenderer renderer) throws TesseractException {
         int result = api.TessBaseAPIProcessPages(handle, filename, null, 0, renderer);
 
-        if (result != TessAPI.TRUE) {
+        if (result != ITessAPI.TRUE) {
             throw new TesseractException("Error during processing.");
         }
     }

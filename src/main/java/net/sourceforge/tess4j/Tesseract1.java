@@ -50,24 +50,19 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     private String language = "eng";
     private String datapath = "./";
     private RenderedFormat renderedFormat = RenderedFormat.TEXT;
-    private int psm = TessAPI1.TessPageSegMode.PSM_AUTO;
+    private int psm = TessPageSegMode.PSM_AUTO;
     private int pageNum;
-    private int ocrEngineMode = TessAPI1.TessOcrEngineMode.OEM_DEFAULT;
+    private int ocrEngineMode = TessOcrEngineMode.OEM_DEFAULT;
     private final Properties prop = new Properties();
     private final List<String> configList = new ArrayList<String>();
-    
+
     private TessBaseAPI handle;
 
     private final static Logger logger = Logger.getLogger(Tesseract1.class.getName());
 
     /**
-     * Public constructor.
-     */
-    public Tesseract1() {
-//        System.setProperty("jna.encoding", "UTF8");
-    }
-
-    /**
+     * Sets path to <code>tessdata</code>.
+     *
      * @param datapath the tessdata path to set
      */
     @Override
@@ -96,6 +91,8 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     }
 
     /**
+     * Sets page segmentation mode.
+     *
      * @param mode the page segmentation mode to set
      */
     @Override
@@ -125,11 +122,11 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     public void setTessVariable(String key, String value) {
         prop.setProperty(key, value);
     }
-    
+
     /**
-     * Sets configs to be passed in Tesseract's <code>Init</code> method.
+     * Sets configs to be passed to Tesseract's <code>Init</code> method.
      *
-     * @param configs list of config filenames
+     * @param configs list of config filenames, e.g., "digits", "bazaar", "quiet"
      */
     @Override
     public void setConfigs(List<String> configs) {
@@ -138,7 +135,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
             configList.addAll(configs);
         }
     }
-    
+
     /**
      * Returns API handle.
      *
@@ -471,7 +468,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     private void createDocuments(String filename, TessResultRenderer renderer) throws TesseractException {
         int result = TessBaseAPIProcessPages(handle, filename, null, 0, renderer);
 
-        if (result != TessAPI.TRUE) {
+        if (result != ITessAPI.TRUE) {
             throw new TesseractException("Error during processing.");
         }
     }

@@ -233,6 +233,40 @@ public interface ITessAPI {
     };
 
     /**
+     * NOTA BENE: Fully justified paragraphs (text aligned to both left and
+     * right margins) are marked by Tesseract with JUSTIFICATION_LEFT if their
+     * text is written with a left-to-right script and with JUSTIFICATION_RIGHT
+     * if their text is written in a right-to-left script.<br>
+     * <br>
+     * Interpretation for text read in vertical lines: "Left" is wherever the
+     * starting reading position is.
+     */
+    public static interface TessParagraphJustification {
+
+        /**
+         * The alignment is not clearly one of the other options. This could
+         * happen for example if there are only one or two lines of text or the
+         * text looks like source code or poetry.
+         */
+        public static final int JUSTIFICATION_UNKNOWN = 0;
+        /**
+         * Each line, except possibly the first, is flush to the same left tab
+         * stop.
+         */
+        public static final int JUSTIFICATION_LEFT = 1;
+        /**
+         * The text lines of the paragraph are centered about a line going down
+         * through their middle of the text lines.
+         */
+        public static final int JUSTIFICATION_CENTER = 2;
+        /**
+         * Each line, except possibly the first, is flush to the same right tab
+         * stop.
+         */
+        public static final int JUSTIFICATION_RIGHT = 3;
+    }
+
+    /**
      * <pre>
      *  +------------------+
      *  | 1 Aaaa Aaaa Aaaa |
@@ -241,9 +275,9 @@ public interface ITessAPI {
      *  |                2 |
      *  |   #######  c c C |
      *  |   #######  c c c |
-     *  | < #######  c c c |
-     *  | < #######  c   c |
-     *  | < #######  .   c |
+     *  | &lt; #######  c c c |
+     *  | &lt; #######  c   c |
+     *  | &lt; #######  .   c |
      *  | 3 #######      c |
      *  +------------------+
      * </pre> Orientation Example:
@@ -253,10 +287,10 @@ public interface ITessAPI {
      * Above is a diagram of some (1) English and (2) Chinese text and a (3)
      * photo credit.<br>
      * <br>
-     * Upright Latin characters are represented as A and a. '<' represents a
+     * Upright Latin characters are represented as A and a. '&lt;' represents a
      * latin character rotated anti-clockwise 90 degrees. Upright Chinese
-     * characters are represented C and c.<br> <br> NOTA BENE: enum values here
-     * should match goodoc.proto<br>
+     * characters are represented C and c.<br>
+     * <br> NOTA BENE: enum values here should match goodoc.proto<br>
      * <br> If you orient your head so that "up" aligns with Orientation, then
      * the characters will appear "right side up" and readable.<br>
      * <br>
@@ -486,7 +520,8 @@ public interface ITessAPI {
      * beyond is UTF-8, which means that ASCII characters will come out as one
      * structure but other characters will be returned in two or more instances
      * of this structure with a single byte of the UTF-8 code in each, but each
-     * will have the same bounding box.<br /><br />
+     * will have the same bounding box.<br>
+     * <br>
      * Programs which want to handle languages with different characters sets
      * will need to handle extended characters appropriately, but
      * <strong>all</strong>
@@ -550,7 +585,7 @@ public interface ITessAPI {
     }
 
     /**
-     * Callback for cancel_func.
+     * Callback for <code>cancel_func</code>.
      */
     interface CANCEL_FUNC extends Callback {
 

@@ -20,16 +20,16 @@ import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-import net.sourceforge.tess4j.util.LoadLibs;
-
-import com.ochafik.lang.jnaerator.runtime.NativeSize;
 import com.sun.jna.Library;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 
+import com.ochafik.lang.jnaerator.runtime.NativeSize;
+import net.sourceforge.tess4j.util.LoadLibs;
+
 /**
- * A Java wrapper for <code>Tesseract OCR 3.02 API</code> using
+ * A Java wrapper for <code>Tesseract OCR 3.03 API</code> using
  * <code>JNA Interface Mapping</code>.
  */
 public interface TessAPI extends Library, ITessAPI {
@@ -68,47 +68,47 @@ public interface TessAPI extends Library, ITessAPI {
     void TessDeleteIntArray(IntBuffer arr);
 
     /* Renderer API */
-    TessAPI.TessResultRenderer TessTextRendererCreate(String outputbase);
+    TessResultRenderer TessTextRendererCreate(String outputbase);
 
-    TessAPI.TessResultRenderer TessHOcrRendererCreate(String outputbase);
+    TessResultRenderer TessHOcrRendererCreate(String outputbase);
 
-    TessAPI.TessResultRenderer TessPDFRendererCreate(String outputbase, String datadir);
+    TessResultRenderer TessPDFRendererCreate(String outputbase, String datadir);
 
-    TessAPI.TessResultRenderer TessUnlvRendererCreate(String outputbase);
+    TessResultRenderer TessUnlvRendererCreate(String outputbase);
 
-    TessAPI.TessResultRenderer TessBoxTextRendererCreate(String outputbase);
+    TessResultRenderer TessBoxTextRendererCreate(String outputbase);
 
-    void TessDeleteResultRenderer(TessAPI.TessResultRenderer renderer);
+    void TessDeleteResultRenderer(TessResultRenderer renderer);
 
-    void TessResultRendererInsert(TessAPI.TessResultRenderer renderer, TessAPI.TessResultRenderer next);
+    void TessResultRendererInsert(TessResultRenderer renderer, TessResultRenderer next);
 
-    TessAPI.TessResultRenderer TessResultRendererNext(TessAPI.TessResultRenderer renderer);
+    TessResultRenderer TessResultRendererNext(TessResultRenderer renderer);
 
-    int TessResultRendererBeginDocument(TessAPI.TessResultRenderer renderer, String title);
+    int TessResultRendererBeginDocument(TessResultRenderer renderer, String title);
 
-    int TessResultRendererAddImage(TessAPI.TessResultRenderer renderer, PointerByReference api);
+    int TessResultRendererAddImage(TessResultRenderer renderer, PointerByReference api);
 
-    int TessResultRendererEndDocument(TessAPI.TessResultRenderer renderer);
+    int TessResultRendererEndDocument(TessResultRenderer renderer);
 
-    Pointer TessResultRendererExtention(TessAPI.TessResultRenderer renderer);
+    Pointer TessResultRendererExtention(TessResultRenderer renderer);
 
-    Pointer TessResultRendererTitle(TessAPI.TessResultRenderer renderer);
+    Pointer TessResultRendererTitle(TessResultRenderer renderer);
 
-    int TessResultRendererImageNum(TessAPI.TessResultRenderer renderer);
+    int TessResultRendererImageNum(TessResultRenderer renderer);
 
     /**
      * Creates an instance of the base class for all Tesseract APIs.
      *
      * @return the TesseractAPI instance
      */
-    TessAPI.TessBaseAPI TessBaseAPICreate();
+    TessBaseAPI TessBaseAPICreate();
 
     /**
      * Disposes the TesseractAPI instance.
      *
      * @param handle the TesseractAPI instance
      */
-    void TessBaseAPIDelete(TessAPI.TessBaseAPI handle);
+    void TessBaseAPIDelete(TessBaseAPI handle);
 
     /**
      * Set the name of the input file. Needed only for training and reading a
@@ -117,7 +117,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param handle the TesseractAPI instance
      * @param name name of the input file
      */
-    void TessBaseAPISetInputName(TessAPI.TessBaseAPI handle, String name);
+    void TessBaseAPISetInputName(TessBaseAPI handle, String name);
 
     /**
      * These functions are required for searchable PDF output. We need our hands
@@ -126,11 +126,11 @@ public interface TessAPI extends Library, ITessAPI {
      * Finally, resolution metadata is stored in the PDF so we need that as
      * well.
      */
-    String TessBaseAPIGetInputName(TessAPI.TessBaseAPI handle);
+    String TessBaseAPIGetInputName(TessBaseAPI handle);
 
-    int TessBaseAPIGetSourceYResolution(TessAPI.TessBaseAPI handle);
+    int TessBaseAPIGetSourceYResolution(TessBaseAPI handle);
 
-    String TessBaseAPIGetDatapath(TessAPI.TessBaseAPI handle);
+    String TessBaseAPIGetDatapath(TessBaseAPI handle);
 
     /**
      * Set the name of the bonus output files. Needed only for debugging.
@@ -138,7 +138,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param handle the TesseractAPI instance
      * @param name name of the output file
      */
-    void TessBaseAPISetOutputName(TessAPI.TessBaseAPI handle, String name);
+    void TessBaseAPISetOutputName(TessBaseAPI handle, String name);
 
     /**
      * Set the value of an internal "parameter." Supply the name of the
@@ -159,7 +159,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param value variable value
      * @return 1 on success
      */
-    int TessBaseAPISetVariable(TessAPI.TessBaseAPI handle, String name, String value);
+    int TessBaseAPISetVariable(TessBaseAPI handle, String name, String value);
 
     /**
      * Get the value of an internal int parameter.
@@ -169,7 +169,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param value pass the int buffer value
      * @return 1 on success
      */
-    int TessBaseAPIGetIntVariable(TessAPI.TessBaseAPI handle, String name, IntBuffer value);
+    int TessBaseAPIGetIntVariable(TessBaseAPI handle, String name, IntBuffer value);
 
     /**
      * Get the value of an internal bool parameter.
@@ -179,7 +179,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param value pass the int buffer value
      * @return 1 on success
      */
-    int TessBaseAPIGetBoolVariable(TessAPI.TessBaseAPI handle, String name, IntBuffer value);
+    int TessBaseAPIGetBoolVariable(TessBaseAPI handle, String name, IntBuffer value);
 
     /**
      * Get the value of an internal double parameter.
@@ -189,7 +189,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param value pass the double buffer value
      * @return 1 on success
      */
-    int TessBaseAPIGetDoubleVariable(TessAPI.TessBaseAPI handle, String name, DoubleBuffer value);
+    int TessBaseAPIGetDoubleVariable(TessBaseAPI handle, String name, DoubleBuffer value);
 
     /**
      * Get the value of an internal string parameter.
@@ -198,7 +198,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param name pass the name of the variable
      * @return the string value
      */
-    String TessBaseAPIGetStringVariable(TessAPI.TessBaseAPI handle, String name);
+    String TessBaseAPIGetStringVariable(TessBaseAPI handle, String name);
 
     /**
      * Print Tesseract parameters to the given file.<br>
@@ -208,7 +208,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param handle the TesseractAPI instance
      * @param filename name of the file where the variables will be persisted
      */
-    void TessBaseAPIPrintVariablesToFile(TessAPI.TessBaseAPI handle, String filename);
+    void TessBaseAPIPrintVariablesToFile(TessBaseAPI handle, String filename);
 
     /**
      * Instances are now mostly thread-safe and totally independent, but some
@@ -246,11 +246,11 @@ public interface TessAPI extends Library, ITessAPI {
      *
      * @param handle the TesseractAPI instance
      * @param datapath The <code>datapath</code> must be the name of the parent
-     * directory of <code>tessdata<code> and must end in
+     * directory of <code>tessdata</code> and must end in
      * <i>/</i>. Any name after the last <i>/</i> will be stripped.
      * @param language The language is (usually) an <code>ISO 639-3</code>
      * string or <code>NULL</code> will default to <code>eng</code>. The
-     * language may be a string of the form [~]<lang>[+[~]<lang>] indicating
+     * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;] indicating
      * that multiple languages are to be loaded. E.g., <code>hin+eng</code> will
      * load Hindi and English.
      * @param oem ocr engine mode
@@ -258,23 +258,8 @@ public interface TessAPI extends Library, ITessAPI {
      * @param configs_size pointer configuration size
      * @return 0 on success and -1 on initialization failure
      */
-    int TessBaseAPIInit1(TessAPI.TessBaseAPI handle, String datapath, String language, int oem,
+    int TessBaseAPIInit1(TessBaseAPI handle, String datapath, String language, int oem,
             PointerByReference configs, int configs_size);
-
-    /**
-     * @param handle the TesseractAPI instance
-     * @param datapath The <code>datapath</code> must be the name of the parent
-     * directory of <code>tessdata<code> and must end in
-     * <i>/</i>. Any name after the last <i>/</i> will be stripped.
-     * @param language The language is (usually) an <code>ISO 639-3</code>
-     * string or <code>NULL</code> will default to <code>eng</code>. The
-     * language may be a string of the form [~]<lang>[+[~]<lang>] indicating
-     * that multiple languages are to be loaded. E.g., <code>hin+eng</code> will
-     * load Hindi and English.
-     * @param oem ocr engine mode
-     * @return 0 on success and -1 on initialization failure
-     */
-    int TessBaseAPIInit2(TessAPI.TessBaseAPI handle, String datapath, String language, int oem);
 
     /**
      * @param handle the TesseractAPI instance
@@ -283,14 +268,49 @@ public interface TessAPI extends Library, ITessAPI {
      * <i>/</i>. Any name after the last <i>/</i> will be stripped.
      * @param language The language is (usually) an <code>ISO 639-3</code>
      * string or <code>NULL</code> will default to <code>eng</code>. The
-     * language may be a string of the form [~]<lang>[+[~]<lang>] indicating
+     * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;] indicating
+     * that multiple languages are to be loaded. E.g., <code>hin+eng</code> will
+     * load Hindi and English.
+     * @param oem ocr engine mode
+     * @return 0 on success and -1 on initialization failure
+     */
+    int TessBaseAPIInit2(TessBaseAPI handle, String datapath, String language, int oem);
+
+    /**
+     * @param handle the TesseractAPI instance
+     * @param datapath The <code>datapath</code> must be the name of the parent
+     * directory of <code>tessdata</code> and must end in
+     * <i>/</i>. Any name after the last <i>/</i> will be stripped.
+     * @param language The language is (usually) an <code>ISO 639-3</code>
+     * string or <code>NULL</code> will default to <code>eng</code>. The
+     * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;] indicating
      * that multiple languages are to be loaded. E.g., <code>hin+eng</code> will
      * load Hindi and English.
      * @return 0 on success and -1 on initialization failure
      */
-    int TessBaseAPIInit3(TessAPI.TessBaseAPI handle, String datapath, String language);
+    int TessBaseAPIInit3(TessBaseAPI handle, String datapath, String language);
 
-    int TessBaseAPIInit4(TessAPI.TessBaseAPI handle, String datapath, String language, int oem, PointerByReference configs, int configs_size, PointerByReference vars_vec, PointerByReference vars_values, NativeSize vars_vec_size, int set_only_non_debug_params);
+    /**
+     *
+     * @param handle the TesseractAPI instance
+     * @param datapath The <code>datapath</code> must be the name of the parent
+     * directory of <code>tessdata</code> and must end in
+     * <i>/</i>. Any name after the last <i>/</i> will be stripped.
+     * @param language The language is (usually) an <code>ISO 639-3</code>
+     * string or <code>NULL</code> will default to <code>eng</code>. The
+     * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;] indicating
+     * that multiple languages are to be loaded. E.g., <code>hin+eng</code> will
+     * load Hindi and English.
+     * @param oem ocr engine mode
+     * @param configs pointer configuration
+     * @param configs_size pointer configuration size
+     * @param vars_vec
+     * @param vars_values
+     * @param vars_vec_size
+     * @param set_only_non_debug_params
+     * @return 0 on success and -1 on initialization failure
+     */
+    int TessBaseAPIInit4(TessBaseAPI handle, String datapath, String language, int oem, PointerByReference configs, int configs_size, PointerByReference vars_vec, PointerByReference vars_values, NativeSize vars_vec_size, int set_only_non_debug_params);
 
     /**
      * Returns the languages string used in the last valid initialization. If
@@ -303,7 +323,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param handle the TesseractAPI instance
      * @return languages as string
      */
-    String TessBaseAPIGetInitLanguagesAsString(TessAPI.TessBaseAPI handle);
+    String TessBaseAPIGetInitLanguagesAsString(TessBaseAPI handle);
 
     /**
      * Returns the loaded languages in the vector of STRINGs. Includes all
@@ -313,7 +333,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param handle the TesseractAPI instance
      * @return loaded languages as vector
      */
-    PointerByReference TessBaseAPIGetLoadedLanguagesAsVector(TessAPI.TessBaseAPI handle);
+    PointerByReference TessBaseAPIGetLoadedLanguagesAsVector(TessBaseAPI handle);
 
     /**
      * Returns the available languages in the vector of STRINGs.
@@ -321,7 +341,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param handle the TesseractAPI instance
      * @return available languages as vector
      */
-    PointerByReference TessBaseAPIGetAvailableLanguagesAsVector(TessAPI.TessBaseAPI handle);
+    PointerByReference TessBaseAPIGetAvailableLanguagesAsVector(TessBaseAPI handle);
 
     /**
      * Init only the lang model component of Tesseract. The only functions that
@@ -331,15 +351,15 @@ public interface TessAPI extends Library, ITessAPI {
      *
      * @param handle the TesseractAPI instance
      * @param datapath The <code>datapath</code> must be the name of the parent
-     * directory of tessdata and must end in
+     * directory of <code>tessdata</code> and must end in
      * <i>/</i>. Any name after the last <i>/</i> will be stripped.
      * @param language The language is (usually) an <code>ISO 639-3</code>
      * string or <code>NULL</code> will default to eng. The language may be a
-     * string of the form [~]<lang>[+[~]<lang>] indicating that multiple
+     * string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;] indicating that multiple
      * languages are to be loaded. E.g., hin+eng will load Hindi and English.
      * @return api init language mode
      */
-    int TessBaseAPIInitLangMod(TessAPI.TessBaseAPI handle, String datapath, String language);
+    int TessBaseAPIInitLangMod(TessBaseAPI handle, String datapath, String language);
 
     /**
      * Init only for page layout analysis. Use only for calls to
@@ -348,7 +368,7 @@ public interface TessAPI extends Library, ITessAPI {
      *
      * @param handle the TesseractAPI instance
      */
-    void TessBaseAPIInitForAnalysePage(TessAPI.TessBaseAPI handle);
+    void TessBaseAPIInitForAnalysePage(TessBaseAPI handle);
 
     /**
      * Read a "config" file containing a set of param, value pairs. Searches the
@@ -363,7 +383,7 @@ public interface TessAPI extends Library, ITessAPI {
      * containing a set of param and value pairs
      * @param init_only
      */
-    void TessBaseAPIReadConfigFile(TessAPI.TessBaseAPI handle, String filename, int init_only);
+    void TessBaseAPIReadConfigFile(TessBaseAPI handle, String filename, int init_only);
 
     /**
      * Set the current page segmentation mode. Defaults to
@@ -374,7 +394,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param handle the TesseractAPI instance
      * @param mode tesseract page segment mode
      */
-    void TessBaseAPISetPageSegMode(TessAPI.TessBaseAPI handle, int mode);
+    void TessBaseAPISetPageSegMode(TessBaseAPI handle, int mode);
 
     /**
      * Return the current page segmentation mode.
@@ -382,7 +402,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param handle the TesseractAPI instance
      * @return page segment mode value
      */
-    int TessBaseAPIGetPageSegMode(TessAPI.TessBaseAPI handle);
+    int TessBaseAPIGetPageSegMode(TessBaseAPI handle);
 
     /**
      * Recognize a rectangle from an image and return the result as a string.
@@ -410,7 +430,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param height image height
      * @return the pointer to recognized text
      */
-    Pointer TessBaseAPIRect(TessAPI.TessBaseAPI handle, ByteBuffer imagedata, int bytes_per_pixel, int bytes_per_line,
+    Pointer TessBaseAPIRect(TessBaseAPI handle, ByteBuffer imagedata, int bytes_per_pixel, int bytes_per_line,
             int left, int top, int width, int height);
 
     /**
@@ -419,7 +439,7 @@ public interface TessAPI extends Library, ITessAPI {
      *
      * @param handle the TesseractAPI instance
      */
-    void TessBaseAPIClearAdaptiveClassifier(TessAPI.TessBaseAPI handle);
+    void TessBaseAPIClearAdaptiveClassifier(TessBaseAPI handle);
 
     /**
      * Provide an image for Tesseract to recognize. Format is as
@@ -437,7 +457,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param bytes_per_pixel bytes per pixel
      * @param bytes_per_line bytes per line
      */
-    void TessBaseAPISetImage(TessAPI.TessBaseAPI handle, ByteBuffer imagedata, int width, int height,
+    void TessBaseAPISetImage(TessBaseAPI handle, ByteBuffer imagedata, int width, int height,
             int bytes_per_pixel, int bytes_per_line);
 
     /**
@@ -448,7 +468,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param handle the TesseractAPI instance
      * @param ppi source resolution value
      */
-    void TessBaseAPISetSourceResolution(TessAPI.TessBaseAPI handle, int ppi);
+    void TessBaseAPISetSourceResolution(TessBaseAPI handle, int ppi);
 
     /**
      * Restrict recognition to a sub-rectangle of the image. Call after
@@ -462,13 +482,13 @@ public interface TessAPI extends Library, ITessAPI {
      * @param width value
      * @param height value
      */
-    void TessBaseAPISetRectangle(TessAPI.TessBaseAPI handle, int left, int top, int width, int height);
+    void TessBaseAPISetRectangle(TessBaseAPI handle, int left, int top, int width, int height);
 
     /**
      * @param handle the TesseractAPI instance
      * @return Scale factor from original image.
      */
-    int TessBaseAPIGetThresholdedImageScaleFactor(TessAPI.TessBaseAPI handle);
+    int TessBaseAPIGetThresholdedImageScaleFactor(TessBaseAPI handle);
 
     /**
      * Dump the internal binary image to a PGM file.
@@ -476,7 +496,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param handle the TesseractAPI instance
      * @param filename pgm file name
      */
-    void TessBaseAPIDumpPGM(TessAPI.TessBaseAPI handle, String filename);
+    void TessBaseAPIDumpPGM(TessBaseAPI handle, String filename);
 
     /**
      * Runs page layout analysis in the mode set by <code>SetPageSegMode</code>.
@@ -494,7 +514,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @return returns an iterator to the results. Returns NULL on error. The
      * returned iterator must be deleted after use.
      */
-    TessAPI.TessPageIterator TessBaseAPIAnalyseLayout(TessAPI.TessBaseAPI handle);
+    TessPageIterator TessBaseAPIAnalyseLayout(TessBaseAPI handle);
 
     /**
      * Recognize the image from <code>SetAndThresholdImage</code>, generating
@@ -507,7 +527,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param monitor the result as Tesseract internal structures
      * @return 0 on success
      */
-    int TessBaseAPIRecognize(TessAPI.TessBaseAPI handle, TessAPI.ETEXT_DESC monitor);
+    int TessBaseAPIRecognize(TessBaseAPI handle, ETEXT_DESC monitor);
 
     /**
      * Variant on Recognize used for testing chopper.
@@ -516,7 +536,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param monitor the result as Tesseract internal structures
      * @return 0 on success
      */
-    int TessBaseAPIRecognizeForChopTest(TessAPI.TessBaseAPI handle, TessAPI.ETEXT_DESC monitor);
+    int TessBaseAPIRecognizeForChopTest(TessBaseAPI handle, ETEXT_DESC monitor);
 
     /**
      * Get a reading-order iterator to the results of LayoutAnalysis and/or
@@ -531,7 +551,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param handle the TesseractAPI instance
      * @return the result iterator
      */
-    TessAPI.TessResultIterator TessBaseAPIGetIterator(TessAPI.TessBaseAPI handle);
+    TessResultIterator TessBaseAPIGetIterator(TessBaseAPI handle);
 
     /**
      * Get a mutable iterator to the results of LayoutAnalysis and/or
@@ -546,7 +566,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param handle the TesseractAPI instance
      * @return the mutable iterator
      */
-    TessAPI.TessMutableIterator TessBaseAPIGetMutableIterator(TessAPI.TessBaseAPI handle);
+    TessMutableIterator TessBaseAPIGetMutableIterator(TessBaseAPI handle);
 
     /**
      * Recognizes all the pages in the named file, as a multi-page tiff or list
@@ -571,7 +591,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param renderer result renderer
      * @return the status
      */
-    int TessBaseAPIProcessPages(TessAPI.TessBaseAPI handle, String filename, String retry_config, int timeout_millisec, TessAPI.TessResultRenderer renderer);
+    int TessBaseAPIProcessPages(TessBaseAPI handle, String filename, String retry_config, int timeout_millisec, TessResultRenderer renderer);
 
     /**
      * The recognized text is returned as a char* which is coded as UTF-8 and
@@ -580,7 +600,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param handle the TesseractAPI instance
      * @return the pointer to output text
      */
-    Pointer TessBaseAPIGetUTF8Text(TessAPI.TessBaseAPI handle);
+    Pointer TessBaseAPIGetUTF8Text(TessBaseAPI handle);
 
     /**
      * Make a HTML-formatted string with hOCR markup from the internal data
@@ -591,7 +611,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param page_number page number
      * @return the pointer to hOCR text
      */
-    Pointer TessBaseAPIGetHOCRText(TessAPI.TessBaseAPI handle, int page_number);
+    Pointer TessBaseAPIGetHOCRText(TessBaseAPI handle, int page_number);
 
     /**
      * The recognized text is returned as a char* which is coded as a UTF8 box
@@ -602,7 +622,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param page_number number of the page
      * @return the pointer to box text
      */
-    Pointer TessBaseAPIGetBoxText(TessAPI.TessBaseAPI handle, int page_number);
+    Pointer TessBaseAPIGetBoxText(TessBaseAPI handle, int page_number);
 
     /**
      * The recognized text is returned as a char* which is coded as UNLV format
@@ -612,7 +632,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param handle the TesseractAPI instance
      * @return the pointer to UNLV text
      */
-    Pointer TessBaseAPIGetUNLVText(TessAPI.TessBaseAPI handle);
+    Pointer TessBaseAPIGetUNLVText(TessBaseAPI handle);
 
     /**
      * Returns the average word confidence for Tesseract page result.
@@ -620,7 +640,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param handle the TesseractAPI instance
      * @return the (average) confidence value between 0 and 100.
      */
-    int TessBaseAPIMeanTextConf(TessAPI.TessBaseAPI handle);
+    int TessBaseAPIMeanTextConf(TessBaseAPI handle);
 
     /**
      * Returns an array of all word confidences, terminated by -1. The calling
@@ -632,7 +652,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @return all word confidences (between 0 and 100) in an array, terminated
      * by -1
      */
-    IntByReference TessBaseAPIAllWordConfidences(TessAPI.TessBaseAPI handle);
+    IntByReference TessBaseAPIAllWordConfidences(TessBaseAPI handle);
 
     /**
      * Applies the given word to the adaptive classifier if possible. The word
@@ -650,7 +670,7 @@ public interface TessAPI extends Library, ITessAPI {
      * so it can tell the boundaries of the graphemes.
      * @return false if adaption was not possible for some reason.
      */
-    int TessBaseAPIAdaptToWordStr(TessAPI.TessBaseAPI handle, int mode, String wordstr);
+    int TessBaseAPIAdaptToWordStr(TessBaseAPI handle, int mode, String wordstr);
 
     /**
      * Free up recognition results and any stored image data, without actually
@@ -661,7 +681,7 @@ public interface TessAPI extends Library, ITessAPI {
      *
      * @param handle the TesseractAPI instance
      */
-    void TessBaseAPIClear(TessAPI.TessBaseAPI handle);
+    void TessBaseAPIClear(TessBaseAPI handle);
 
     /**
      * Close down tesseract and free up all memory. <code>End()</code> is
@@ -672,7 +692,7 @@ public interface TessAPI extends Library, ITessAPI {
      *
      * @param handle the TesseractAPI instance
      */
-    void TessBaseAPIEnd(TessAPI.TessBaseAPI handle);
+    void TessBaseAPIEnd(TessBaseAPI handle);
 
     /**
      * Check whether a word is valid according to Tesseract's language model.
@@ -681,7 +701,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param word word value
      * @return 0 if the word is invalid, non-zero if valid
      */
-    int TessBaseAPIIsValidWord(TessAPI.TessBaseAPI handle, String word);
+    int TessBaseAPIIsValidWord(TessBaseAPI handle, String word);
 
     /**
      * Gets text direction.
@@ -691,7 +711,16 @@ public interface TessAPI extends Library, ITessAPI {
      * @param out_slope slope
      * @return TRUE if text direction is valid
      */
-    int TessBaseAPIGetTextDirection(TessAPI.TessBaseAPI handle, IntBuffer out_offset, FloatBuffer out_slope);
+    int TessBaseAPIGetTextDirection(TessBaseAPI handle, IntBuffer out_offset, FloatBuffer out_slope);
+
+    /**
+     * Clear any library-level memory caches. There are a variety of
+     * expensive-to-load constant data structures (mostly language dictionaries)
+     * that are cached globally -- surviving the <code>Init()</code> and
+     * <code>End()</code> of individual TessBaseAPI's. This function allows the
+     * clearing of these caches.
+     */
+    void TessBaseAPIClearPersistentCache(TessBaseAPI handle);
 
     /**
      * Gets the string of the specified unichar.
@@ -700,14 +729,14 @@ public interface TessAPI extends Library, ITessAPI {
      * @param unichar_id the unichar id
      * @return the string form of the specified unichar.
      */
-    String TessBaseAPIGetUnichar(TessAPI.TessBaseAPI handle, int unichar_id);
+    String TessBaseAPIGetUnichar(TessBaseAPI handle, int unichar_id);
 
     /**
      * Deletes the specified PageIterator instance.
      *
      * @param handle the TessPageIterator instance
      */
-    void TessPageIteratorDelete(TessAPI.TessPageIterator handle);
+    void TessPageIteratorDelete(TessPageIterator handle);
 
     /**
      * Creates a copy of the specified PageIterator instance.
@@ -715,14 +744,14 @@ public interface TessAPI extends Library, ITessAPI {
      * @param handle the TessPageIterator instance
      * @return page iterator copy
      */
-    TessAPI.TessPageIterator TessPageIteratorCopy(TessAPI.TessPageIterator handle);
+    TessPageIterator TessPageIteratorCopy(TessPageIterator handle);
 
     /**
      * Resets the iterator to point to the start of the page.
      *
      * @param handle the TessPageIterator instance
      */
-    void TessPageIteratorBegin(TessAPI.TessPageIterator handle);
+    void TessPageIteratorBegin(TessPageIterator handle);
 
     /**
      * Moves to the start of the next object at the given level in the page
@@ -741,7 +770,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param level tesseract page level
      * @return next iterator object
      */
-    int TessPageIteratorNext(TessAPI.TessPageIterator handle, int level);
+    int TessPageIteratorNext(TessPageIterator handle, int level);
 
     /**
      * Returns TRUE if the iterator is at the start of an object at the given
@@ -752,7 +781,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param level tesseract page level
      * @return 1 if true
      */
-    int TessPageIteratorIsAtBeginningOf(TessAPI.TessPageIterator handle, int level);
+    int TessPageIteratorIsAtBeginningOf(TessPageIterator handle, int level);
 
     /**
      * Returns whether the iterator is positioned at the last element in a given
@@ -763,7 +792,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param element page iterator level
      * @return 1 if true
      */
-    int TessPageIteratorIsAtFinalElement(TessAPI.TessPageIterator handle, int level, int element);
+    int TessPageIteratorIsAtFinalElement(TessPageIterator handle, int level, int element);
 
     /**
      * Returns the bounding rectangle of the current object at the given level
@@ -777,7 +806,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param bottom int buffer position
      * @return FALSE if there is no such object at the current position
      */
-    int TessPageIteratorBoundingBox(TessAPI.TessPageIterator handle, int level, IntBuffer left, IntBuffer top,
+    int TessPageIteratorBoundingBox(TessPageIterator handle, int level, IntBuffer left, IntBuffer top,
             IntBuffer right, IntBuffer bottom);
 
     /**
@@ -786,7 +815,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param handle the TessPageIterator instance
      * @return TessPolyBlockType value
      */
-    int TessPageIteratorBlockType(TessAPI.TessPageIterator handle);
+    int TessPageIteratorBlockType(TessPageIterator handle);
 
     /**
      * Returns the baseline of the current object at the given level. The
@@ -801,7 +830,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param y2 int buffer position
      * @return TRUE if the baseline is valid
      */
-    int TessPageIteratorBaseline(TessAPI.TessPageIterator handle, int level, IntBuffer x1, IntBuffer y1, IntBuffer x2,
+    int TessPageIteratorBaseline(TessPageIterator handle, int level, IntBuffer x1, IntBuffer y1, IntBuffer x2,
             IntBuffer y2);
 
     /**
@@ -813,15 +842,27 @@ public interface TessAPI extends Library, ITessAPI {
      * @param textline_order text line order
      * @param deskew_angle deskew angle
      */
-    void TessPageIteratorOrientation(TessAPI.TessPageIterator handle, IntBuffer orientation,
+    void TessPageIteratorOrientation(TessPageIterator handle, IntBuffer orientation,
             IntBuffer writing_direction, IntBuffer textline_order, FloatBuffer deskew_angle);
+
+    /**
+     * Gets paragraph information.
+     * 
+     * @param handle the TessPageIterator instance
+     * @param justification justification type
+     * @param is_list_item list item
+     * @param is_crown very first or continuation
+     * @param first_line_indent first line indentation
+     */
+    void TessPageIteratorParagraphInfo(TessPageIterator handle, IntBuffer justification,
+            IntBuffer is_list_item, IntBuffer is_crown, IntBuffer first_line_indent);
 
     /**
      * Deletes the specified ResultIterator handle.
      *
      * @param handle the TessResultIterator instance
      */
-    void TessResultIteratorDelete(TessAPI.TessResultIterator handle);
+    void TessResultIteratorDelete(TessResultIterator handle);
 
     /**
      * Creates a copy of the specified ResultIterator instance.
@@ -829,7 +870,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param handle the TessResultIterator instance
      * @return the copy object
      */
-    TessAPI.TessResultIterator TessResultIteratorCopy(TessAPI.TessResultIterator handle);
+    TessResultIterator TessResultIteratorCopy(TessResultIterator handle);
 
     /**
      * Gets the PageIterator of the specified ResultIterator instance.
@@ -837,7 +878,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param handle the TessResultIterator instance
      * @return the page iterator
      */
-    TessAPI.TessPageIterator TessResultIteratorGetPageIterator(TessAPI.TessResultIterator handle);
+    TessPageIterator TessResultIteratorGetPageIterator(TessResultIterator handle);
 
     /**
      * Gets the PageIterator of the specified ResultIterator instance.
@@ -845,9 +886,9 @@ public interface TessAPI extends Library, ITessAPI {
      * @param handle the TessResultIterator instance
      * @return the page iterator constant
      */
-    TessAPI.TessPageIterator TessResultIteratorGetPageIteratorConst(TessAPI.TessResultIterator handle);
+    TessPageIterator TessResultIteratorGetPageIteratorConst(TessResultIterator handle);
 
-    int TessResultIteratorNext(TessAPI.TessResultIterator handle, int level);
+    int TessResultIteratorNext(TessResultIterator handle, int level);
 
     /**
      * Returns the null terminated UTF-8 encoded text string for the current
@@ -857,7 +898,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param level tesseract page level
      * @return the pointer to recognized text
      */
-    Pointer TessResultIteratorGetUTF8Text(TessAPI.TessResultIterator handle, int level);
+    Pointer TessResultIteratorGetUTF8Text(TessResultIterator handle, int level);
 
     /**
      * Returns the mean confidence of the current object at the given level. The
@@ -867,7 +908,9 @@ public interface TessAPI extends Library, ITessAPI {
      * @param level tesseract page level
      * @return confidence value
      */
-    float TessResultIteratorConfidence(TessAPI.TessResultIterator handle, int level);
+    float TessResultIteratorConfidence(TessResultIterator handle, int level);
+
+    String TessResultIteratorWordRecognitionLanguage(TessResultIterator handle);
 
     /**
      * Returns the font attributes of the current word. If iterating at a higher
@@ -890,7 +933,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param font_id font attribute
      * @return font name
      */
-    String TessResultIteratorWordFontAttributes(TessAPI.TessResultIterator handle, IntBuffer is_bold,
+    String TessResultIteratorWordFontAttributes(TessResultIterator handle, IntBuffer is_bold,
             IntBuffer is_italic, IntBuffer is_underlined, IntBuffer is_monospace, IntBuffer is_serif,
             IntBuffer is_smallcaps, IntBuffer pointsize, IntBuffer font_id);
 
@@ -900,7 +943,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param handle the TessResultIterator instance
      * @return 1 if word is from dictionary
      */
-    int TessResultIteratorWordIsFromDictionary(TessAPI.TessResultIterator handle);
+    int TessResultIteratorWordIsFromDictionary(TessResultIterator handle);
 
     /**
      * Returns TRUE if the current word is numeric.
@@ -908,7 +951,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param handle the TessResultIterator instance
      * @return 1 if word is numeric
      */
-    int TessResultIteratorWordIsNumeric(TessAPI.TessResultIterator handle);
+    int TessResultIteratorWordIsNumeric(TessResultIterator handle);
 
     /**
      * Returns TRUE if the current symbol is a superscript. If iterating at a
@@ -918,7 +961,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param handle the TessResultIterator instance
      * @return 1 if symbol is superscript
      */
-    int TessResultIteratorSymbolIsSuperscript(TessAPI.TessResultIterator handle);
+    int TessResultIteratorSymbolIsSuperscript(TessResultIterator handle);
 
     /**
      * Returns TRUE if the current symbol is a subscript. If iterating at a
@@ -928,7 +971,7 @@ public interface TessAPI extends Library, ITessAPI {
      * @param handle the TessResultIterator instance
      * @return 1 if symbol is subscript
      */
-    int TessResultIteratorSymbolIsSubscript(TessAPI.TessResultIterator handle);
+    int TessResultIteratorSymbolIsSubscript(TessResultIterator handle);
 
     /**
      * Returns TRUE if the current symbol is a dropcap. If iterating at a higher
@@ -938,16 +981,16 @@ public interface TessAPI extends Library, ITessAPI {
      * @param handle the TessResultIterator instance
      * @return 1 if symbol is dropcap
      */
-    int TessResultIteratorSymbolIsDropcap(TessAPI.TessResultIterator handle);
+    int TessResultIteratorSymbolIsDropcap(TessResultIterator handle);
 
     /* Choice iterator */
-    TessAPI.TessChoiceIterator TessResultIteratorGetChoiceIterator(TessAPI.TessResultIterator handle);
+    TessChoiceIterator TessResultIteratorGetChoiceIterator(TessResultIterator handle);
 
-    void TessChoiceIteratorDelete(TessAPI.TessChoiceIterator handle);
+    void TessChoiceIteratorDelete(TessChoiceIterator handle);
 
-    int TessChoiceIteratorNext(TessAPI.TessChoiceIterator handle);
+    int TessChoiceIteratorNext(TessChoiceIterator handle);
 
-    String TessChoiceIteratorGetUTF8Text(TessAPI.TessChoiceIterator handle);
+    String TessChoiceIteratorGetUTF8Text(TessChoiceIterator handle);
 
-    float TessChoiceIteratorConfidence(TessAPI.TessChoiceIterator handle);
+    float TessChoiceIteratorConfidence(TessChoiceIterator handle);
 }
