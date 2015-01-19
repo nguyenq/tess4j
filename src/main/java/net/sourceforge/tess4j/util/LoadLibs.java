@@ -58,7 +58,12 @@ public class LoadLibs {
         System.setProperty("jna.encoding", "UTF8");
         File targetTempFolder = extractTessResources(Platform.RESOURCE_PREFIX);
         if (targetTempFolder != null && targetTempFolder.exists()) {
-            System.setProperty("jna.library.path", targetTempFolder.getPath());
+            String currentPath = System.getProperty("jna.library.path");
+            if (currentPath == null) {
+                System.setProperty("jna.library.path", targetTempFolder.getPath());
+            } else {
+                System.setProperty("jna.library.path", currentPath + File.pathSeparator + targetTempFolder.getPath());
+            }
         }
     }
 
