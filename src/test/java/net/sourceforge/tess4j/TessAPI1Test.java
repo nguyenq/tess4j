@@ -48,13 +48,9 @@ import com.sun.jna.Pointer;
 import com.sun.jna.StringArray;
 import com.sun.jna.ptr.PointerByReference;
 
-import net.sourceforge.tess4j.ITessAPI.ETEXT_DESC;
-import net.sourceforge.tess4j.ITessAPI.TessOcrEngineMode;
-import net.sourceforge.tess4j.ITessAPI.TessOrientation;
-import net.sourceforge.tess4j.ITessAPI.TessPageSegMode;
-import net.sourceforge.tess4j.ITessAPI.TessResultRenderer;
-import net.sourceforge.tess4j.ITessAPI.TessTextlineOrder;
-import net.sourceforge.tess4j.ITessAPI.TessWritingDirection;
+import net.sourceforge.tess4j.ITessAPI.*;
+import static net.sourceforge.tess4j.ITessAPI.FALSE;
+import static net.sourceforge.tess4j.ITessAPI.TRUE;
 
 public class TessAPI1Test {
 
@@ -63,7 +59,7 @@ public class TessAPI1Test {
     String language = "eng";
     String expOCRResult = "The (quick) [brown] {fox} jumps!\nOver the $43,456.78 <lazy> #90 dog";
 
-    TessAPI1.TessBaseAPI handle;
+    TessBaseAPI handle;
 
     public TessAPI1Test() {
         System.setProperty("jna.encoding", "UTF8");
@@ -157,7 +153,7 @@ public class TessAPI1Test {
     @Test
     public void testTessBaseAPICreate() {
         System.out.println("TessBaseAPICreate");
-        TessAPI1.TessBaseAPI handle = TessAPI1.TessBaseAPICreate();
+        TessBaseAPI handle = TessAPI1.TessBaseAPICreate();
         assertNotNull(handle);
         TessAPI1.TessBaseAPIDelete(handle);
     }
@@ -168,7 +164,7 @@ public class TessAPI1Test {
     @Test
     public void testTessBaseAPIDelete() {
         System.out.println("TessBaseAPIDelete");
-        TessAPI1.TessBaseAPI handle = TessAPI1.TessBaseAPICreate();
+        TessBaseAPI handle = TessAPI1.TessBaseAPICreate();
         TessAPI1.TessBaseAPIDelete(handle);
     }
 
@@ -215,7 +211,7 @@ public class TessAPI1Test {
         TessAPI1.TessBaseAPISetVariable(handle, name, "1");
         IntBuffer value = IntBuffer.allocate(1);
         int result = -1;
-        if (TessAPI1.TessBaseAPIGetBoolVariable(handle, "tessedit_create_hocr", value) == TessAPI1.TRUE) {
+        if (TessAPI1.TessBaseAPIGetBoolVariable(handle, "tessedit_create_hocr", value) == TRUE) {
             result = value.get(0);
         }
         int expResult = 1;
@@ -298,7 +294,7 @@ public class TessAPI1Test {
         PointerByReference configs = null;
         int configs_size = 0;
         int expResult = 0;
-        int result = TessAPI1.TessBaseAPIInit4(handle, datapath, language, oem, configs, configs_size, null, null, new NativeSize(), TessAPI.FALSE);
+        int result = TessAPI1.TessBaseAPIInit4(handle, datapath, language, oem, configs, configs_size, null, null, new NativeSize(), FALSE);
         assertEquals(expResult, result);
     }
 
@@ -494,11 +490,11 @@ public class TessAPI1Test {
         pmo.start();
         TessAPI1.TessBaseAPIRecognize(handle, monitor);
         System.err.println("Message: " + pmo.getMessage());
-        TessAPI1.TessResultIterator ri = TessAPI1.TessBaseAPIGetIterator(handle);
-        TessAPI1.TessPageIterator pi = TessAPI1.TessResultIteratorGetPageIterator(ri);
+        TessResultIterator ri = TessAPI1.TessBaseAPIGetIterator(handle);
+        TessPageIterator pi = TessAPI1.TessResultIteratorGetPageIterator(ri);
         TessAPI1.TessPageIteratorBegin(pi);
         System.out.println("Bounding boxes:\nchar(s) left top right bottom confidence font-attributes");
-        int level = TessAPI1.TessPageIteratorLevel.RIL_WORD;
+        int level = TessPageIteratorLevel.RIL_WORD;
 
         // int height = image.getHeight();
         do {
@@ -529,18 +525,18 @@ public class TessAPI1Test {
             IntBuffer fontIdB = IntBuffer.allocate(1);
             String fontName = TessAPI1.TessResultIteratorWordFontAttributes(ri, boldB, italicB, underlinedB,
                     monospaceB, serifB, smallcapsB, pointSizeB, fontIdB);
-            boolean bold = boldB.get() == TessAPI1.TRUE;
-            boolean italic = italicB.get() == TessAPI1.TRUE;
-            boolean underlined = underlinedB.get() == TessAPI1.TRUE;
-            boolean monospace = monospaceB.get() == TessAPI1.TRUE;
-            boolean serif = serifB.get() == TessAPI1.TRUE;
-            boolean smallcaps = smallcapsB.get() == TessAPI1.TRUE;
+            boolean bold = boldB.get() == TRUE;
+            boolean italic = italicB.get() == TRUE;
+            boolean underlined = underlinedB.get() == TRUE;
+            boolean monospace = monospaceB.get() == TRUE;
+            boolean serif = serifB.get() == TRUE;
+            boolean smallcaps = smallcapsB.get() == TRUE;
             int pointSize = pointSizeB.get();
             int fontId = fontIdB.get();
             System.out.println(String.format("  font: %s, size: %d, font id: %d, bold: %b,"
                     + " italic: %b, underlined: %b, monospace: %b, serif: %b, smallcap: %b", fontName, pointSize,
                     fontId, bold, italic, underlined, monospace, serif, smallcaps));
-        } while (TessAPI1.TessPageIteratorNext(pi, level) == TessAPI1.TRUE);
+        } while (TessAPI1.TessPageIteratorNext(pi, level) == TRUE);
 
         assertTrue(true);
     }
@@ -569,8 +565,8 @@ public class TessAPI1Test {
         pmo.start();
         TessAPI1.TessBaseAPIRecognize(handle, monitor);
         System.out.println("Message: " + pmo.getMessage());
-        TessAPI1.TessResultIterator ri = TessAPI1.TessBaseAPIGetIterator(handle);
-        int level = TessAPI1.TessPageIteratorLevel.RIL_SYMBOL;
+        TessResultIterator ri = TessAPI1.TessBaseAPIGetIterator(handle);
+        int level = TessPageIteratorLevel.RIL_SYMBOL;
 
         if (ri != null) {
             do {
@@ -579,7 +575,7 @@ public class TessAPI1Test {
                 if (symbol != null) {
                     System.out.println(String.format("symbol %s, conf: %f", symbol.getString(0), conf));
                     boolean indent = false;
-                    TessAPI1.TessChoiceIterator ci = TessAPI1.TessResultIteratorGetChoiceIterator(ri);
+                    TessChoiceIterator ci = TessAPI1.TessResultIteratorGetChoiceIterator(ri);
                     do {
                         if (indent) {
                             System.out.print("\t");
@@ -588,12 +584,12 @@ public class TessAPI1Test {
                         String choice = TessAPI1.TessChoiceIteratorGetUTF8Text(ci);
                         System.out.println(String.format("%s conf: %f", choice, TessAPI1.TessChoiceIteratorConfidence(ci)));
                         indent = true;
-                    } while (TessAPI1.TessChoiceIteratorNext(ci) == TessAPI1.TRUE);
+                    } while (TessAPI1.TessChoiceIteratorNext(ci) == TRUE);
                     TessAPI1.TessChoiceIteratorDelete(ci);
                 }
                 System.out.println("---------------------------------------------");
                 TessAPI1.TessDeleteText(symbol);
-            } while (TessAPI1.TessResultIteratorNext(ri, level) == TessAPI1.TRUE);
+            } while (TessAPI1.TessResultIteratorNext(ri, level) == TRUE);
         }
 
         assertTrue(true);
@@ -634,7 +630,7 @@ public class TessAPI1Test {
         }
 
         String outputbase = "target/test-classes/test-results/outputbase1";
-        TessAPI1.TessResultRenderer renderer = TessAPI1.TessHOcrRendererCreate(outputbase);
+        TessResultRenderer renderer = TessAPI1.TessHOcrRendererCreate(outputbase);
         TessAPI1.TessResultRendererInsert(renderer, TessAPI1.TessBoxTextRendererCreate(outputbase));
         TessAPI1.TessResultRendererInsert(renderer, TessAPI1.TessTextRendererCreate(outputbase));
         String dataPath = TessAPI1.TessBaseAPIGetDatapath(handle);
@@ -642,7 +638,7 @@ public class TessAPI1Test {
 
         int result = TessAPI1.TessBaseAPIProcessPages(handle, image, null, 0, renderer);
 
-        if (result != TessAPI1.TRUE) {
+        if (result != TRUE) {
             System.err.println("Error during processing.");
             return;
         }

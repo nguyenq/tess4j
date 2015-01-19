@@ -30,6 +30,7 @@ import net.sourceforge.tess4j.util.Utils;
 import net.sourceforge.tess4j.util.ImageHelper;
 import net.sourceforge.tess4j.util.ImageIOHelper;
 import net.sourceforge.tess4j.ITesseract.RenderedFormat;
+import net.sourceforge.tess4j.ITessAPI.TessPageIteratorLevel;
 
 import com.recognition.software.jdeskew.ImageDeskew;
 
@@ -213,9 +214,9 @@ public class Tesseract1Test {
 
         Tess1Extension instance1 = new Tess1Extension();
         instance1.setDatapath(this.datapath);
-        int pageIteratorLevel = TessAPI1.TessPageIteratorLevel.RIL_WORD;
+        int pageIteratorLevel = TessPageIteratorLevel.RIL_WORD;
         System.out.println("PageIteratorLevel: "
-                + Utils.getConstantName(pageIteratorLevel, TessAPI1.TessPageIteratorLevel.class));
+                + Utils.getConstantName(pageIteratorLevel, TessPageIteratorLevel.class));
         List<Word> result = instance1.getWords(imageFile, pageIteratorLevel);
 
         // print the complete result
@@ -243,8 +244,8 @@ public class Tesseract1Test {
                 setImage(bi, null);
 
                 TessAPI1.TessBaseAPIRecognize(this.getHandle(), null);
-                TessAPI1.TessResultIterator ri = TessAPI1.TessBaseAPIGetIterator(this.getHandle());
-                TessAPI1.TessPageIterator pi = TessAPI1.TessResultIteratorGetPageIterator(ri);
+                TessResultIterator ri = TessAPI1.TessBaseAPIGetIterator(this.getHandle());
+                TessPageIterator pi = TessAPI1.TessResultIteratorGetPageIterator(ri);
                 TessAPI1.TessPageIteratorBegin(pi);
 
                 do {
@@ -263,7 +264,7 @@ public class Tesseract1Test {
                     int bottom = bottomB.get();
                     Word word = new Word(text, confidence, new Rectangle(left, top, right - left, bottom - top));
                     words.add(word);
-                } while (TessAPI1.TessPageIteratorNext(pi, pageIteratorLevel) == TessAPI1.TRUE);
+                } while (TessAPI1.TessPageIteratorNext(pi, pageIteratorLevel) == TRUE);
 
                 return words;
             } catch (Exception e) {
