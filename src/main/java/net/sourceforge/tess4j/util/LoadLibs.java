@@ -44,6 +44,7 @@ import net.sourceforge.tess4j.TessAPI;
  */
 public class LoadLibs {
 
+    private static final String JNA_LIBRARY_PATH = "jna.library.path";
     public static final String TESS4J_TEMP_DIR = new File(System.getProperty("java.io.tmpdir"), "tess4j").getPath();
 
     /**
@@ -58,11 +59,11 @@ public class LoadLibs {
         System.setProperty("jna.encoding", "UTF8");
         File targetTempFolder = extractTessResources(Platform.RESOURCE_PREFIX);
         if (targetTempFolder != null && targetTempFolder.exists()) {
-            String currentPath = System.getProperty("jna.library.path");
-            if (currentPath == null) {
-                System.setProperty("jna.library.path", targetTempFolder.getPath());
+            String userCustomizedPath = System.getProperty(JNA_LIBRARY_PATH);
+            if (null == userCustomizedPath || userCustomizedPath.isEmpty()) {
+                System.setProperty(JNA_LIBRARY_PATH, targetTempFolder.getPath());
             } else {
-                System.setProperty("jna.library.path", currentPath + File.pathSeparator + targetTempFolder.getPath());
+                System.setProperty(JNA_LIBRARY_PATH, userCustomizedPath + File.pathSeparator + targetTempFolder.getPath());
             }
         }
     }
