@@ -19,6 +19,4 @@ The library provides optical character recognition (OCR) support for:
 
 ## Contributors
 
-A big thanks to GitHub and all of Tess4J's contributors:
-
-* [O.J. Sousa Rodrigues](https://github.com/4F2E4A2E) for mavenizing Tess4J and committing it to Maven Central Repositories
+A big thanks to GitHub and all of Tess4J's contributors.
