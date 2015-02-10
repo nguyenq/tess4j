@@ -232,39 +232,39 @@ public interface ITessAPI {
         public static final int PT_COUNT = 15;
     };
 
-    /**
-     * NOTA BENE: Fully justified paragraphs (text aligned to both left and
-     * right margins) are marked by Tesseract with JUSTIFICATION_LEFT if their
-     * text is written with a left-to-right script and with JUSTIFICATION_RIGHT
-     * if their text is written in a right-to-left script.<br>
-     * <br>
-     * Interpretation for text read in vertical lines: "Left" is wherever the
-     * starting reading position is.
-     */
-    public static interface TessParagraphJustification {
-
-        /**
-         * The alignment is not clearly one of the other options. This could
-         * happen for example if there are only one or two lines of text or the
-         * text looks like source code or poetry.
-         */
-        public static final int JUSTIFICATION_UNKNOWN = 0;
-        /**
-         * Each line, except possibly the first, is flush to the same left tab
-         * stop.
-         */
-        public static final int JUSTIFICATION_LEFT = 1;
-        /**
-         * The text lines of the paragraph are centered about a line going down
-         * through their middle of the text lines.
-         */
-        public static final int JUSTIFICATION_CENTER = 2;
-        /**
-         * Each line, except possibly the first, is flush to the same right tab
-         * stop.
-         */
-        public static final int JUSTIFICATION_RIGHT = 3;
-    }
+//    /**
+//     * NOTA BENE: Fully justified paragraphs (text aligned to both left and
+//     * right margins) are marked by Tesseract with JUSTIFICATION_LEFT if their
+//     * text is written with a left-to-right script and with JUSTIFICATION_RIGHT
+//     * if their text is written in a right-to-left script.<br>
+//     * <br>
+//     * Interpretation for text read in vertical lines: "Left" is wherever the
+//     * starting reading position is.
+//     */
+//    public static interface TessParagraphJustification {
+//
+//        /**
+//         * The alignment is not clearly one of the other options. This could
+//         * happen for example if there are only one or two lines of text or the
+//         * text looks like source code or poetry.
+//         */
+//        public static final int JUSTIFICATION_UNKNOWN = 0;
+//        /**
+//         * Each line, except possibly the first, is flush to the same left tab
+//         * stop.
+//         */
+//        public static final int JUSTIFICATION_LEFT = 1;
+//        /**
+//         * The text lines of the paragraph are centered about a line going down
+//         * through their middle of the text lines.
+//         */
+//        public static final int JUSTIFICATION_CENTER = 2;
+//        /**
+//         * Each line, except possibly the first, is flush to the same right tab
+//         * stop.
+//         */
+//        public static final int JUSTIFICATION_RIGHT = 3;
+//    }
 
     /**
      * <pre>

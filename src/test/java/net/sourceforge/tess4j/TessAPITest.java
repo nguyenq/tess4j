@@ -20,7 +20,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
@@ -63,9 +62,6 @@ public class TessAPITest {
 
     TessAPI api;
     TessBaseAPI handle;
-
-    public TessAPITest() {
-    }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -1181,10 +1177,10 @@ public class TessAPITest {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
-        @Override
-        public void TessPageIteratorParagraphInfo(TessPageIterator handle, IntBuffer justification, IntBuffer is_list_item, IntBuffer is_crown, IntBuffer first_line_indent) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
+//        @Override
+//        public void TessPageIteratorParagraphInfo(TessPageIterator handle, IntBuffer justification, IntBuffer is_list_item, IntBuffer is_crown, IntBuffer first_line_indent) {
+//            throw new UnsupportedOperationException("Not supported yet.");
+//        }
 
         @Override
         public String TessResultIteratorWordRecognitionLanguage(TessResultIterator handle) {

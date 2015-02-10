@@ -847,17 +847,17 @@ public class TessAPI1 implements Library, ITessAPI {
     public static native void TessPageIteratorOrientation(TessPageIterator handle, IntBuffer orientation,
             IntBuffer writing_direction, IntBuffer textline_order, FloatBuffer deskew_angle);
 
-    /**
-     * Gets paragraph information.
-     *
-     * @param handle the TessPageIterator instance
-     * @param justification justification type
-     * @param is_list_item list item
-     * @param is_crown very first or continuation
-     * @param first_line_indent first line indentation
-     */
-    public static native void TessPageIteratorParagraphInfo(TessPageIterator handle, IntBuffer justification,
-            IntBuffer is_list_item, IntBuffer is_crown, IntBuffer first_line_indent);
+//    /**
+//     * Gets paragraph information.
+//     *
+//     * @param handle the TessPageIterator instance
+//     * @param justification justification type
+//     * @param is_list_item list item
+//     * @param is_crown very first or continuation
+//     * @param first_line_indent first line indentation
+//     */
+//    public static native void TessPageIteratorParagraphInfo(TessPageIterator handle, IntBuffer justification,
+//            IntBuffer is_list_item, IntBuffer is_crown, IntBuffer first_line_indent);
 
     /**
      * Deletes the specified ResultIterator handle.
