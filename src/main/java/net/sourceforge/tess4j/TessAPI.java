@@ -68,15 +68,15 @@ public interface TessAPI extends Library, ITessAPI {
     void TessDeleteIntArray(IntBuffer arr);
 
     /* Renderer API */
-    TessResultRenderer TessTextRendererCreate(String outputbase);
+    TessResultRenderer TessTextRendererCreate();
 
-    TessResultRenderer TessHOcrRendererCreate(String outputbase);
+    TessResultRenderer TessHOcrRendererCreate();
 
-    TessResultRenderer TessPDFRendererCreate(String outputbase, String datadir);
+    TessResultRenderer TessPDFRendererCreate(String datadir);
 
-    TessResultRenderer TessUnlvRendererCreate(String outputbase);
+    TessResultRenderer TessUnlvRendererCreate();
 
-    TessResultRenderer TessBoxTextRendererCreate(String outputbase);
+    TessResultRenderer TessBoxTextRendererCreate();
 
     void TessDeleteResultRenderer(TessResultRenderer renderer);
 
@@ -88,7 +88,14 @@ public interface TessAPI extends Library, ITessAPI {
 
     int TessResultRendererAddImage(TessResultRenderer renderer, PointerByReference api);
 
+    int TessResultRendererAddError(TessResultRenderer renderer, PointerByReference api);
+
     int TessResultRendererEndDocument(TessResultRenderer renderer);
+
+//    int TessResultRendererGetOutput(TessResultRenderer renderer, String data[], IntBuffer data_len);
+    int TessResultRendererGetOutput(TessResultRenderer renderer, PointerByReference data, IntByReference data_len);
+
+    Pointer TessResultRendererTypename(TessResultRenderer renderer);
 
     Pointer TessResultRendererExtention(TessResultRenderer renderer);
 
@@ -250,9 +257,9 @@ public interface TessAPI extends Library, ITessAPI {
      * <i>/</i>. Any name after the last <i>/</i> will be stripped.
      * @param language The language is (usually) an <code>ISO 639-3</code>
      * string or <code>NULL</code> will default to <code>eng</code>. The
-     * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;] indicating
-     * that multiple languages are to be loaded. E.g., <code>hin+eng</code> will
-     * load Hindi and English.
+     * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;]
+     * indicating that multiple languages are to be loaded. E.g.,
+     * <code>hin+eng</code> will load Hindi and English.
      * @param oem ocr engine mode
      * @param configs pointer configuration
      * @param configs_size pointer configuration size
@@ -268,9 +275,9 @@ public interface TessAPI extends Library, ITessAPI {
      * <i>/</i>. Any name after the last <i>/</i> will be stripped.
      * @param language The language is (usually) an <code>ISO 639-3</code>
      * string or <code>NULL</code> will default to <code>eng</code>. The
-     * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;] indicating
-     * that multiple languages are to be loaded. E.g., <code>hin+eng</code> will
-     * load Hindi and English.
+     * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;]
+     * indicating that multiple languages are to be loaded. E.g.,
+     * <code>hin+eng</code> will load Hindi and English.
      * @param oem ocr engine mode
      * @return 0 on success and -1 on initialization failure
      */
@@ -283,9 +290,9 @@ public interface TessAPI extends Library, ITessAPI {
      * <i>/</i>. Any name after the last <i>/</i> will be stripped.
      * @param language The language is (usually) an <code>ISO 639-3</code>
      * string or <code>NULL</code> will default to <code>eng</code>. The
-     * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;] indicating
-     * that multiple languages are to be loaded. E.g., <code>hin+eng</code> will
-     * load Hindi and English.
+     * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;]
+     * indicating that multiple languages are to be loaded. E.g.,
+     * <code>hin+eng</code> will load Hindi and English.
      * @return 0 on success and -1 on initialization failure
      */
     int TessBaseAPIInit3(TessBaseAPI handle, String datapath, String language);
@@ -298,9 +305,9 @@ public interface TessAPI extends Library, ITessAPI {
      * <i>/</i>. Any name after the last <i>/</i> will be stripped.
      * @param language The language is (usually) an <code>ISO 639-3</code>
      * string or <code>NULL</code> will default to <code>eng</code>. The
-     * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;] indicating
-     * that multiple languages are to be loaded. E.g., <code>hin+eng</code> will
-     * load Hindi and English.
+     * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;]
+     * indicating that multiple languages are to be loaded. E.g.,
+     * <code>hin+eng</code> will load Hindi and English.
      * @param oem ocr engine mode
      * @param configs pointer configuration
      * @param configs_size pointer configuration size
@@ -355,8 +362,9 @@ public interface TessAPI extends Library, ITessAPI {
      * <i>/</i>. Any name after the last <i>/</i> will be stripped.
      * @param language The language is (usually) an <code>ISO 639-3</code>
      * string or <code>NULL</code> will default to eng. The language may be a
-     * string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;] indicating that multiple
-     * languages are to be loaded. E.g., hin+eng will load Hindi and English.
+     * string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;] indicating that
+     * multiple languages are to be loaded. E.g., hin+eng will load Hindi and
+     * English.
      * @return api init language mode
      */
     int TessBaseAPIInitLangMod(TessBaseAPI handle, String datapath, String language);
@@ -588,10 +596,11 @@ public interface TessAPI extends Library, ITessAPI {
      * @param filename multi-page tiff or list of filenames
      * @param retry_config retry config values
      * @param timeout_millisec timeout value
-     * @param renderer result renderer
-     * @return the status
+     * @return the pointer to output text
      */
-    int TessBaseAPIProcessPages(TessBaseAPI handle, String filename, String retry_config, int timeout_millisec, TessResultRenderer renderer);
+    Pointer TessBaseAPIProcessPages(TessBaseAPI handle, String filename, String retry_config, int timeout_millisec);
+
+    int TessBaseAPIProcessPages1(TessBaseAPI handle, String filename, String retry_config, int timeout_millisec, TessResultRenderer renderer);
 
     /**
      * The recognized text is returned as a char* which is coded as UTF-8 and
@@ -845,18 +854,6 @@ public interface TessAPI extends Library, ITessAPI {
     void TessPageIteratorOrientation(TessPageIterator handle, IntBuffer orientation,
             IntBuffer writing_direction, IntBuffer textline_order, FloatBuffer deskew_angle);
 
-//    /**
-//     * Gets paragraph information.
-//     * 
-//     * @param handle the TessPageIterator instance
-//     * @param justification justification type
-//     * @param is_list_item list item
-//     * @param is_crown very first or continuation
-//     * @param first_line_indent first line indentation
-//     */
-//    void TessPageIteratorParagraphInfo(TessPageIterator handle, IntBuffer justification,
-//            IntBuffer is_list_item, IntBuffer is_crown, IntBuffer first_line_indent);
-
     /**
      * Deletes the specified ResultIterator handle.
      *
@@ -888,8 +885,6 @@ public interface TessAPI extends Library, ITessAPI {
      */
     TessPageIterator TessResultIteratorGetPageIteratorConst(TessResultIterator handle);
 
-    int TessResultIteratorNext(TessResultIterator handle, int level);
-
     /**
      * Returns the null terminated UTF-8 encoded text string for the current
      * object at the given level. Use delete [] to free after use.
@@ -909,8 +904,6 @@ public interface TessAPI extends Library, ITessAPI {
      * @return confidence value
      */
     float TessResultIteratorConfidence(TessResultIterator handle, int level);
-
-    String TessResultIteratorWordRecognitionLanguage(TessResultIterator handle);
 
     /**
      * Returns the font attributes of the current word. If iterating at a higher
@@ -982,15 +975,4 @@ public interface TessAPI extends Library, ITessAPI {
      * @return 1 if symbol is dropcap
      */
     int TessResultIteratorSymbolIsDropcap(TessResultIterator handle);
-
-    /* Choice iterator */
-    TessChoiceIterator TessResultIteratorGetChoiceIterator(TessResultIterator handle);
-
-    void TessChoiceIteratorDelete(TessChoiceIterator handle);
-
-    int TessChoiceIteratorNext(TessChoiceIterator handle);
-
-    String TessChoiceIteratorGetUTF8Text(TessChoiceIterator handle);
-
-    float TessChoiceIteratorConfidence(TessChoiceIterator handle);
 }

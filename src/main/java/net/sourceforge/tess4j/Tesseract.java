@@ -17,6 +17,7 @@ package net.sourceforge.tess4j;
 
 import com.sun.jna.Pointer;
 import com.sun.jna.StringArray;
+import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 import java.awt.Rectangle;
 import java.awt.image.*;
@@ -32,6 +33,7 @@ import net.sourceforge.tess4j.ITessAPI.TessResultRenderer;
 
 import net.sourceforge.tess4j.util.ImageIOHelper;
 import net.sourceforge.tess4j.util.PdfUtilities;
+import net.sourceforge.tess4j.util.Utils;
 
 /**
  * An object layer on top of <code>TessAPI</code>, provides character
@@ -152,7 +154,8 @@ public class Tesseract implements ITesseract {
     /**
      * Sets configs to be passed to Tesseract's <code>Init</code> method.
      *
-     * @param configs list of config filenames, e.g., "digits", "bazaar", "quiet"
+     * @param configs list of config filenames, e.g., "digits", "bazaar",
+     * "quiet"
      */
     @Override
     public void setConfigs(List<String> configs) {
@@ -367,49 +370,48 @@ public class Tesseract implements ITesseract {
     /**
      * Creates renderers for given formats.
      *
-     * @param outputbase
      * @param formats
      * @return
      */
-    private TessResultRenderer createRenderers(String outputbase, List<RenderedFormat> formats) {
+    private TessResultRenderer createRenderers(List<RenderedFormat> formats) {
         TessResultRenderer renderer = null;
 
         for (RenderedFormat format : formats) {
             switch (format) {
                 case TEXT:
                     if (renderer == null) {
-                        renderer = api.TessTextRendererCreate(outputbase);
+                        renderer = api.TessTextRendererCreate();
                     } else {
-                        api.TessResultRendererInsert(renderer, api.TessTextRendererCreate(outputbase));
+                        api.TessResultRendererInsert(renderer, api.TessTextRendererCreate());
                     }
                     break;
                 case HOCR:
                     if (renderer == null) {
-                        renderer = api.TessHOcrRendererCreate(outputbase);
+                        renderer = api.TessHOcrRendererCreate();
                     } else {
-                        api.TessResultRendererInsert(renderer, api.TessHOcrRendererCreate(outputbase));
+                        api.TessResultRendererInsert(renderer, api.TessHOcrRendererCreate());
                     }
                     break;
                 case PDF:
                     String dataPath = api.TessBaseAPIGetDatapath(handle);
                     if (renderer == null) {
-                        renderer = api.TessPDFRendererCreate(outputbase, dataPath);
+                        renderer = api.TessPDFRendererCreate(dataPath);
                     } else {
-                        api.TessResultRendererInsert(renderer, api.TessPDFRendererCreate(outputbase, dataPath));
+                        api.TessResultRendererInsert(renderer, api.TessPDFRendererCreate(dataPath));
                     }
                     break;
                 case BOX:
                     if (renderer == null) {
-                        renderer = api.TessBoxTextRendererCreate(outputbase);
+                        renderer = api.TessBoxTextRendererCreate();
                     } else {
-                        api.TessResultRendererInsert(renderer, api.TessBoxTextRendererCreate(outputbase));
+                        api.TessResultRendererInsert(renderer, api.TessBoxTextRendererCreate());
                     }
                     break;
                 case UNLV:
                     if (renderer == null) {
-                        renderer = api.TessUnlvRendererCreate(outputbase);
+                        renderer = api.TessUnlvRendererCreate();
                     } else {
-                        api.TessResultRendererInsert(renderer, api.TessUnlvRendererCreate(outputbase));
+                        api.TessResultRendererInsert(renderer, api.TessUnlvRendererCreate());
                     }
                     break;
             }
@@ -460,8 +462,8 @@ public class Tesseract implements ITesseract {
                         filename = workingTiffFile.getPath();
                     }
 
-                    TessResultRenderer renderer = createRenderers(outputbases[i], formats);
-                    createDocuments(filename, renderer);
+                    TessResultRenderer renderer = createRenderers(formats);
+                    createDocuments(filename, outputbases[i], renderer);
                 } catch (Exception e) {
                     // skip the problematic image file
                     logger.log(Level.SEVERE, e.getMessage(), e);
@@ -483,12 +485,55 @@ public class Tesseract implements ITesseract {
      * @param renderer renderer
      * @throws TesseractException
      */
-    private void createDocuments(String filename, TessResultRenderer renderer) throws TesseractException {
-        int result = api.TessBaseAPIProcessPages(handle, filename, null, 0, renderer);
+    private void createDocuments(String filename, String outputbase, TessResultRenderer renderer) throws TesseractException {
+        Map<String, byte[]> map = getRendererOutput(filename, renderer);
 
-        if (result != ITessAPI.TRUE) {
-            throw new TesseractException("Error during processing.");
+        for (Map.Entry<String, byte[]> entry : map.entrySet()) {
+            String key = entry.getKey();
+            byte[] value = entry.getValue();
+
+            try {
+                File file = new File(outputbase + "." + key);
+                Utils.writeFile(value, file);
+            } catch (IOException e) {
+                logger.log(Level.SEVERE, e.getMessage(), e);
+            }
         }
+    }
+
+    /**
+     * Gets renderer output in form of byte arrays.
+     *
+     * @param imageFilename input image
+     * @param formats types of renderers
+     * @return output byte arrays
+     * @throws TesseractException
+     */
+    Map<String, byte[]> getRendererOutput(String imageFilename, TessResultRenderer renderer) throws TesseractException {
+        int result = api.TessBaseAPIProcessPages1(handle, imageFilename, null, 0, renderer);
+
+        if (result == ITessAPI.FALSE) {
+            throw new TesseractException("Error during processing page.");
+        }
+        Map<String, byte[]> map = new HashMap<String, byte[]>();
+
+        for (; renderer != null; renderer = api.TessResultRendererNext(renderer)) {
+            String ext = api.TessResultRendererExtention(renderer).getString(0);
+
+            PointerByReference data = new PointerByReference();
+            IntByReference dataLength = new IntByReference();
+
+            result = api.TessResultRendererGetOutput(renderer, data, dataLength);
+            if (result == ITessAPI.TRUE) {
+                int length = dataLength.getValue();
+                byte[] bytes = data.getValue().getByteArray(0, length);
+                map.put(ext, bytes);
+            }
+        }
+
+        api.TessDeleteResultRenderer(renderer);
+
+        return map;
     }
 
     /**

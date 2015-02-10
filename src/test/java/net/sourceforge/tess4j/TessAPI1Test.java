@@ -18,7 +18,6 @@ package net.sourceforge.tess4j;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -46,11 +45,15 @@ import org.junit.Test;
 
 import com.sun.jna.Pointer;
 import com.sun.jna.StringArray;
+import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import net.sourceforge.tess4j.ITessAPI.*;
 import static net.sourceforge.tess4j.ITessAPI.FALSE;
 import static net.sourceforge.tess4j.ITessAPI.TRUE;
+import static org.junit.Assert.assertTrue;
 
 public class TessAPI1Test {
 
@@ -386,14 +389,37 @@ public class TessAPI1Test {
     @Test
     public void testTessBaseAPIProcessPages() {
         System.out.println("TessBaseAPIProcessPages");
+        String expResult = expOCRResult;
         String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
         String retry_config = null;
         int timeout_millisec = 0;
-        String outputbase = "target/test-classes/test-results/eurotext1";
-        TessResultRenderer renderer = TessAPI1.TessTextRendererCreate(outputbase);
         TessAPI1.TessBaseAPIInit3(handle, datapath, language);
-        int rc = TessAPI1.TessBaseAPIProcessPages(handle, filename, retry_config, timeout_millisec, renderer);
-        assertEquals(TessAPI1.TRUE, rc);
+        Pointer utf8Text = TessAPI1.TessBaseAPIProcessPages(handle, filename, retry_config, timeout_millisec);
+        String result = utf8Text.getString(0);
+        TessAPI1.TessDeleteText(utf8Text);
+        assertTrue(result.startsWith(expResult));
+    }
+    
+    /**
+     * Test of TessBaseAPIProcessPages1 method, of class TessAPI.
+     */
+    @Test
+    public void testTessBaseAPIProcessPages1() {
+        System.out.println("TessBaseAPIProcessPages1");
+        String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
+        String retry_config = null;
+        int timeout_millisec = 0;
+        TessResultRenderer renderer = TessAPI1.TessTextRendererCreate();
+        TessAPI1.TessBaseAPIInit3(handle, datapath, language);
+        String expResult = expOCRResult;
+        TessAPI1.TessBaseAPIProcessPages1(handle, filename, retry_config, timeout_millisec, renderer);
+        PointerByReference data = new PointerByReference();
+        IntByReference dataLength = new IntByReference();
+        TessAPI1.TessResultRendererGetOutput(renderer, data, dataLength);
+        int length = dataLength.getValue();
+        String result = data.getValue().getString(0);
+        assertTrue(result.startsWith(expResult));
+//        api.TessDeleteResultRenderer(renderer);
     }
 
     /**
@@ -538,60 +564,6 @@ public class TessAPI1Test {
     }
 
     /**
-     * Test of ChoiceIterator.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testChoiceIterator() throws Exception {
-        System.out.println("TessResultIteratorGetChoiceIterator");
-        String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
-        File tiff = new File(filename);
-        BufferedImage image = ImageIO.read(new FileInputStream(tiff)); // require jai-imageio lib to read TIFF
-        ByteBuffer buf = ImageIOHelper.convertImageData(image);
-        int bpp = image.getColorModel().getPixelSize();
-        int bytespp = bpp / 8;
-        int bytespl = (int) Math.ceil(image.getWidth() * bpp / 8.0);
-        TessAPI1.TessBaseAPIInit3(handle, datapath, language);
-        TessAPI1.TessBaseAPISetImage(handle, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
-        TessAPI1.TessBaseAPISetVariable(handle, "save_blob_choices", "T");
-        TessAPI1.TessBaseAPISetRectangle(handle, 37, 228, 548, 31);
-        ETEXT_DESC monitor = new ETEXT_DESC();
-        ProgressMonitor pmo = new ProgressMonitor(monitor);
-        pmo.start();
-        TessAPI1.TessBaseAPIRecognize(handle, monitor);
-        System.out.println("Message: " + pmo.getMessage());
-        TessResultIterator ri = TessAPI1.TessBaseAPIGetIterator(handle);
-        int level = TessPageIteratorLevel.RIL_SYMBOL;
-
-        if (ri != null) {
-            do {
-                Pointer symbol = TessAPI1.TessResultIteratorGetUTF8Text(ri, level);
-                float conf = TessAPI1.TessResultIteratorConfidence(ri, level);
-                if (symbol != null) {
-                    System.out.println(String.format("symbol %s, conf: %f", symbol.getString(0), conf));
-                    boolean indent = false;
-                    TessChoiceIterator ci = TessAPI1.TessResultIteratorGetChoiceIterator(ri);
-                    do {
-                        if (indent) {
-                            System.out.print("\t");
-                        }
-                        System.out.print("\t- ");
-                        String choice = TessAPI1.TessChoiceIteratorGetUTF8Text(ci);
-                        System.out.println(String.format("%s conf: %f", choice, TessAPI1.TessChoiceIteratorConfidence(ci)));
-                        indent = true;
-                    } while (TessAPI1.TessChoiceIteratorNext(ci) == TRUE);
-                    TessAPI1.TessChoiceIteratorDelete(ci);
-                }
-                System.out.println("---------------------------------------------");
-                TessAPI1.TessDeleteText(symbol);
-            } while (TessAPI1.TessResultIteratorNext(ri, level) == TRUE);
-        }
-
-        assertTrue(true);
-    }
-
-    /**
      * Test of ResultRenderer method, of class TessAPI1.
      *
      * @throws java.lang.Exception
@@ -626,15 +598,15 @@ public class TessAPI1Test {
         }
 
         String outputbase = "target/test-classes/test-results/outputbase1";
-        TessResultRenderer renderer = TessAPI1.TessHOcrRendererCreate(outputbase);
-        TessAPI1.TessResultRendererInsert(renderer, TessAPI1.TessBoxTextRendererCreate(outputbase));
-        TessAPI1.TessResultRendererInsert(renderer, TessAPI1.TessTextRendererCreate(outputbase));
+        TessResultRenderer renderer = TessAPI1.TessHOcrRendererCreate();
+        TessAPI1.TessResultRendererInsert(renderer, TessAPI1.TessBoxTextRendererCreate());
+        TessAPI1.TessResultRendererInsert(renderer, TessAPI1.TessTextRendererCreate());
         String dataPath = TessAPI1.TessBaseAPIGetDatapath(handle);
-        TessAPI1.TessResultRendererInsert(renderer, TessAPI1.TessPDFRendererCreate(outputbase, dataPath));
+        TessAPI1.TessResultRendererInsert(renderer, TessAPI1.TessPDFRendererCreate(dataPath));
 
-        int result = TessAPI1.TessBaseAPIProcessPages(handle, image, null, 0, renderer);
+        int result = TessAPI1.TessBaseAPIProcessPages1(handle, image, null, 0, renderer);
 
-        if (result != TRUE) {
+        if (result == FALSE) {
             System.err.println("Error during processing.");
             return;
         }
@@ -646,6 +618,32 @@ public class TessAPI1Test {
                     TessAPI1.TessResultRendererTitle(renderer).getString(0),
                     TessAPI1.TessResultRendererImageNum(renderer)));
 
+            PointerByReference data = new PointerByReference();
+            IntByReference dataLength = new IntByReference();
+            result = TessAPI1.TessResultRendererGetOutput(renderer, data, dataLength);
+            if (result == TRUE) {
+                if (ext.equals("pdf")) {
+                    int length = dataLength.getValue();
+                    byte[] bytes = data.getValue().getByteArray(0, length);
+                    try {
+                        File file = new File(outputbase + "." + ext);
+
+                        // if file not exists, create it
+                        if (!file.exists()) {
+                            file.createNewFile();
+                        }
+
+                        FileOutputStream bw = new FileOutputStream(file.getAbsoluteFile());
+                        bw.write(bytes);
+                        bw.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    String result1 = data.getValue().getString(0);
+                    System.out.println(result1);
+                }
+            }
         }
 
         TessAPI1.TessDeleteResultRenderer(renderer);
