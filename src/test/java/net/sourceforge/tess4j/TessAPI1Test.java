@@ -292,8 +292,21 @@ public class TessAPI1Test {
         int oem = TessOcrEngineMode.OEM_DEFAULT;
         PointerByReference configs = null;
         int configs_size = 0;
+        // disable loading dictionaries
+        String[] args = new String[]{"load_system_dawg", "load_freq_dawg"};
+        StringArray sarray = new StringArray(args);
+        PointerByReference vars_vec = new PointerByReference();
+        vars_vec.setPointer(sarray);
+
+        args = new String[]{"F", "F"};
+        sarray = new StringArray(args);
+        PointerByReference vars_values = new PointerByReference();
+        vars_values.setPointer(sarray);
+
+        NativeSize vars_vec_size = new NativeSize(args.length);
+
         int expResult = 0;
-        int result = TessAPI1.TessBaseAPIInit4(handle, datapath, language, oem, configs, configs_size, null, null, new NativeSize(), FALSE);
+        int result = TessAPI1.TessBaseAPIInit4(handle, datapath, language, oem, configs, configs_size, vars_vec, vars_values, vars_vec_size, FALSE);
         assertEquals(expResult, result);
     }
 
@@ -574,7 +587,7 @@ public class TessAPI1Test {
         String image = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
         String output = "capi-test.txt";
         int set_only_init_params = TessAPI.FALSE;
-        int oem = TessAPI.TessOcrEngineMode.OEM_DEFAULT;
+        int oem = TessOcrEngineMode.OEM_DEFAULT;
         PointerByReference configs = null;
         int configs_size = 0;
 
@@ -606,10 +619,10 @@ public class TessAPI1Test {
 
         int result = TessAPI1.TessBaseAPIProcessPages1(handle, image, null, 0, renderer);
 
-        if (result == FALSE) {
-            System.err.println("Error during processing.");
-            return;
-        }
+//        if (result == FALSE) {
+//            System.err.println("Error during processing.");
+//            return;
+//        }
 
         for (; renderer != null; renderer = TessAPI1.TessResultRendererNext(renderer)) {
             String ext = TessAPI1.TessResultRendererExtention(renderer).getString(0);
