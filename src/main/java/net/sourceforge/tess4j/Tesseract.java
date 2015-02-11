@@ -421,11 +421,11 @@ public class Tesseract implements ITesseract {
     }
 
     /**
-     * Creates documents for given renderers.
+     * Creates documents for given renderer.
      *
      * @param filename input image
      * @param outputbase output filename without extension
-     * @param formats types of renderers
+     * @param formats types of renderer
      * @throws TesseractException
      */
     @Override
@@ -438,7 +438,7 @@ public class Tesseract implements ITesseract {
      *
      * @param filenames array of input files
      * @param outputbases array of output filenames without extension
-     * @param formats types of renderers
+     * @param formats types of renderer
      * @throws TesseractException
      */
     @Override
@@ -482,6 +482,7 @@ public class Tesseract implements ITesseract {
      * Creates documents.
      *
      * @param filename input file
+     * @param outputbase output filename without extension
      * @param renderer renderer
      * @throws TesseractException
      */
@@ -500,8 +501,8 @@ public class Tesseract implements ITesseract {
     /**
      * Writes renderer output to files.
      *
-     * @param outputbase
-     * @param renderer
+     * @param outputbase output filename without extension
+     * @param renderer renderer
      * @throws TesseractException
      */
     void writeToFiles(String outputbase, TessResultRenderer renderer) throws TesseractException {
@@ -523,8 +524,7 @@ public class Tesseract implements ITesseract {
     /**
      * Gets renderer output in form of byte arrays.
      *
-     * @param imageFilename input image
-     * @param formats types of renderer
+     * @param renderer renderer
      * @return output byte arrays
      * @throws TesseractException
      */

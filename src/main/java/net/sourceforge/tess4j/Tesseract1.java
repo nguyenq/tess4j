@@ -403,16 +403,17 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     }
 
     /**
-     * Creates documents for given renderers.
+     * Creates documents for given renderer.
      *
      * @param filename input image
      * @param outputbase output filename without extension
-     * @param formats types of renders
-     * @throws TesseractException     
+     * @param formats types of renderer
+     * @throws TesseractException
      */
     @Override
     public void createDocuments(String filename, String outputbase, List<RenderedFormat> formats) throws TesseractException {
         createDocuments(new String[]{filename}, new String[]{outputbase}, formats);
+
     }
 
     /**
@@ -420,7 +421,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
      *
      * @param filenames array of input files
      * @param outputbases array of output filenames without extension
-     * @param formats types of renderers
+     * @param formats types of renderer
      * @throws TesseractException
      */
     @Override
@@ -464,6 +465,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
      * Creates documents.
      *
      * @param filename input file
+     * @param outputbase output filename without extension
      * @param renderer renderer
      * @throws TesseractException
      */
@@ -482,8 +484,8 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     /**
      * Writes renderer output to files.
      *
-     * @param outputbase
-     * @param renderer
+     * @param outputbase output filename without extension
+     * @param renderer renderer
      * @throws TesseractException
      */
     void writeToFiles(String outputbase, TessResultRenderer renderer) throws TesseractException {
@@ -505,8 +507,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     /**
      * Gets renderer output in form of byte arrays.
      *
-     * @param imageFilename input image
-     * @param formats types of renderer
+     * @param renderer renderer
      * @return output byte arrays
      * @throws TesseractException
      */
