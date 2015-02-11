@@ -426,10 +426,12 @@ public class TessAPITest {
         String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
         String retry_config = null;
         int timeout_millisec = 0;
-        TessResultRenderer renderer = api.TessTextRendererCreate();
         api.TessBaseAPIInit3(handle, datapath, language);
         String expResult = expOCRResult;
+        TessResultRenderer renderer = api.TessTextRendererCreate();
+        api.TessResultRendererBeginDocument(renderer, filename);
         api.TessBaseAPIProcessPages1(handle, filename, retry_config, timeout_millisec, renderer);
+        api.TessResultRendererEndDocument(renderer);
         PointerByReference data = new PointerByReference();
         IntByReference dataLength = new IntByReference();
         api.TessResultRendererGetOutput(renderer, data, dataLength);
@@ -620,8 +622,9 @@ public class TessAPITest {
         api.TessResultRendererInsert(renderer, api.TessTextRendererCreate());
         String dataPath = api.TessBaseAPIGetDatapath(handle);
         api.TessResultRendererInsert(renderer, api.TessPDFRendererCreate(dataPath));
-
+        api.TessResultRendererBeginDocument(renderer, image);
         int result = api.TessBaseAPIProcessPages1(handle, image, null, 0, renderer);
+        api.TessResultRendererEndDocument(renderer);
 
         if (result == FALSE) {
             System.err.println("Error during processing.");

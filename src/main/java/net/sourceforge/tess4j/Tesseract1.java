@@ -408,6 +408,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
      * @param filename input image
      * @param outputbase output filename without extension
      * @param formats types of renders
+     * @throws TesseractException     
      */
     @Override
     public void createDocuments(String filename, String outputbase, List<RenderedFormat> formats) throws TesseractException {
@@ -467,7 +468,26 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
      * @throws TesseractException
      */
     private void createDocuments(String filename, String outputbase, TessResultRenderer renderer) throws TesseractException {
-        Map<String, byte[]> map = getRendererOutput(filename, renderer);
+        TessResultRendererBeginDocument(renderer, filename);
+        int result = TessBaseAPIProcessPages1(handle, filename, null, 0, renderer);
+        TessResultRendererEndDocument(renderer);
+
+//        if (result == ITessAPI.FALSE) {
+//            throw new TesseractException("Error during processing page.");
+//        }
+
+        writeToFiles(outputbase, renderer);
+    }
+
+    /**
+     * Writes renderer output to files.
+     *
+     * @param outputbase
+     * @param renderer
+     * @throws TesseractException
+     */
+    void writeToFiles(String outputbase, TessResultRenderer renderer) throws TesseractException {
+        Map<String, byte[]> map = getRendererOutput(renderer);
 
         for (Map.Entry<String, byte[]> entry : map.entrySet()) {
             String key = entry.getKey();
@@ -486,16 +506,11 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
      * Gets renderer output in form of byte arrays.
      *
      * @param imageFilename input image
-     * @param formats types of renderers
+     * @param formats types of renderer
      * @return output byte arrays
      * @throws TesseractException
      */
-    Map<String, byte[]> getRendererOutput(String imageFilename, TessResultRenderer renderer) throws TesseractException {
-        int result = TessBaseAPIProcessPages1(handle, imageFilename, null, 0, renderer);
-
-//        if (result == ITessAPI.FALSE) {
-//            throw new TesseractException("Error during processing page.");
-//        }
+    Map<String, byte[]> getRendererOutput(TessResultRenderer renderer) throws TesseractException {
         Map<String, byte[]> map = new HashMap<String, byte[]>();
 
         for (; renderer != null; renderer = TessResultRendererNext(renderer)) {
@@ -504,15 +519,13 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
             PointerByReference data = new PointerByReference();
             IntByReference dataLength = new IntByReference();
 
-            result = TessResultRendererGetOutput(renderer, data, dataLength);
+            int result = TessResultRendererGetOutput(renderer, data, dataLength);
             if (result == ITessAPI.TRUE) {
                 int length = dataLength.getValue();
                 byte[] bytes = data.getValue().getByteArray(0, length);
                 map.put(ext, bytes);
             }
         }
-
-        TessDeleteResultRenderer(renderer);
 
         return map;
     }
