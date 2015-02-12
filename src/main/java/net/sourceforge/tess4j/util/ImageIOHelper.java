@@ -346,7 +346,7 @@ public class ImageIOHelper {
             String imageFormat = imageFileName.substring(imageFileName.lastIndexOf('.') + 1);
             if (imageFormat.matches("(pbm|pgm|ppm)")) {
                 imageFormat = "pnm";
-            } else if (imageFormat.equals("jp2")) {
+            } else if (imageFormat.matches("(jp2|j2k|jpf|jpx|jpm)")) {
                 imageFormat = "jpeg2000";
             }
             Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName(imageFormat);
