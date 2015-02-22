@@ -32,7 +32,7 @@ import org.ghost4j.GhostscriptException;
 public class PdfUtilities {
 
     public static final String GS_INSTALL = "\nPlease download, install GPL Ghostscript from http://sourceforge.net/projects/ghostscript/files\nand/or set the appropriate environment variable.";
-
+    
     private final static Logger logger = Logger.getLogger(PdfUtilities.class.getName());
 
     /**
@@ -171,6 +171,8 @@ public class PdfUtilities {
         }
     }
 
+    private static final String PS_FILE = "lib/pdfpagecount.ps";
+        
     /**
      * Gets PDF Page Count.
      *
@@ -190,7 +192,8 @@ public class PdfUtilities {
         gsArgs.add("-dQUIET");
         gsArgs.add("-dBATCH");
         gsArgs.add("-sPDFname=" + inputPdfFile);
-        gsArgs.add("src/main/resources/pdfpagecount.ps");
+        String postscript = PdfUtilities.class.getProtectionDomain().getCodeSource().getLocation().getPath() + PS_FILE;
+        gsArgs.add(new File(postscript).getPath());
 
         int pageCount = 0;
         ByteArrayOutputStream os;

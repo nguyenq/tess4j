@@ -1,0 +1,23 @@
+% pdfpagecount.ps
+% read pdf file and output number of pages
+% based on pdf2dsc.ps with one line taken from ps2ascii.ps
+/PDFfile PDFname (r) file def
+
+/PageCountString 255 string
+
+def
+systemdict /.setsafe known { .setsafe } if
+/.show.stdout { (%stdout) (w) file } bind def
+/puts { .show.stdout exch writestring } bind def
+GS_PDF_ProcSet begin
+pdfdict begin
+PDFfile
+pdfopen begin
+/FirstPage where { pop } { /FirstPage 1 def } ifelse
+/LastPage where { pop } { /LastPage pdfpagecount def } ifelse
+(%%Pages: ) puts
+LastPage FirstPage sub 1 add
+
+PageCountString cvs puts
+
+quit
