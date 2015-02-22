@@ -46,8 +46,11 @@ public class LoadLibs {
 
     private static final String JNA_LIBRARY_PATH = "jna.library.path";
     public static final String TESS4J_TEMP_DIR = new File(System.getProperty("java.io.tmpdir"), "tess4j").getPath();
+    private static File targetTempFolder = null;
 
-    /**
+    
+
+	/**
      * Native library name.
      */
     public static final String LIB_NAME = "libtesseract303";
@@ -57,7 +60,7 @@ public class LoadLibs {
 
     static {
         System.setProperty("jna.encoding", "UTF8");
-        File targetTempFolder = extractTessResources(Platform.RESOURCE_PREFIX);
+        targetTempFolder = extractTessResources(Platform.RESOURCE_PREFIX);
         if (targetTempFolder != null && targetTempFolder.exists()) {
             String userCustomizedPath = System.getProperty(JNA_LIBRARY_PATH);
             if (null == userCustomizedPath || userCustomizedPath.isEmpty()) {
@@ -95,10 +98,10 @@ public class LoadLibs {
      * @return target location
      */
     public static File extractTessResources(String dirname) {
-        File targetTempDir = null;
+        
 
         try {
-            targetTempDir = new File(TESS4J_TEMP_DIR, dirname);
+        	targetTempFolder = new File(TESS4J_TEMP_DIR, dirname);
 
             URL tessResourceUrl = LoadLibs.class.getResource(dirname.startsWith("/") ? dirname : "/" + dirname);
             if (tessResourceUrl == null) {
@@ -111,15 +114,21 @@ public class LoadLibs {
              * Either load from resources from jar or project resource folder.
              */
             if (urlConnection instanceof JarURLConnection) {
-                copyJarResourceToDirectory((JarURLConnection) urlConnection, targetTempDir);
+                copyJarResourceToDirectory((JarURLConnection) urlConnection, targetTempFolder);
             } else {
-                FileUtils.copyDirectory(new File(tessResourceUrl.getPath()), targetTempDir);
+                File tmp = new File(tessResourceUrl.getPath());
+                if(tmp.isDirectory()) {
+                	FileUtils.copyDirectory(tmp, targetTempFolder);
+                }else {
+                	FileUtils.copyFile(tmp, targetTempFolder);
+                }
+                
             }
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
         }
 
-        return targetTempDir;
+        return targetTempFolder;
     }
 
     /**
@@ -132,7 +141,7 @@ public class LoadLibs {
     static void copyJarResourceToDirectory(JarURLConnection jarConnection, File destDir) {
         try {
             JarFile jarFile = jarConnection.getJarFile();
-            String jarConnectionEntryName = jarConnection.getEntryName() + "/";
+            String jarConnectionEntryName = jarConnection.getEntryName();
 
             /**
              * Iterate all entries in the jar file.
@@ -164,4 +173,13 @@ public class LoadLibs {
             logger.log(Level.SEVERE, e.getMessage(), e);
         }
     }
+    
+    /**
+     * 
+     * @return The name of the tess4j target temporary working folder, where
+     * the resource files are getting extracted to.
+     */
+    public static File getTargetTempFolder() {
+		return targetTempFolder;
+	}
 }

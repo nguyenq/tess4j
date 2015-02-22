@@ -180,6 +180,7 @@ public class PdfUtilities {
     public static int getPdfPageCount(String inputPdfFile) {
         //get Ghostscript instance
         Ghostscript gs = Ghostscript.getInstance();
+        String pdfPageCountFilePath = LoadLibs.extractTessResources("pdfpagecount.ps").getAbsolutePath();
 
         //prepare Ghostscript interpreter parameters
         //refer to Ghostscript documentation for parameter usage
@@ -190,7 +191,7 @@ public class PdfUtilities {
         gsArgs.add("-dQUIET");
         gsArgs.add("-dBATCH");
         gsArgs.add("-sPDFname=" + inputPdfFile);
-        gsArgs.add("src/main/resources/pdfpagecount.ps");
+		gsArgs.add(pdfPageCountFilePath);
 
         int pageCount = 0;
         ByteArrayOutputStream os;
