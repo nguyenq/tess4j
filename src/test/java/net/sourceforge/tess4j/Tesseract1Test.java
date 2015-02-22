@@ -51,10 +51,12 @@ public class Tesseract1Test {
     static final double MINIMUM_DESKEW_THRESHOLD = 0.05d;
     Tesseract1 instance;
 
-    private final String datapath = "src/main/resources";
-    private final String testResourcesDataPath = "src/test/resources/test-data";
+    private final String datapath;
+    private final String testResourcesDataPath;
 
     public Tesseract1Test() {
+        datapath = new File(Tesseract.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getPath();
+        testResourcesDataPath = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), "test-data").getPath();
     }
 
     @BeforeClass
@@ -68,7 +70,7 @@ public class Tesseract1Test {
     @Before
     public void setUp() {
         instance = new Tesseract1();
-        instance.setDatapath(datapath);
+        instance.setDatapath(new File(datapath).getPath());
     }
 
     @After
@@ -83,8 +85,7 @@ public class Tesseract1Test {
     @Test
     public void testDoOCR_File() throws Exception {
         System.out.println("doOCR on a PNG image");
-        String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.png");
-        File imageFile = new File(filename);
+        File imageFile = new File(this.testResourcesDataPath, "eurotext.png");
         String expResult = "The (quick) [brown] {fox} jumps!\nOver the $43,456.78 <lazy> #90 dog";
         String result = instance.doOCR(imageFile);
         System.out.println(result);
@@ -93,13 +94,13 @@ public class Tesseract1Test {
 
     /**
      * Test of doOCR method, of class Tesseract.
+     *
      * @throws java.lang.Exception
      */
     @Test
     public void testDoOCR_File_With_Configs() throws Exception {
         System.out.println("doOCR with configs");
-        String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.png");
-        File imageFile = new File(filename);
+        File imageFile = new File(this.testResourcesDataPath, "eurotext.png");
         String expResult = "[-0123456789.\n ]+";
         List<String> configs = Arrays.asList("digits");
         instance.setConfigs(configs);
@@ -116,8 +117,7 @@ public class Tesseract1Test {
     @Test
     public void testDoOCR_File_Rectangle() throws Exception {
         System.out.println("doOCR on a BMP image with bounding rectangle");
-        String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.bmp");
-        File imageFile = new File(filename);
+        File imageFile = new File(this.testResourcesDataPath, "eurotext.bmp");
         Rectangle rect = new Rectangle(0, 0, 1024, 800); // define an equal or smaller region of interest on the image
         String expResult = "The (quick) [brown] {fox} jumps!\nOver the $43,456.78 <lazy> #90 dog";
         String result = instance.doOCR(imageFile, rect);
@@ -133,8 +133,7 @@ public class Tesseract1Test {
     @Test
     public void testDoOCR_List_Rectangle() throws Exception {
         System.out.println("doOCR on a PDF document");
-        String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.pdf");
-        File imageFile = new File(filename);
+        File imageFile = new File(this.testResourcesDataPath, "eurotext.pdf");
         List<IIOImage> imageList = ImageIOHelper.getIIOImageList(imageFile);
         String expResult = "The (quick) [brown] {fox} jumps!\nOver the $43,456.78 <lazy> #90 dog";
         String result = instance.doOCR(imageList, null);
@@ -150,8 +149,7 @@ public class Tesseract1Test {
     @Test
     public void testDoOCR_BufferedImage() throws Exception {
         System.out.println("doOCR on a buffered image of a GIF");
-        String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.gif");
-        File imageFile = new File(filename);
+        File imageFile = new File(this.testResourcesDataPath, "eurotext.gif");
         BufferedImage bi = ImageIO.read(imageFile);
         String expResult = "The (quick) [brown] {fox} jumps!\nOver the $43,456.78 <lazy> #90 dog";
         String result = instance.doOCR(bi);
@@ -167,8 +165,7 @@ public class Tesseract1Test {
     @Test
     public void testDoOCR_SkewedImage() throws Exception {
         System.out.println("doOCR on a skewed PNG image");
-        String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext_deskew.png");
-        File imageFile = new File(filename);
+        File imageFile = new File(this.testResourcesDataPath, "eurotext_deskew.png");
         BufferedImage bi = ImageIO.read(imageFile);
         ImageDeskew id = new ImageDeskew(bi);
         double imageSkewAngle = id.getSkewAngle(); // determine skew angle
@@ -184,17 +181,18 @@ public class Tesseract1Test {
 
     /**
      * Test of createDocuments method, of class Tesseract.
+     *
      * @throws java.lang.Exception
      */
     @Test
     public void testCreateDocuments() throws Exception {
         System.out.println("createDocuments for an image");
-        String imageFilename1 = String.format("%s/%s", this.testResourcesDataPath, "eurotext.pdf");
-        String imageFilename2 = String.format("%s/%s", this.testResourcesDataPath, "eurotext.png");
+        File imageFile1 = new File(this.testResourcesDataPath, "eurotext.pdf");
+        File imageFile2 = new File(this.testResourcesDataPath, "eurotext.png");
         String outputbase1 = "target/test-classes/test-results/docrenderer1-1";
         String outputbase2 = "target/test-classes/test-results/docrenderer1-2";
         List<RenderedFormat> formats = new ArrayList<RenderedFormat>(Arrays.asList(RenderedFormat.HOCR, RenderedFormat.PDF, RenderedFormat.TEXT));
-        instance.createDocuments(new String[]{imageFilename1, imageFilename2}, new String[]{outputbase1, outputbase2}, formats);
+        instance.createDocuments(new String[]{imageFile1.getPath(), imageFile2.getPath()}, new String[]{outputbase1, outputbase2}, formats);
         assertTrue(new File(outputbase1 + ".pdf").exists());
     }
 
@@ -206,14 +204,13 @@ public class Tesseract1Test {
     @Test
     public void testExtendingTesseract1() throws Exception {
         System.out.println("Extends Tesseract1");
-        String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
-        File imageFile = new File(filename);
+        File imageFile = new File(this.testResourcesDataPath, "eurotext.tif");
 
         String expResult = "The (quick) [brown] {fox} jumps!\nOver the $43,456.78 <lazy> #90 dog";
         String[] expResults = expResult.split("\\s");
 
         Tess1Extension instance1 = new Tess1Extension();
-        instance1.setDatapath(this.datapath);
+        instance1.setDatapath(new File(datapath).getPath());
         int pageIteratorLevel = TessPageIteratorLevel.RIL_WORD;
         System.out.println("PageIteratorLevel: "
                 + Utils.getConstantName(pageIteratorLevel, TessPageIteratorLevel.class));
