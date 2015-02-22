@@ -108,7 +108,7 @@ public class LoadLibs {
             URLConnection urlConnection = tessResourceUrl.openConnection();
 
             /**
-             * Either load from resources from jar or project resource folder.
+             * Copy resources either from inside jar or from project folder.
              */
             if (urlConnection instanceof JarURLConnection) {
                 copyJarResourceToDirectory((JarURLConnection) urlConnection, targetTempDir);
