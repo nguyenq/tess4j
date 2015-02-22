@@ -192,8 +192,8 @@ public class PdfUtilities {
         gsArgs.add("-dQUIET");
         gsArgs.add("-dBATCH");
         gsArgs.add("-sPDFname=" + inputPdfFile);
-        String postscript = PdfUtilities.class.getProtectionDomain().getCodeSource().getLocation().getPath() + PS_FILE;
-        gsArgs.add(new File(postscript).getPath());
+        String pdfPageCountFilePath = LoadLibs.extractTessResources(PS_FILE).getPath();
+        gsArgs.add(pdfPageCountFilePath);
 
         int pageCount = 0;
         ByteArrayOutputStream os;
