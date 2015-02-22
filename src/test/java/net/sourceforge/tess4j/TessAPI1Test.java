@@ -17,7 +17,6 @@ package net.sourceforge.tess4j;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -57,12 +56,17 @@ import static org.junit.Assert.assertTrue;
 
 public class TessAPI1Test {
 
-    private final String datapath = "src/main/resources";
-    private final String testResourcesDataPath = "src/test/resources/test-data";
+    private final String datapath;
+    private final String testResourcesDataPath;
     String language = "eng";
     String expOCRResult = "The (quick) [brown] {fox} jumps!\nOver the $43,456.78 <lazy> #90 dog";
 
     TessBaseAPI handle;
+
+    public TessAPI1Test() {
+        datapath = new File(Tesseract.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getPath();
+        testResourcesDataPath = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), "test-data").getPath();
+    }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -91,8 +95,7 @@ public class TessAPI1Test {
     public void testTessBaseAPIRect() throws Exception {
         System.out.println("TessBaseAPIRect");
         String expResult = expOCRResult;
-        String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
-        File tiff = new File(filename);
+        File tiff = new File(this.testResourcesDataPath, "eurotext.tif");
         BufferedImage image = ImageIO.read(tiff); // require jai-imageio lib to read TIFF
         ByteBuffer buf = ImageIOHelper.convertImageData(image);
         int bpp = image.getColorModel().getPixelSize();
@@ -116,8 +119,7 @@ public class TessAPI1Test {
     public void testTessBaseAPIGetUTF8Text() throws Exception {
         System.out.println("TessBaseAPIGetUTF8Text");
         String expResult = expOCRResult;
-        String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
-        File tiff = new File(filename);
+        File tiff = new File(this.testResourcesDataPath, "eurotext.tif");
         BufferedImage image = ImageIO.read(new FileInputStream(tiff)); // require jai-imageio lib to read TIFF
         ByteBuffer buf = ImageIOHelper.convertImageData(image);
         int bpp = image.getColorModel().getPixelSize();
@@ -144,26 +146,6 @@ public class TessAPI1Test {
         String result = TessAPI1.TessVersion();
         System.out.println(result);
         assertTrue(result.startsWith(expResult));
-    }
-
-    /**
-     * Test of TessBaseAPISetInputName method, of class TessAPI1.
-     */
-    @Test
-    public void testTessBaseAPISetInputName() {
-        System.out.println("TessBaseAPISetInputName");
-        String name = "eurotext.tif";
-        TessAPI1.TessBaseAPISetInputName(handle, name);
-    }
-
-    /**
-     * Test of TessBaseAPISetOutputName method, of class TessAPI1.
-     */
-    @Test
-    public void testTessBaseAPISetOutputName() {
-        System.out.println("TessBaseAPISetOutputName");
-        String name = "out";
-        TessAPI1.TessBaseAPISetOutputName(handle, name);
     }
 
     /**
@@ -353,7 +335,7 @@ public class TessAPI1Test {
         TessAPI1.TessDeleteText(utf8Text);
         assertTrue(result.startsWith(expResult));
     }
-    
+
     /**
      * Test of TessBaseAPIProcessPages1 method, of class TessAPI.
      */
@@ -386,8 +368,7 @@ public class TessAPI1Test {
     @Test
     public void testTessBaseAPIGetHOCRText() throws Exception {
         System.out.println("TessBaseAPIGetHOCRText");
-        String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
-        File tiff = new File(filename);
+        File tiff = new File(this.testResourcesDataPath, "eurotext.tif");
         BufferedImage image = ImageIO.read(new FileInputStream(tiff)); // require jai-imageio lib to read TIFF
         ByteBuffer buf = ImageIOHelper.convertImageData(image);
         int bpp = image.getColorModel().getPixelSize();
@@ -416,8 +397,7 @@ public class TessAPI1Test {
         IntBuffer direction = IntBuffer.allocate(1);
         IntBuffer order = IntBuffer.allocate(1);
         FloatBuffer deskew_angle = FloatBuffer.allocate(1);
-        String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
-        File tiff = new File(filename);
+        File tiff = new File(this.testResourcesDataPath, "eurotext.tif");
         BufferedImage image = ImageIO.read(new FileInputStream(tiff)); // require jai-imageio lib to read TIFF
         ByteBuffer buf = ImageIOHelper.convertImageData(image);
         int bpp = image.getColorModel().getPixelSize();
@@ -450,8 +430,7 @@ public class TessAPI1Test {
     @Test
     public void testResultIterator() throws Exception {
         System.out.println("TessBaseAPIGetIterator");
-        String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
-        File tiff = new File(filename);
+        File tiff = new File(this.testResourcesDataPath, "eurotext.tif");
         BufferedImage image = ImageIO.read(new FileInputStream(tiff)); // require jai-imageio lib to read TIFF
         ByteBuffer buf = ImageIOHelper.convertImageData(image);
         int bpp = image.getColorModel().getPixelSize();
@@ -605,23 +584,5 @@ public class TessAPI1Test {
 
         TessAPI1.TessDeleteResultRenderer(renderer);
         assertTrue(new File(outputbase + ".pdf").exists());
-    }
-
-    /**
-     * Test of TessBaseAPIClear method, of class TessAPI1.
-     */
-    @Test
-    public void testTessBaseAPIClear() {
-        System.out.println("TessBaseAPIClear");
-        TessAPI1.TessBaseAPIClear(handle);
-    }
-
-    /**
-     * Test of TessBaseAPIEnd method, of class TessAPI1.
-     */
-    @Test
-    public void testTessBaseAPIEnd() {
-        System.out.println("TessBaseAPIEnd");
-        TessAPI1.TessBaseAPIEnd(handle);
     }
 }
