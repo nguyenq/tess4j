@@ -470,6 +470,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
      * @throws TesseractException
      */
     private void createDocuments(String filename, String outputbase, TessResultRenderer renderer) throws TesseractException {
+        TessBaseAPISetInputName(handle, filename);
         TessResultRendererBeginDocument(renderer, filename);
         int result = TessBaseAPIProcessPages1(handle, filename, null, 0, renderer);
         TessResultRendererEndDocument(renderer);
