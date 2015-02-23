@@ -1,4 +1,4 @@
-<html>
+﻿<html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Tess4J - Java Wrapper for Tesseract OCR API</title>
@@ -11,7 +11,9 @@
             DESCRIPTION</h3>
         <p>
             Tess4J is a JNA wrapper for <a href="http://code.google.com/p/tesseract-ocr/">Tesseract
-                OCR API</a>; it provides character recognition support for common image formats, and multi-page images. The library has been developed and tested on Windows and Linux.</p>
+                OCR API</a>; it provides character recognition support for common image formats,
+            multi-page images, and PDF documents. The library has been developed and tested
+            on Windows and Linux.</p>
         <p>
             Tess4J is released and distributed under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">
                 Apache License, v2.0</a>. Its official homepage is at <a href="http://tess4j.sourceforge.net/">
@@ -19,33 +21,26 @@
         <h3>
             SOFTWARE REQUIREMENTS</h3>
         <p>
-            <a href="http://java.oracle.com/">Java Runtime Environment 6.0</a>, 
-            <a href="http://jna.java.net/">JNA</a>, and
-            <a href="http://jai-imageio.java.net/">JAI-ImageIO</a> are required. <a href="http://ant.apache.org/">Apache Ant</a> and <a href="http://www.junit.org/">
-                JUnit</a> are used for program building and unit testing.</p>
+            <a href="http://java.oracle.com/">Java Runtime Environment</a>, <a href="https://github.com/twall/jna">
+                JNA</a>, and <a href="https://java.net/projects/jai-imageio/">JAI-ImageIO</a>
+            are required. <a href="http://ant.apache.org/">Apache Ant</a> and <a href="http://www.junit.org/">
+                JUnit</a> are used for program building and unit testing. The Tesseract DLLs
+            were built with VS2013 and therefore depend on the <a href="http://www.microsoft.com/en-au/download/details.aspx?id=40784">
+                Visual C++ Redistributable Packages for VS2013</a>. <a href="http://www.ghostscript.com/">
+                    GPL Ghostscript</a> is required for PDF support.
+        </p>
         <h3>
             INSTRUCTIONS</h3>
         <p>
-            Tesseract and Leptonica 32- and 64-bit DLLs, language data for English, and sample images are bundled
-            with the library. <a href="http://code.google.com/p/tesseract-ocr/downloads/list">Language
-                data packs</a> for Tesseract should be decompressed and placed into the <code>tessdata</code>
-            folder.</p>
+            Tesseract 3.03RC, Leptonica 1.70, and Ghostscript 9.15 32- and 64-bit DLLs, language
+            data for English, and sample images are bundled with the library. <a href="http://code.google.com/p/tesseract-ocr/downloads/list">
+                Language data packs</a> for Tesseract should be decompressed and placed into
+            the <code>tessdata</code> folder.</p>
         <p>
-            The Linux shared object library (<code>libtesseract.so</code>) equivalent to the DLL is available in Tesseract 3.02, which can be built from the 
-            <a href="http://code.google.com/p/tesseract-ocr/source/checkout" target="_blank">source</a> with the instructions given in
-            <a href="http://code.google.com/p/tesseract-ocr/wiki/Compiling" target="_blank">
-            Tesseract Wiki</a>.</p>
-        <p>
-            PDF support is possible via <a href="http://sourceforge.net/projects/ghostscript/">GPL
-                Ghostscript</a>. After installation of GS, ensure its shared library
-            object (<code>gsdll32.dll</code> or <code>gsdll64.dll</code>) is in the search path by setting the appropriate environment
-            variable. On Windows, append the following to <code>Path</code> value (accessible through
-            Control Panel &gt; System &gt; Advanced &gt; Environment Variables) for GS version
-            9.14:</p>
-        <blockquote>
-            <p>
-                <code>;C:\Program Files\gs\gs9.14\bin</code></p>
-        </blockquote>
+            The Linux shared object library (<code>libtesseract.so</code>) for Tesseract 3.03RC
+            is available on Linux. It can also be built from the <a href="http://code.google.com/p/tesseract-ocr/source/checkout"
+                target="_blank">source</a> with the instructions given in <a href="http://code.google.com/p/tesseract-ocr/wiki/Compiling"
+                    target="_blank">Tesseract Wiki</a>.</p>
         <p>
             To unit test, at the command line, execute:</p>
         <blockquote>
@@ -69,10 +64,10 @@
         <h3>
             CODE EXAMPLES</h3>
         <p>
-            The following code example shows common usage of the library. Make sure <code>libtesseract302.dll</code>, <code>liblept168.dll</code>,
-            and <code>tessdata</code> folder are in the same directory and in the search 
-            path, and the <code>.jar</code> files
-            are in the classpath.</p>
+            The following code example shows common usage of the library. Make sure <code>tessdata</code>
+            folder is populated with appropriate language data files and the <code>.jar</code>
+            files are in the classpath. On Windows, the DLLs will be automatically extracted
+            from <code>tess4j.jar</code> to the default temporary directory and loaded.</p>
         <blockquote>
             <pre>
 package net.sourceforge.tess4j.example;

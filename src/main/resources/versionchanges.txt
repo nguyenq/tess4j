@@ -44,10 +44,14 @@ Version 1.3 (31 May 2014)
 - Refactoring
 - Bundle Tesseract and Leptonica 64-bit DLLs
 
-Version 1.4 (25 June 2014)
-- Make Maven-enabled
-- Additional documentation
+Version 1.4 (18 January 2015)
+- Refactor to reduce code duplication
+- Embed Windows native resources in JAR
+- Autoload Windows native libraries
 
-Version 2.0 Beta (20 December 2014)
-- Upgrade to Tesseract 3.03 DLL r1127
-- Refactoring; add new interface to eliminate code duplication
+Version 1.4.1 (24 January 2015)
+- Enable use of jna.library.path system property for user-customizable path
+
+Version 2.0 (22 February 2015)
+- Upgrade to Tesseract 3.03 (r1050), which is compatible with Tesseract 3.03RC on Linux
+- Include English language data for Tesseract 3.02
