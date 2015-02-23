@@ -23,7 +23,7 @@
         <p>
             <a href="http://java.oracle.com/">Java Runtime Environment</a>, <a href="https://github.com/twall/jna">
                 JNA</a>, and <a href="https://java.net/projects/jai-imageio/">JAI-ImageIO</a>
-            are required. <a href="http://ant.apache.org/">Apache Ant</a> and <a href="http://www.junit.org/">
+            are required. <a href="http://maven.apache.org/">Apache Maven</a> and <a href="http://www.junit.org/">
                 JUnit</a> are used for program building and unit testing. The Tesseract DLLs
             were built with VS2013 and therefore depend on the <a href="http://www.microsoft.com/en-au/download/details.aspx?id=40784">
                 Visual C++ Redistributable Packages for VS2013</a>. <a href="http://www.ghostscript.com/">
@@ -45,7 +45,7 @@
             To unit test, at the command line, execute:</p>
         <blockquote>
             <p>
-                <code>ant test</code></p>
+                <code>mvn test</code></p>
         </blockquote>
         <p>
             Images to be OCRed should be scanned at resolution from at least 200 DPI (dot per
@@ -81,6 +81,8 @@ public class TesseractExample {
         File imageFile = new File("eurotext.tif");
         Tesseract instance = Tesseract.getInstance(); // JNA Interface Mapping
         // Tesseract1 instance = new Tesseract1(); // JNA Direct Mapping
+        // File tessDataFolder = LoadLibs.extractTessResources("tessdata");
+        // instance.setDatapath(tessDataFolder.getAbsolutePath());
 
         try {
             String result = instance.doOCR(imageFile);
