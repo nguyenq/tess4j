@@ -52,13 +52,14 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     private String language = "eng";
     private String datapath = "./";
     private RenderedFormat renderedFormat = RenderedFormat.TEXT;
-    private int psm = TessPageSegMode.PSM_AUTO;
-    private int pageNum;
+    private int psm = -1;
     private int ocrEngineMode = TessOcrEngineMode.OEM_DEFAULT;
     private final Properties prop = new Properties();
     private final List<String> configList = new ArrayList<String>();
 
     private TessBaseAPI handle;
+
+    private int pageNum;
 
     private final static Logger logger = Logger.getLogger(Tesseract1.class.getName());
 
@@ -173,7 +174,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     @Override
     public String doOCR(File imageFile, Rectangle rect) throws TesseractException {
         try {
-            return doOCR(ImageIOHelper.getIIOImageList(imageFile), rect);
+            return doOCR(ImageIOHelper.getIIOImageList(imageFile), rect, imageFile.getPath());
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
             throw new TesseractException(e);
@@ -224,6 +225,22 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
      */
     @Override
     public String doOCR(List<IIOImage> imageList, Rectangle rect) throws TesseractException {
+        return doOCR(imageList, rect, null);
+    }
+
+    /**
+     * Performs OCR operation.
+     *
+     * @param imageList a list of <code>IIOImage</code> objects
+     * @param rect the bounding rectangle defines the region of the image to be
+     * recognized. A rectangle of zero dimension or <code>null</code> indicates
+     * the whole image.
+     * @param filename input file name
+     * @return the recognized text
+     * @throws TesseractException
+     */
+    @Override
+    public String doOCR(List<IIOImage> imageList, Rectangle rect, String filename) throws TesseractException {
         init();
         setTessVariables();
 
@@ -234,7 +251,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
                 pageNum++;
                 try {
                     setImage(oimage.getRenderedImage(), rect);
-                    sb.append(getOCRText());
+                    sb.append(getOCRText(filename));
                 } catch (IOException ioe) {
                     // skip the problematic image
                     logger.log(Level.SEVERE, ioe.getMessage(), ioe);
@@ -269,12 +286,35 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
      */
     @Override
     public String doOCR(int xsize, int ysize, ByteBuffer buf, Rectangle rect, int bpp) throws TesseractException {
+        return doOCR(xsize, ysize, buf, rect, bpp, null);
+    }
+
+    /**
+     * Performs OCR operation. Use <code>SetImage</code>, (optionally)
+     * <code>SetRectangle</code>, and one or more of the <code>Get*Text</code>
+     * functions.
+     *
+     * @param xsize width of image
+     * @param ysize height of image
+     * @param buf pixel data
+     * @param rect the bounding rectangle defines the region of the image to be
+     * recognized. A rectangle of zero dimension or <code>null</code> indicates
+     * the whole image.
+     * @param bpp bits per pixel, represents the bit depth of the image, with 1
+     * for binary bitmap, 8 for gray, and 24 for color RGB.
+     * @param filename input file name. Needed only for training and reading a
+     * UNLV zone file.
+     * @return the recognized text
+     * @throws TesseractException
+     */
+    @Override
+    public String doOCR(int xsize, int ysize, ByteBuffer buf, Rectangle rect, int bpp, String filename) throws TesseractException {
         init();
         setTessVariables();
 
         try {
             setImage(xsize, ysize, buf, rect, bpp);
-            return getOCRText();
+            return getOCRText(filename);
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
             throw new TesseractException(e);
@@ -293,7 +333,9 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
         PointerByReference configs = new PointerByReference();
         configs.setPointer(sarray);
         TessBaseAPIInit1(handle, datapath, language, ocrEngineMode, configs, configList.size());
-        TessBaseAPISetPageSegMode(handle, psm);
+        if (psm > -1) {
+            TessBaseAPISetPageSegMode(handle, psm);
+        }
     }
 
     /**
@@ -309,6 +351,10 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
 
     /**
      * A wrapper for {@link #setImage(int, int, ByteBuffer, Rectangle, int)}.
+     *
+     * @param image a rendered image
+     * @param rect region of interest
+     * @throws java.io.IOException
      */
     protected void setImage(RenderedImage image, Rectangle rect) throws IOException {
         setImage(image.getWidth(), image.getHeight(), ImageIOHelper.getImageByteBuffer(image), rect, image
@@ -340,9 +386,15 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     /**
      * Gets recognized text.
      *
+     * @param filename input file name. Needed only for reading a UNLV zone
+     * file.
      * @return the recognized text
      */
-    protected String getOCRText() {
+    protected String getOCRText(String filename) {
+        if (filename != null && !filename.isEmpty()) {
+            TessBaseAPISetInputName(handle, filename);
+        }
+
         Pointer utf8Text = renderedFormat == RenderedFormat.HOCR ? TessBaseAPIGetHOCRText(handle, pageNum - 1) : TessBaseAPIGetUTF8Text(handle);
         String str = utf8Text.getString(0);
         TessDeleteText(utf8Text);
@@ -470,7 +522,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
      * @throws TesseractException
      */
     private void createDocuments(String filename, String outputbase, TessResultRenderer renderer) throws TesseractException {
-        TessBaseAPISetInputName(handle, filename);
+        TessBaseAPISetInputName(handle, filename); //for reading a UNLV zone file
         TessResultRendererBeginDocument(renderer, filename);
         int result = TessBaseAPIProcessPages1(handle, filename, null, 0, renderer);
         TessResultRendererEndDocument(renderer);
@@ -478,7 +530,6 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
 //        if (result == ITessAPI.FALSE) {
 //            throw new TesseractException("Error during processing page.");
 //        }
-
         writeToFiles(outputbase, renderer);
     }
 

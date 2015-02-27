@@ -98,6 +98,20 @@ public interface ITesseract {
     String doOCR(List<IIOImage> imageList, Rectangle rect) throws TesseractException;
 
     /**
+     * Performs OCR operation.
+     *
+     * @param imageList a list of <code>IIOImage</code> objects
+     * @param rect the bounding rectangle defines the region of the image to be
+     * recognized. A rectangle of zero dimension or <code>null</code> indicates
+     * the whole image.
+     * @param filename input file name. Needed only for training and reading a
+     * UNLV zone file.
+     * @return the recognized text
+     * @throws TesseractException
+     */
+    String doOCR(List<IIOImage> imageList, Rectangle rect, String filename) throws TesseractException;
+
+    /**
      * Performs OCR operation. Use <code>SetImage</code>, (optionally)
      * <code>SetRectangle</code>, and one or more of the <code>Get*Text</code>
      * functions.
@@ -114,6 +128,26 @@ public interface ITesseract {
      * @throws TesseractException
      */
     String doOCR(int xsize, int ysize, ByteBuffer buf, Rectangle rect, int bpp) throws TesseractException;
+
+    /**
+     * Performs OCR operation. Use <code>SetImage</code>, (optionally)
+     * <code>SetRectangle</code>, and one or more of the <code>Get*Text</code>
+     * functions.
+     *
+     * @param xsize width of image
+     * @param ysize height of image
+     * @param buf pixel data
+     * @param rect the bounding rectangle defines the region of the image to be
+     * recognized. A rectangle of zero dimension or <code>null</code> indicates
+     * the whole image.
+     * @param bpp bits per pixel, represents the bit depth of the image, with 1
+     * for binary bitmap, 8 for gray, and 24 for color RGB.
+     * @param filename input file name. Needed only for training and reading a
+     * UNLV zone file.
+     * @return the recognized text
+     * @throws TesseractException
+     */
+    String doOCR(int xsize, int ysize, ByteBuffer buf, Rectangle rect, int bpp, String filename) throws TesseractException;
 
     /**
      * Sets tessdata path.
@@ -156,14 +190,15 @@ public interface ITesseract {
     /**
      * Sets configs to be passed to Tesseract's <code>Init</code> method.
      *
-     * @param configs list of config filenames, e.g., "digits", "bazaar", "quiet"
+     * @param configs list of config filenames, e.g., "digits", "bazaar",
+     * "quiet"
      */
     void setConfigs(List<String> configs);
 
     /**
      * Creates documents for given renderers.
      *
-     * @param filename input file
+     * @param filename input image
      * @param outputbase output filename without extension
      * @param formats types of renderers
      * @throws TesseractException
