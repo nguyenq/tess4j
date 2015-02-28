@@ -32,7 +32,7 @@ import org.ghost4j.GhostscriptException;
 public class PdfUtilities {
 
     public static final String GS_INSTALL = "\nPlease download, install GPL Ghostscript from http://sourceforge.net/projects/ghostscript/files\nand/or set the appropriate environment variable.";
-    
+
     private final static Logger logger = Logger.getLogger(PdfUtilities.class.getName());
 
     /**
@@ -172,7 +172,12 @@ public class PdfUtilities {
     }
 
     private static final String PS_FILE = "lib/pdfpagecount.ps";
-        
+    private static final String pdfPageCountFilePath;
+
+    static {
+        pdfPageCountFilePath = LoadLibs.extractTessResources(PS_FILE).getPath();
+    }
+
     /**
      * Gets PDF Page Count.
      *
@@ -192,7 +197,6 @@ public class PdfUtilities {
         gsArgs.add("-dQUIET");
         gsArgs.add("-dBATCH");
         gsArgs.add("-sPDFname=" + inputPdfFile);
-        String pdfPageCountFilePath = LoadLibs.extractTessResources(PS_FILE).getPath();
         gsArgs.add(pdfPageCountFilePath);
 
         int pageCount = 0;
@@ -235,7 +239,6 @@ public class PdfUtilities {
 //        }
 //        return pageCount;
 //    }
-
     /**
      * Merge PDF files.
      *
