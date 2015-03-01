@@ -130,49 +130,6 @@ public class TessAPITest {
     }
 
     /**
-     * Test of TessBaseAPICreate method, of class TessAPI.
-     */
-    @Test
-    public void testTessBaseAPICreate() {
-        System.out.println("TessBaseAPICreate");
-        TessAPI api = new TessDllAPIImpl().getInstance();
-        TessBaseAPI handle = api.TessBaseAPICreate();
-        assertNotNull(handle);
-        api.TessBaseAPIDelete(handle);
-    }
-
-    /**
-     * Test of TessBaseAPIDelete method, of class TessAPI.
-     */
-    @Test
-    public void testTessBaseAPIDelete() {
-        System.out.println("TessBaseAPIDelete");
-        TessAPI api = new TessDllAPIImpl().getInstance();
-        TessBaseAPI handle = api.TessBaseAPICreate();
-        api.TessBaseAPIDelete(handle);
-    }
-
-    /**
-     * Test of TessBaseAPISetInputName method, of class TessAPI.
-     */
-    @Test
-    public void testTessBaseAPISetInputName() {
-        System.out.println("TessBaseAPISetInputName");
-        String name = "eurotext.tif";
-        api.TessBaseAPISetInputName(handle, name);
-    }
-
-    /**
-     * Test of TessBaseAPISetOutputName method, of class TessAPI.
-     */
-    @Test
-    public void testTessBaseAPISetOutputName() {
-        System.out.println("TessBaseAPISetOutputName");
-        String name = "out";
-        api.TessBaseAPISetOutputName(handle, name);
-    }
-
-    /**
      * Test of TessBaseAPISetVariable method, of class TessAPI.
      */
     @Test
@@ -312,16 +269,6 @@ public class TessAPITest {
     }
 
     /**
-     * Test of TessBaseAPISetPageSegMode method, of class TessAPI.
-     */
-    @Test
-    public void testTessBaseAPISetPageSegMode() {
-        System.out.println("TessBaseAPISetPageSegMode");
-        int mode = TessPageSegMode.PSM_AUTO;
-        api.TessBaseAPISetPageSegMode(handle, mode);
-    }
-
-    /**
      * Test of TessBaseAPIGetPageSegMode method, of class TessAPI.
      */
     @Test
@@ -331,33 +278,6 @@ public class TessAPITest {
         int expResult = TessPageSegMode.PSM_SINGLE_CHAR;
         int result = api.TessBaseAPIGetPageSegMode(handle);
         assertEquals(expResult, result);
-    }
-
-    /**
-     * Test of TessBaseAPISetImage method, of class TessAPI.
-     */
-    @Test
-    public void testTessBaseAPISetImage() {
-        System.out.println("TessBaseAPISetImage");
-        ByteBuffer imagedata = null;
-        int width = 0;
-        int height = 0;
-        int bytes_per_pixel = 0;
-        int bytes_per_line = 0;
-        api.TessBaseAPISetImage(handle, imagedata, width, height, bytes_per_pixel, bytes_per_line);
-    }
-
-    /**
-     * Test of TessBaseAPISetRectangle method, of class TessAPI.
-     */
-    @Test
-    public void testTessBaseAPISetRectangle() {
-        System.out.println("TessBaseAPISetRectangle");
-        int left = 0;
-        int top = 0;
-        int width = 0;
-        int height = 0;
-        api.TessBaseAPISetRectangle(handle, left, top, width, height);
     }
 
     /**
@@ -511,24 +431,6 @@ public class TessAPITest {
         } while (api.TessPageIteratorNext(pi, TessPageIteratorLevel.RIL_WORD) == TRUE);
 
         assertTrue(true);
-    }
-
-    /**
-     * Test of TessBaseAPIClear method, of class TessAPI.
-     */
-    @Test
-    public void testTessBaseAPIClear() {
-        System.out.println("TessBaseAPIClear");
-        api.TessBaseAPIClear(handle);
-    }
-
-    /**
-     * Test of TessBaseAPIEnd method, of class TessAPI.
-     */
-    @Test
-    public void testTessBaseAPIEnd() {
-        System.out.println("TessBaseAPIEnd");
-        api.TessBaseAPIEnd(handle);
     }
 
     public class TessDllAPIImpl implements TessAPI {
