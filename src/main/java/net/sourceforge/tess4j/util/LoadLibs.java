@@ -91,16 +91,16 @@ public class LoadLibs {
     /**
      * Extracts tesseract resources to temp folder.
      *
-     * @param dirname resource location
-     * @return target location
+     * @param resourceName name of file or directory
+     * @return target path, which could be file or directory
      */
-    public static File extractTessResources(String dirname) {
-        File targetTempDir = null;
+    public static File extractTessResources(String resourceName) {
+        File targetPath = null;
 
         try {
-            targetTempDir = new File(TESS4J_TEMP_DIR, dirname);
+            targetPath = new File(TESS4J_TEMP_DIR, resourceName);
 
-            URL tessResourceUrl = LoadLibs.class.getResource(dirname.startsWith("/") ? dirname : "/" + dirname);
+            URL tessResourceUrl = LoadLibs.class.getResource(resourceName.startsWith("/") ? resourceName : "/" + resourceName);
             if (tessResourceUrl == null) {
                 return null;
             }
@@ -108,31 +108,36 @@ public class LoadLibs {
             URLConnection urlConnection = tessResourceUrl.openConnection();
 
             /**
-             * Either load from resources from jar or project resource folder.
+             * Copy resources either from inside jar or from project folder.
              */
             if (urlConnection instanceof JarURLConnection) {
-                copyJarResourceToDirectory((JarURLConnection) urlConnection, targetTempDir);
+                copyJarResourceToPath((JarURLConnection) urlConnection, targetPath);
             } else {
-                FileUtils.copyDirectory(new File(tessResourceUrl.getPath()), targetTempDir);
+                File file = new File(tessResourceUrl.getPath());
+                if (file.isDirectory()) {
+                    FileUtils.copyDirectory(file, targetPath);
+                } else {
+                    FileUtils.copyFile(file, targetPath);
+                }
             }
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
         }
 
-        return targetTempDir;
+        return targetPath;
     }
 
     /**
      * Copies resources from the jar file of the current thread and extract it
-     * to the destination directory.
+     * to the destination path.
      *
      * @param jarConnection
-     * @param destDir
+     * @param destPath destination file or directory
      */
-    static void copyJarResourceToDirectory(JarURLConnection jarConnection, File destDir) {
+    static void copyJarResourceToPath(JarURLConnection jarConnection, File destPath) {
         try {
             JarFile jarFile = jarConnection.getJarFile();
-            String jarConnectionEntryName = jarConnection.getEntryName() + "/";
+            String jarConnectionEntryName = jarConnection.getEntryName();
 
             /**
              * Iterate all entries in the jar file.
@@ -146,7 +151,7 @@ public class LoadLibs {
                  */
                 if (jarEntryName.startsWith(jarConnectionEntryName)) {
                     String filename = jarEntryName.substring(jarConnectionEntryName.length());
-                    File currentFile = new File(destDir, filename);
+                    File currentFile = new File(destPath, filename);
 
                     if (jarEntry.isDirectory()) {
                         currentFile.mkdirs();

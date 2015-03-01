@@ -21,7 +21,7 @@
         <p>
             <a href="http://java.oracle.com/">Java Runtime Environment</a>, 
             <a href="https://github.com/twall/jna">JNA</a>, and
-            <a href="https://java.net/projects/jai-imageio">JAI-ImageIO</a> are required. <a href="http://ant.apache.org/">Apache Ant</a> and <a href="http://www.junit.org/">
+            <a href="https://java.net/projects/jai-imageio">JAI-ImageIO</a> are required. <a href="http://maven.apache.org/">Apache Maven</a> and <a href="http://www.junit.org/">
                 JUnit</a> are used for program building and unit testing.</p>
         <h3>
             INSTRUCTIONS</h3>
@@ -41,16 +41,16 @@
             object (<code>gsdll32.dll</code> or <code>gsdll64.dll</code>) is in the search path by setting the appropriate environment
             variable. On Windows, append the following to <code>Path</code> value (accessible through
             Control Panel &gt; System &gt; Advanced &gt; Environment Variables) for GS version
-            9.14:</p>
+            9.15:</p>
         <blockquote>
             <p>
-                <code>;C:\Program Files\gs\gs9.14\bin</code></p>
+                <code>;C:\Program Files\gs\gs9.15\bin</code></p>
         </blockquote>
         <p>
             To unit test, at the command line, execute:</p>
         <blockquote>
             <p>
-                <code>ant test</code></p>
+                <code>mvn test</code></p>
         </blockquote>
         <p>
             Images to be OCRed should be scanned at resolution from at least 200 DPI (dot per
