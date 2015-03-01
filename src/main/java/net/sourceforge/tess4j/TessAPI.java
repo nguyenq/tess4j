@@ -119,7 +119,7 @@ public interface TessAPI extends Library, ITessAPI {
 
     /**
      * Set the name of the input file. Needed only for training and reading a
-     * UNLV zone file.
+     * UNLV zone file, and for searchable PDF output.
      *
      * @param handle the TesseractAPI instance
      * @param name name of the input file
