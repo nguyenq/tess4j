@@ -25,6 +25,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import net.sourceforge.tess4j.util.LoadLibs;
 
 import org.ghost4j.Ghostscript;
 import org.ghost4j.GhostscriptException;
@@ -171,6 +172,13 @@ public class PdfUtilities {
         }
     }
 
+    private static final String PS_FILE = "lib/pdfpagecount.ps";
+    private static final String pdfPageCountFilePath;
+
+    static {
+        pdfPageCountFilePath = LoadLibs.extractTessResources(PS_FILE).getPath();
+    }
+
     /**
      * Get PDF Page Count.
      *
@@ -190,10 +198,10 @@ public class PdfUtilities {
         gsArgs.add("-dQUIET");
         gsArgs.add("-dBATCH");
         gsArgs.add("-sPDFname=" + inputPdfFile);
-        gsArgs.add("lib/pdfpagecount.ps");
+        gsArgs.add(pdfPageCountFilePath);
 
         int pageCount = 0;
-        ByteArrayOutputStream os = null;
+        ByteArrayOutputStream os;
 
         //execute and exit interpreter
         try {
