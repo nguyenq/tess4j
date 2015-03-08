@@ -45,7 +45,6 @@ public class TessAPITest {
     TessBaseAPI handle;
 
     public TessAPITest() {
-        System.setProperty("jna.encoding", "UTF8");
     }
 
     @BeforeClass
