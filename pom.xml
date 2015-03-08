@@ -270,11 +270,6 @@
             <version>3.5.2</version>
         </dependency>
         <dependency>
-            <groupId>com.sun.jna</groupId>
-            <artifactId>jna</artifactId>
-            <version>3.0.9</version>
-        </dependency>
-        <dependency>
             <groupId>net.java.dev.jai-imageio</groupId>
             <artifactId>jai-imageio-core-standalone</artifactId>
             <version>1.2-pre-dr-b04-2011-07-04</version>
