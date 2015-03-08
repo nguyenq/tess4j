@@ -98,6 +98,26 @@ public class Tesseract1Test {
      * @throws java.lang.Exception
      */
     @Test
+    public void testDoOCR_UNLV_Zone_File() throws Exception {
+        System.out.println("doOCR on a PNG image with UNLV zone file .uzn");
+        //UNLV zone format: left top width height label
+        String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext_unlv.png");
+        File imageFile = new File(filename);
+        String expResult = "& duck/goose, as 12.5% of E-mail\n\n"
+                + "from aspammer@website.com is spam.\n\n"
+                + "The (quick) [brown] {fox} jumps!\n"
+                + "Over the $43,456.78 <lazy> #90 dog";
+        String result = instance.doOCR(imageFile);
+        System.out.println(result);
+        assertEquals(expResult, result.trim());
+    }
+
+    /**
+     * Test of doOCR method, of class Tesseract.
+     *
+     * @throws java.lang.Exception
+     */
+    @Test
     public void testDoOCR_File_With_Configs() throws Exception {
         System.out.println("doOCR with configs");
         File imageFile = new File(this.testResourcesDataPath, "eurotext.png");
@@ -148,8 +168,8 @@ public class Tesseract1Test {
      */
     @Test
     public void testDoOCR_BufferedImage() throws Exception {
-        System.out.println("doOCR on a buffered image of a GIF");
-        File imageFile = new File(this.testResourcesDataPath, "eurotext.gif");
+        System.out.println("doOCR on a buffered image of a PNG");
+        File imageFile = new File(this.testResourcesDataPath, "eurotext.png");
         BufferedImage bi = ImageIO.read(imageFile);
         String expResult = "The (quick) [brown] {fox} jumps!\nOver the $43,456.78 <lazy> #90 dog";
         String result = instance.doOCR(bi);
