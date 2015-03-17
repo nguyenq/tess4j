@@ -26,6 +26,8 @@ import java.util.Arrays;
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 
+import com.sun.jna.Pointer;
+
 import net.sourceforge.tess4j.util.Utils;
 import net.sourceforge.tess4j.util.ImageHelper;
 import net.sourceforge.tess4j.util.ImageIOHelper;
@@ -43,8 +45,6 @@ import org.junit.Test;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
-import com.sun.jna.Pointer;
 
 public class Tesseract1Test {
 
@@ -260,28 +260,28 @@ public class Tesseract1Test {
                 BufferedImage bi = ImageIO.read(file);
                 setImage(bi, null);
 
-                TessAPI1.TessBaseAPIRecognize(this.getHandle(), null);
-                TessResultIterator ri = TessAPI1.TessBaseAPIGetIterator(this.getHandle());
-                TessPageIterator pi = TessAPI1.TessResultIteratorGetPageIterator(ri);
-                TessAPI1.TessPageIteratorBegin(pi);
+                TessBaseAPIRecognize(this.getHandle(), null);
+                TessResultIterator ri = TessBaseAPIGetIterator(this.getHandle());
+                TessPageIterator pi = TessResultIteratorGetPageIterator(ri);
+                TessPageIteratorBegin(pi);
 
                 do {
-                    Pointer ptr = TessAPI1.TessResultIteratorGetUTF8Text(ri, pageIteratorLevel);
+                    Pointer ptr = TessResultIteratorGetUTF8Text(ri, pageIteratorLevel);
                     String text = ptr.getString(0);
                     TessAPI1.TessDeleteText(ptr);
-                    float confidence = TessAPI1.TessResultIteratorConfidence(ri, pageIteratorLevel);
+                    float confidence = TessResultIteratorConfidence(ri, pageIteratorLevel);
                     IntBuffer leftB = IntBuffer.allocate(1);
                     IntBuffer topB = IntBuffer.allocate(1);
                     IntBuffer rightB = IntBuffer.allocate(1);
                     IntBuffer bottomB = IntBuffer.allocate(1);
-                    TessAPI1.TessPageIteratorBoundingBox(pi, pageIteratorLevel, leftB, topB, rightB, bottomB);
+                    TessPageIteratorBoundingBox(pi, pageIteratorLevel, leftB, topB, rightB, bottomB);
                     int left = leftB.get();
                     int top = topB.get();
                     int right = rightB.get();
                     int bottom = bottomB.get();
                     Word word = new Word(text, confidence, new Rectangle(left, top, right - left, bottom - top));
                     words.add(word);
-                } while (TessAPI1.TessPageIteratorNext(pi, pageIteratorLevel) == TRUE);
+                } while (TessPageIteratorNext(pi, pageIteratorLevel) == TRUE);
 
                 return words;
             } catch (Exception e) {
@@ -289,49 +289,6 @@ public class Tesseract1Test {
             } finally {
                 this.dispose();
             }
-        }
-    }
-
-    /**
-     * Encapsulates results.
-     */
-    class Word {
-
-        private final String text;
-        private final float confidence;
-        private final Rectangle rect;
-
-        public Word(String text, float confidence, Rectangle rect) {
-            this.text = text;
-            this.confidence = confidence;
-            this.rect = rect;
-        }
-
-        /**
-         * @return the text
-         */
-        public String getText() {
-            return text;
-        }
-
-        /**
-         * @return the confidence
-         */
-        public float getConfidence() {
-            return confidence;
-        }
-
-        /**
-         * @return the bounding box
-         */
-        public Rectangle getRect() {
-            return rect;
-        }
-
-        @Override
-        public String toString() {
-            return String.format("%s\t[Confidence: %f Bounding box: %d %d %d %d]", text, confidence, rect.x, rect.y,
-                    rect.width, rect.height);
         }
     }
 }

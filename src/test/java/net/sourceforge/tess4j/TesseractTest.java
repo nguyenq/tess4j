@@ -18,6 +18,7 @@ package net.sourceforge.tess4j;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.nio.IntBuffer;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,14 +26,23 @@ import java.util.Arrays;
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 
+import com.sun.jna.Pointer;
+
 import net.sourceforge.tess4j.util.ImageHelper;
 import net.sourceforge.tess4j.util.ImageIOHelper;
+import net.sourceforge.tess4j.util.Utils;
+
 import net.sourceforge.tess4j.ITesseract.RenderedFormat;
+import net.sourceforge.tess4j.ITessAPI.TessPageIteratorLevel;
+import static net.sourceforge.tess4j.ITessAPI.TRUE;
 
 import com.recognition.software.jdeskew.ImageDeskew;
+import net.sourceforge.tess4j.ITessAPI.TessPageIterator;
+import net.sourceforge.tess4j.ITessAPI.TessResultIterator;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -62,7 +72,7 @@ public class TesseractTest {
 
     @Before
     public void setUp() {
-        instance = Tesseract.getInstance();
+        instance = new Tesseract();
         instance.setDatapath(new File(datapath).getPath());
     }
 
@@ -208,5 +218,84 @@ public class TesseractTest {
         List<RenderedFormat> formats = new ArrayList<RenderedFormat>(Arrays.asList(RenderedFormat.HOCR, RenderedFormat.PDF, RenderedFormat.TEXT));
         instance.createDocuments(new String[]{imageFile1.getPath(), imageFile2.getPath()}, new String[]{outputbase1, outputbase2}, formats);
         assertTrue(new File(outputbase1 + ".pdf").exists());
+    }
+
+    /**
+     * Test of extending Tesseract.
+     *
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testExtendingTesseract() throws Exception {
+        System.out.println("Extends Tesseract");
+        File imageFile = new File(this.testResourcesDataPath, "eurotext.tif");
+
+        String expResult = "The (quick) [brown] {fox} jumps!\nOver the $43,456.78 <lazy> #90 dog";
+        String[] expResults = expResult.split("\\s");
+
+        TessExtension instance1 = new TessExtension();
+        instance1.setDatapath(new File(datapath).getPath());
+        int pageIteratorLevel = TessPageIteratorLevel.RIL_WORD;
+        System.out.println("PageIteratorLevel: " + Utils.getConstantName(pageIteratorLevel, TessPageIteratorLevel.class));
+        List<Word> result = instance1.getTextElements(imageFile, pageIteratorLevel);
+
+        //print the complete result
+        for (Word word : result) {
+            System.out.println(word);
+        }
+
+        List<String> text = new ArrayList<String>();
+        for (Word word : result.subList(0, expResults.length)) {
+            text.add(word.getText());
+        }
+
+        assertArrayEquals(expResults, text.toArray());
+    }
+
+    /**
+     * Extends Tesseract.
+     */
+    class TessExtension extends Tesseract {
+
+        public List<Word> getTextElements(File file, int pageIteratorLevel) {
+            this.init();
+            this.setTessVariables();
+
+            List<Word> words = new ArrayList<Word>();
+            try {
+                BufferedImage bi = ImageIO.read(file);
+                setImage(bi, null);
+
+                TessAPI api = this.getAPI();
+                api.TessBaseAPIRecognize(this.getHandle(), null);
+                TessResultIterator ri = api.TessBaseAPIGetIterator(this.getHandle());
+                TessPageIterator pi = api.TessResultIteratorGetPageIterator(ri);
+                api.TessPageIteratorBegin(pi);
+
+                do {
+                    Pointer ptr = api.TessResultIteratorGetUTF8Text(ri, pageIteratorLevel);
+                    String text = ptr.getString(0);
+                    api.TessDeleteText(ptr);
+                    float confidence = api.TessResultIteratorConfidence(ri, pageIteratorLevel);
+                    IntBuffer leftB = IntBuffer.allocate(1);
+                    IntBuffer topB = IntBuffer.allocate(1);
+                    IntBuffer rightB = IntBuffer.allocate(1);
+                    IntBuffer bottomB = IntBuffer.allocate(1);
+                    api.TessPageIteratorBoundingBox(pi, pageIteratorLevel, leftB, topB, rightB, bottomB);
+                    int left = leftB.get();
+                    int top = topB.get();
+                    int right = rightB.get();
+                    int bottom = bottomB.get();
+                    Word word = new Word(text, confidence, new Rectangle(left, top, right - left, bottom - top));
+                    words.add(word);
+                } while (api.TessPageIteratorNext(pi, pageIteratorLevel) == TRUE);
+
+                return words;
+            } catch (Exception e) {
+                return words;
+            } finally {
+                this.dispose();
+            }
+        }
     }
 }

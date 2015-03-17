@@ -27,6 +27,7 @@ import java.util.*;
 import java.util.logging.*;
 import javax.imageio.IIOImage;
 
+import net.sourceforge.tess4j.ITessAPI.TessBaseAPI;
 import net.sourceforge.tess4j.ITessAPI.TessOcrEngineMode;
 import net.sourceforge.tess4j.ITessAPI.TessResultRenderer;
 
@@ -62,22 +63,35 @@ public class Tesseract implements ITesseract {
     private final List<String> configList = new ArrayList<String>();
 
     private TessAPI api;
-    private TessAPI.TessBaseAPI handle;
+    private TessBaseAPI handle;
 
     private final static Logger logger = Logger.getLogger(Tesseract.class.getName());
 
     /**
-     * Private constructor.
+     * Returns TessAPI object.
+     *
+     * @return api
      */
-    private Tesseract() {
+    protected TessAPI getAPI() {
+        return api;
+    }
 
+    /**
+     * Returns API handle.
+     *
+     * @return handle
+     */
+    protected TessBaseAPI getHandle() {
+        return handle;
     }
 
     /**
      * Gets an instance of the class library.
      *
+     * @deprecated As of Release 2.0, use {@link #Tesseract()} instead.
      * @return instance
      */
+    @Deprecated
     public static synchronized Tesseract getInstance() {
         if (instance == null) {
             instance = new Tesseract();
@@ -342,7 +356,7 @@ public class Tesseract implements ITesseract {
     /**
      * Initializes Tesseract engine.
      */
-    private void init() {
+    protected void init() {
         api = TessAPI.INSTANCE;
         handle = api.TessBaseAPICreate();
         StringArray sarray = new StringArray(configList.toArray(new String[0]));
@@ -357,7 +371,7 @@ public class Tesseract implements ITesseract {
     /**
      * Sets Tesseract's internal parameters.
      */
-    private void setTessVariables() {
+    protected void setTessVariables() {
         Enumeration<?> em = prop.propertyNames();
         while (em.hasMoreElements()) {
             String key = (String) em.nextElement();
@@ -372,7 +386,7 @@ public class Tesseract implements ITesseract {
      * @param rect region of interest
      * @throws java.io.IOException
      */
-    private void setImage(RenderedImage image, Rectangle rect) throws IOException {
+    protected void setImage(RenderedImage image, Rectangle rect) throws IOException {
         setImage(image.getWidth(), image.getHeight(), ImageIOHelper.getImageByteBuffer(image), rect, image
                 .getColorModel().getPixelSize());
     }
@@ -389,7 +403,7 @@ public class Tesseract implements ITesseract {
      * @param bpp bits per pixel, represents the bit depth of the image, with 1
      * for binary bitmap, 8 for gray, and 24 for color RGB.
      */
-    private void setImage(int xsize, int ysize, ByteBuffer buf, Rectangle rect, int bpp) {
+    protected void setImage(int xsize, int ysize, ByteBuffer buf, Rectangle rect, int bpp) {
         int bytespp = bpp / 8;
         int bytespl = (int) Math.ceil(xsize * bpp / 8.0);
         api.TessBaseAPISetImage(handle, buf, xsize, ysize, bytespp, bytespl);
@@ -407,7 +421,7 @@ public class Tesseract implements ITesseract {
      * @param pageNum page number; needed for hocr paging.
      * @return the recognized text
      */
-    private String getOCRText(String filename, int pageNum) {
+    protected String getOCRText(String filename, int pageNum) {
         if (filename != null && !filename.isEmpty()) {
             api.TessBaseAPISetInputName(handle, filename);
         }
@@ -557,7 +571,7 @@ public class Tesseract implements ITesseract {
      * @param renderer renderer
      * @throws TesseractException
      */
-    void writeToFiles(String outputbase, TessResultRenderer renderer) throws TesseractException {
+    private void writeToFiles(String outputbase, TessResultRenderer renderer) throws TesseractException {
         Map<String, byte[]> map = getRendererOutput(renderer);
 
         for (Map.Entry<String, byte[]> entry : map.entrySet()) {
@@ -580,7 +594,7 @@ public class Tesseract implements ITesseract {
      * @return output byte arrays
      * @throws TesseractException
      */
-    Map<String, byte[]> getRendererOutput(TessResultRenderer renderer) throws TesseractException {
+    private Map<String, byte[]> getRendererOutput(TessResultRenderer renderer) throws TesseractException {
         Map<String, byte[]> map = new HashMap<String, byte[]>();
 
         for (; renderer != null; renderer = api.TessResultRendererNext(renderer)) {
@@ -603,7 +617,7 @@ public class Tesseract implements ITesseract {
     /**
      * Releases all of the native resources used by this instance.
      */
-    private void dispose() {
+    protected void dispose() {
         api.TessBaseAPIDelete(handle);
     }
 }

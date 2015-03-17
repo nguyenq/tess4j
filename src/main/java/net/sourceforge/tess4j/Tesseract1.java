@@ -62,6 +62,15 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     private final static Logger logger = Logger.getLogger(Tesseract1.class.getName());
 
     /**
+     * Returns API handle.
+     *
+     * @return handle
+     */
+    protected TessBaseAPI getHandle() {
+        return handle;
+    }
+
+    /**
      * Sets path to <code>tessdata</code>.
      *
      * @param datapath the tessdata path to set
@@ -136,15 +145,6 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
         if (configs != null) {
             configList.addAll(configs);
         }
-    }
-
-    /**
-     * Returns API handle.
-     *
-     * @return handle
-     */
-    protected TessBaseAPI getHandle() {
-        return handle;
     }
 
     /**
@@ -464,7 +464,6 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     @Override
     public void createDocuments(String filename, String outputbase, List<RenderedFormat> formats) throws TesseractException {
         createDocuments(new String[]{filename}, new String[]{outputbase}, formats);
-
     }
 
     /**
@@ -539,7 +538,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
      * @param renderer renderer
      * @throws TesseractException
      */
-    void writeToFiles(String outputbase, TessResultRenderer renderer) throws TesseractException {
+    private void writeToFiles(String outputbase, TessResultRenderer renderer) throws TesseractException {
         Map<String, byte[]> map = getRendererOutput(renderer);
 
         for (Map.Entry<String, byte[]> entry : map.entrySet()) {
@@ -562,7 +561,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
      * @return output byte arrays
      * @throws TesseractException
      */
-    Map<String, byte[]> getRendererOutput(TessResultRenderer renderer) throws TesseractException {
+    private Map<String, byte[]> getRendererOutput(TessResultRenderer renderer) throws TesseractException {
         Map<String, byte[]> map = new HashMap<String, byte[]>();
 
         for (; renderer != null; renderer = TessResultRendererNext(renderer)) {

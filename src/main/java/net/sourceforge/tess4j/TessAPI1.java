@@ -132,6 +132,8 @@ public class TessAPI1 implements Library, ITessAPI {
      * transcoding. If that is not possible, we need the original image.
      * Finally, resolution metadata is stored in the PDF so we need that as
      * well.
+     * @param handle the TesseractAPI instance
+     * @return input file name
      */
     public static native String TessBaseAPIGetInputName(TessBaseAPI handle);
 
@@ -257,9 +259,9 @@ public class TessAPI1 implements Library, ITessAPI {
      * <i>/</i>. Any name after the last <i>/</i> will be stripped.
      * @param language The language is (usually) an <code>ISO 639-3</code>
      * string or <code>NULL</code> will default to <code>eng</code>. The
-     * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;]
-     * indicating that multiple languages are to be loaded. E.g.,
-     * <code>hin+eng</code> will load Hindi and English.
+     * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;] indicating
+     * that multiple languages are to be loaded. E.g., <code>hin+eng</code> will
+     * load Hindi and English.
      * @param oem ocr engine mode
      * @param configs pointer configuration
      * @param configs_size pointer configuration size
@@ -275,9 +277,9 @@ public class TessAPI1 implements Library, ITessAPI {
      * <i>/</i>. Any name after the last <i>/</i> will be stripped.
      * @param language The language is (usually) an <code>ISO 639-3</code>
      * string or <code>NULL</code> will default to <code>eng</code>. The
-     * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;]
-     * indicating that multiple languages are to be loaded. E.g.,
-     * <code>hin+eng</code> will load Hindi and English.
+     * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;] indicating
+     * that multiple languages are to be loaded. E.g., <code>hin+eng</code> will
+     * load Hindi and English.
      * @param oem ocr engine mode
      * @return 0 on success and -1 on initialization failure
      */
@@ -290,9 +292,9 @@ public class TessAPI1 implements Library, ITessAPI {
      * <i>/</i>. Any name after the last <i>/</i> will be stripped.
      * @param language The language is (usually) an <code>ISO 639-3</code>
      * string or <code>NULL</code> will default to <code>eng</code>. The
-     * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;]
-     * indicating that multiple languages are to be loaded. E.g.,
-     * <code>hin+eng</code> will load Hindi and English.
+     * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;] indicating
+     * that multiple languages are to be loaded. E.g., <code>hin+eng</code> will
+     * load Hindi and English.
      * @return 0 on success and -1 on initialization failure
      */
     public static native int TessBaseAPIInit3(TessBaseAPI handle, String datapath, String language);
@@ -305,9 +307,9 @@ public class TessAPI1 implements Library, ITessAPI {
      * <i>/</i>. Any name after the last <i>/</i> will be stripped.
      * @param language The language is (usually) an <code>ISO 639-3</code>
      * string or <code>NULL</code> will default to <code>eng</code>. The
-     * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;]
-     * indicating that multiple languages are to be loaded. E.g.,
-     * <code>hin+eng</code> will load Hindi and English.
+     * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;] indicating
+     * that multiple languages are to be loaded. E.g., <code>hin+eng</code> will
+     * load Hindi and English.
      * @param oem ocr engine mode
      * @param configs pointer configuration
      * @param configs_size pointer configuration size
@@ -362,9 +364,8 @@ public class TessAPI1 implements Library, ITessAPI {
      * <i>/</i>. Any name after the last <i>/</i> will be stripped.
      * @param language The language is (usually) an <code>ISO 639-3</code>
      * string or <code>NULL</code> will default to eng. The language may be a
-     * string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;] indicating that
-     * multiple languages are to be loaded. E.g., hin+eng will load Hindi and
-     * English.
+     * string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;] indicating that multiple
+     * languages are to be loaded. E.g., hin+eng will load Hindi and English.
      * @return api init language mode
      */
     public static native int TessBaseAPIInitLangMod(TessBaseAPI handle, String datapath, String language);
@@ -730,6 +731,7 @@ public class TessAPI1 implements Library, ITessAPI {
      * that are cached globally -- surviving the <code>Init()</code> and
      * <code>End()</code> of individual TessBaseAPI's. This function allows the
      * clearing of these caches.
+     * @param handle the TesseractAPI instance
      */
     public static native void TessBaseAPIClearPersistentCache(TessBaseAPI handle);
 
