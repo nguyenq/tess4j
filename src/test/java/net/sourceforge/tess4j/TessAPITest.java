@@ -56,19 +56,14 @@ import static net.sourceforge.tess4j.ITessAPI.TRUE;
 
 public class TessAPITest {
 
-    private final String datapath;
-    private final String testResourcesDataPath;
+    private final String datapath = "src/main/resources";
+    private final String testResourcesDataPath = "src/test/resources/test-data";
     String language = "eng";
     String expOCRResult = "The (quick) [brown] {fox} jumps!\nOver the $43,456.78 <lazy> #90 dog";
 
     TessAPI api;
     TessBaseAPI handle;
     
-    public TessAPITest() {
-        datapath = new File(Tesseract.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getPath();
-        testResourcesDataPath = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), "test-data").getPath();
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
     }

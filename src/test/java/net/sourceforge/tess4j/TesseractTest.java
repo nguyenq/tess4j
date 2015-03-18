@@ -52,15 +52,10 @@ import static org.junit.Assert.assertEquals;
 public class TesseractTest {
 
     static final double MINIMUM_DESKEW_THRESHOLD = 0.05d;
-    Tesseract instance;
+    ITesseract instance;
 
-    private final String datapath;
-    private final String testResourcesDataPath;
-
-    public TesseractTest() {
-        datapath = new File(Tesseract.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getPath();
-        testResourcesDataPath = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), "test-data").getPath();
-    }
+    private final String datapath = "src/main/resources";
+    private final String testResourcesDataPath = "src/test/resources/test-data";
 
     @BeforeClass
     public static void setUpClass() throws Exception {
