@@ -79,9 +79,9 @@ public class TesseractExample {
 
     public static void main(String[] args) {
         File imageFile = new File("eurotext.tif");
-        Tesseract instance = Tesseract.getInstance(); // JNA Interface Mapping
-        // Tesseract1 instance = new Tesseract1(); // JNA Direct Mapping
-        // File tessDataFolder = LoadLibs.extractTessResources("tessdata");
+        ITesseract instance = new Tesseract(); // JNA Interface Mapping
+        // ITesseract instance = new Tesseract1(); // JNA Direct Mapping
+        // File tessDataFolder = LoadLibs.extractTessResources("tessdata"); // Maven build only; only English data bundled
         // instance.setDatapath(tessDataFolder.getAbsolutePath());
 
         try {
