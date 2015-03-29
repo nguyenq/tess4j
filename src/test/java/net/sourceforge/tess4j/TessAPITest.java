@@ -562,9 +562,9 @@ public class TessAPITest {
                     try {
                         File file = new File(outputbase + "." + ext);
                         
-                        // if file not exists, create it
-                        if (!file.exists()) {
-                            file.createNewFile();
+                        // create parent dirs when necessary
+                        if (file.getParentFile() != null) {
+                            file.getParentFile().mkdirs();
                         }
 
                         FileOutputStream bw = new FileOutputStream(file.getAbsoluteFile());

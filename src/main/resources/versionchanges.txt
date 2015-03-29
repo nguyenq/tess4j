@@ -56,7 +56,7 @@ Version 1.5 (13 March 2015)
 - Add UNLV zone file support
 - Refactor
 
-Version 2.0 (17 March 2015)
+Version 2.0 (29 March 2015)
 - Upgrade to Tesseract 3.03 (r1050), which is compatible with Tesseract 3.03RC on Linux
 - Refactor Tesseract class for extensibility and thread-safety
-- Include English language data for Tesseract 3.02
+- Update English language data for Tesseract 3.02
