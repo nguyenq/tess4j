@@ -70,7 +70,7 @@ public class Tesseract implements ITesseract {
      * Private constructor.
      */
     private Tesseract() {
-//        System.setProperty("jna.encoding", "UTF8");
+
     }
 
     /**

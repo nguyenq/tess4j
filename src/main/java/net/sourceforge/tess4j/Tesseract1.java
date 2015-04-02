@@ -468,9 +468,9 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     private void createDocuments(String filename, TessResultRenderer renderer) throws TesseractException {
         int result = TessBaseAPIProcessPages(handle, filename, null, 0, renderer);
 
-        if (result != ITessAPI.TRUE) {
-            throw new TesseractException("Error during processing.");
-        }
+//        if (result != ITessAPI.TRUE) {
+//            throw new TesseractException("Error during processing.");
+//        }
     }
 
     /**

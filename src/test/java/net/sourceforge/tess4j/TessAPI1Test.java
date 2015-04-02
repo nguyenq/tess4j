@@ -137,7 +137,7 @@ public class TessAPI1Test {
     @Test
     public void testTessVersion() {
         System.out.println("TessVersion");
-        String expResult = "3.03";
+        String expResult = "3.04";
         String result = TessAPI1.TessVersion();
         System.out.println(result);
         assertTrue(result.startsWith(expResult));

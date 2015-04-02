@@ -140,7 +140,7 @@ public class TessAPITest {
     @Test
     public void testTessVersion() {
         System.out.println("TessVersion");
-        String expResult = "3.03";
+        String expResult = "3.04";
         String result = api.TessVersion();
         System.out.println(result);
         assertTrue(result.startsWith(expResult));
@@ -1177,10 +1177,10 @@ public class TessAPITest {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
-//        @Override
-//        public void TessPageIteratorParagraphInfo(TessPageIterator handle, IntBuffer justification, IntBuffer is_list_item, IntBuffer is_crown, IntBuffer first_line_indent) {
-//            throw new UnsupportedOperationException("Not supported yet.");
-//        }
+        @Override
+        public void TessPageIteratorParagraphInfo(TessPageIterator handle, IntBuffer justification, IntBuffer is_list_item, IntBuffer is_crown, IntBuffer first_line_indent) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
 
         @Override
         public String TessResultIteratorWordRecognitionLanguage(TessResultIterator handle) {
