@@ -53,7 +53,7 @@ public class LoadLibs {
 	/**
      * Native library name.
      */
-    public static final String LIB_NAME = "libtesseract303";
+    public static final String LIB_NAME = "libtesseract304";
     public static final String LIB_NAME_NON_WIN = "tesseract";
 
     private final static Logger logger = Logger.getLogger(LoadLibs.class.getName());
