@@ -17,8 +17,6 @@ package net.sourceforge.tess4j;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -46,11 +44,15 @@ import org.junit.Test;
 
 import com.sun.jna.Pointer;
 import com.sun.jna.StringArray;
+import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import net.sourceforge.tess4j.ITessAPI.*;
 import static net.sourceforge.tess4j.ITessAPI.FALSE;
 import static net.sourceforge.tess4j.ITessAPI.TRUE;
+import static org.junit.Assert.assertTrue;
 
 public class TessAPI1Test {
 
@@ -88,8 +90,7 @@ public class TessAPI1Test {
     public void testTessBaseAPIRect() throws Exception {
         System.out.println("TessBaseAPIRect");
         String expResult = expOCRResult;
-        String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
-        File tiff = new File(filename);
+        File tiff = new File(this.testResourcesDataPath, "eurotext.tif");
         BufferedImage image = ImageIO.read(tiff); // require jai-imageio lib to read TIFF
         ByteBuffer buf = ImageIOHelper.convertImageData(image);
         int bpp = image.getColorModel().getPixelSize();
@@ -113,8 +114,7 @@ public class TessAPI1Test {
     public void testTessBaseAPIGetUTF8Text() throws Exception {
         System.out.println("TessBaseAPIGetUTF8Text");
         String expResult = expOCRResult;
-        String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
-        File tiff = new File(filename);
+        File tiff = new File(this.testResourcesDataPath, "eurotext.tif");
         BufferedImage image = ImageIO.read(new FileInputStream(tiff)); // require jai-imageio lib to read TIFF
         ByteBuffer buf = ImageIOHelper.convertImageData(image);
         int bpp = image.getColorModel().getPixelSize();
@@ -141,47 +141,6 @@ public class TessAPI1Test {
         String result = TessAPI1.TessVersion();
         System.out.println(result);
         assertTrue(result.startsWith(expResult));
-    }
-
-    /**
-     * Test of TessBaseAPICreate method, of class TessAPI1.
-     */
-    @Test
-    public void testTessBaseAPICreate() {
-        System.out.println("TessBaseAPICreate");
-        TessBaseAPI handle = TessAPI1.TessBaseAPICreate();
-        assertNotNull(handle);
-        TessAPI1.TessBaseAPIDelete(handle);
-    }
-
-    /**
-     * Test of TessBaseAPIDelete method, of class TessAPI1.
-     */
-    @Test
-    public void testTessBaseAPIDelete() {
-        System.out.println("TessBaseAPIDelete");
-        TessBaseAPI handle = TessAPI1.TessBaseAPICreate();
-        TessAPI1.TessBaseAPIDelete(handle);
-    }
-
-    /**
-     * Test of TessBaseAPISetInputName method, of class TessAPI1.
-     */
-    @Test
-    public void testTessBaseAPISetInputName() {
-        System.out.println("TessBaseAPISetInputName");
-        String name = "eurotext.tif";
-        TessAPI1.TessBaseAPISetInputName(handle, name);
-    }
-
-    /**
-     * Test of TessBaseAPISetOutputName method, of class TessAPI1.
-     */
-    @Test
-    public void testTessBaseAPISetOutputName() {
-        System.out.println("TessBaseAPISetOutputName");
-        String name = "out";
-        TessAPI1.TessBaseAPISetOutputName(handle, name);
     }
 
     /**
@@ -289,8 +248,21 @@ public class TessAPI1Test {
         int oem = TessOcrEngineMode.OEM_DEFAULT;
         PointerByReference configs = null;
         int configs_size = 0;
+        // disable loading dictionaries
+        String[] args = new String[]{"load_system_dawg", "load_freq_dawg"};
+        StringArray sarray = new StringArray(args);
+        PointerByReference vars_vec = new PointerByReference();
+        vars_vec.setPointer(sarray);
+
+        args = new String[]{"F", "F"};
+        sarray = new StringArray(args);
+        PointerByReference vars_values = new PointerByReference();
+        vars_values.setPointer(sarray);
+
+        NativeSize vars_vec_size = new NativeSize(args.length);
+
         int expResult = 0;
-        int result = TessAPI1.TessBaseAPIInit4(handle, datapath, language, oem, configs, configs_size, null, null, new NativeSize(), FALSE);
+        int result = TessAPI1.TessBaseAPIInit4(handle, datapath, language, oem, configs, configs_size, vars_vec, vars_values, vars_vec_size, FALSE);
         assertEquals(expResult, result);
     }
 
@@ -331,16 +303,6 @@ public class TessAPI1Test {
     }
 
     /**
-     * Test of TessBaseAPISetPageSegMode method, of class TessAPI1.
-     */
-    @Test
-    public void testTessBaseAPISetPageSegMode() {
-        System.out.println("TessBaseAPISetPageSegMode");
-        int mode = TessPageSegMode.PSM_AUTO;
-        TessAPI1.TessBaseAPISetPageSegMode(handle, mode);
-    }
-
-    /**
      * Test of TessBaseAPIGetPageSegMode method, of class TessAPI1.
      */
     @Test
@@ -353,47 +315,20 @@ public class TessAPI1Test {
     }
 
     /**
-     * Test of TessBaseAPISetImage method, of class TessAPI1.
-     */
-    @Test
-    public void testTessBaseAPISetImage() {
-        System.out.println("TessBaseAPISetImage");
-        ByteBuffer imagedata = null;
-        int width = 0;
-        int height = 0;
-        int bytes_per_pixel = 0;
-        int bytes_per_line = 0;
-        TessAPI1.TessBaseAPIInit3(handle, datapath, language);
-        TessAPI1.TessBaseAPISetImage(handle, imagedata, width, height, bytes_per_pixel, bytes_per_line);
-    }
-
-    /**
-     * Test of TessBaseAPISetRectangle method, of class TessAPI1.
-     */
-    @Test
-    public void testTessBaseAPISetRectangle() {
-        System.out.println("TessBaseAPISetRectangle");
-        int left = 0;
-        int top = 0;
-        int width = 0;
-        int height = 0;
-        TessAPI1.TessBaseAPISetRectangle(handle, left, top, width, height);
-    }
-
-    /**
      * Test of TessBaseAPIProcessPages method, of class TessAPI1.
      */
     @Test
     public void testTessBaseAPIProcessPages() {
         System.out.println("TessBaseAPIProcessPages");
+        String expResult = expOCRResult;
         String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
         String retry_config = null;
         int timeout_millisec = 0;
-        String outputbase = "target/test-classes/test-results/eurotext1";
-        TessResultRenderer renderer = TessAPI1.TessTextRendererCreate(outputbase);
         TessAPI1.TessBaseAPIInit3(handle, datapath, language);
-        int rc = TessAPI1.TessBaseAPIProcessPages(handle, filename, retry_config, timeout_millisec, renderer);
-        assertEquals(TessAPI1.TRUE, rc);
+        Pointer utf8Text = TessAPI1.TessBaseAPIProcessPages(handle, filename, retry_config, timeout_millisec);
+        String result = utf8Text.getString(0);
+        TessAPI1.TessDeleteText(utf8Text);
+        assertTrue(result.startsWith(expResult));
     }
 
     /**
@@ -404,8 +339,7 @@ public class TessAPI1Test {
     @Test
     public void testTessBaseAPIGetHOCRText() throws Exception {
         System.out.println("TessBaseAPIGetHOCRText");
-        String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
-        File tiff = new File(filename);
+        File tiff = new File(this.testResourcesDataPath, "eurotext.tif");
         BufferedImage image = ImageIO.read(new FileInputStream(tiff)); // require jai-imageio lib to read TIFF
         ByteBuffer buf = ImageIOHelper.convertImageData(image);
         int bpp = image.getColorModel().getPixelSize();
@@ -434,8 +368,7 @@ public class TessAPI1Test {
         IntBuffer direction = IntBuffer.allocate(1);
         IntBuffer order = IntBuffer.allocate(1);
         FloatBuffer deskew_angle = FloatBuffer.allocate(1);
-        String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
-        File tiff = new File(filename);
+        File tiff = new File(this.testResourcesDataPath, "eurotext.tif");
         BufferedImage image = ImageIO.read(new FileInputStream(tiff)); // require jai-imageio lib to read TIFF
         ByteBuffer buf = ImageIOHelper.convertImageData(image);
         int bpp = image.getColorModel().getPixelSize();
@@ -468,8 +401,7 @@ public class TessAPI1Test {
     @Test
     public void testResultIterator() throws Exception {
         System.out.println("TessBaseAPIGetIterator");
-        String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
-        File tiff = new File(filename);
+        File tiff = new File(this.testResourcesDataPath, "eurotext.tif");
         BufferedImage image = ImageIO.read(new FileInputStream(tiff)); // require jai-imageio lib to read TIFF
         ByteBuffer buf = ImageIOHelper.convertImageData(image);
         int bpp = image.getColorModel().getPixelSize();
@@ -538,60 +470,6 @@ public class TessAPI1Test {
     }
 
     /**
-     * Test of ChoiceIterator.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testChoiceIterator() throws Exception {
-        System.out.println("TessResultIteratorGetChoiceIterator");
-        String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
-        File tiff = new File(filename);
-        BufferedImage image = ImageIO.read(new FileInputStream(tiff)); // require jai-imageio lib to read TIFF
-        ByteBuffer buf = ImageIOHelper.convertImageData(image);
-        int bpp = image.getColorModel().getPixelSize();
-        int bytespp = bpp / 8;
-        int bytespl = (int) Math.ceil(image.getWidth() * bpp / 8.0);
-        TessAPI1.TessBaseAPIInit3(handle, datapath, language);
-        TessAPI1.TessBaseAPISetImage(handle, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
-        TessAPI1.TessBaseAPISetVariable(handle, "save_blob_choices", "T");
-        TessAPI1.TessBaseAPISetRectangle(handle, 37, 228, 548, 31);
-        ETEXT_DESC monitor = new ETEXT_DESC();
-        ProgressMonitor pmo = new ProgressMonitor(monitor);
-        pmo.start();
-        TessAPI1.TessBaseAPIRecognize(handle, monitor);
-        System.out.println("Message: " + pmo.getMessage());
-        TessResultIterator ri = TessAPI1.TessBaseAPIGetIterator(handle);
-        int level = TessPageIteratorLevel.RIL_SYMBOL;
-
-        if (ri != null) {
-            do {
-                Pointer symbol = TessAPI1.TessResultIteratorGetUTF8Text(ri, level);
-                float conf = TessAPI1.TessResultIteratorConfidence(ri, level);
-                if (symbol != null) {
-                    System.out.println(String.format("symbol %s, conf: %f", symbol.getString(0), conf));
-                    boolean indent = false;
-                    TessChoiceIterator ci = TessAPI1.TessResultIteratorGetChoiceIterator(ri);
-                    do {
-                        if (indent) {
-                            System.out.print("\t");
-                        }
-                        System.out.print("\t- ");
-                        String choice = TessAPI1.TessChoiceIteratorGetUTF8Text(ci);
-                        System.out.println(String.format("%s conf: %f", choice, TessAPI1.TessChoiceIteratorConfidence(ci)));
-                        indent = true;
-                    } while (TessAPI1.TessChoiceIteratorNext(ci) == TRUE);
-                    TessAPI1.TessChoiceIteratorDelete(ci);
-                }
-                System.out.println("---------------------------------------------");
-                TessAPI1.TessDeleteText(symbol);
-            } while (TessAPI1.TessResultIteratorNext(ri, level) == TRUE);
-        }
-
-        assertTrue(true);
-    }
-
-    /**
      * Test of ResultRenderer method, of class TessAPI1.
      *
      * @throws java.lang.Exception
@@ -602,7 +480,7 @@ public class TessAPI1Test {
         String image = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
         String output = "capi-test.txt";
         int set_only_init_params = TessAPI.FALSE;
-        int oem = TessAPI.TessOcrEngineMode.OEM_DEFAULT;
+        int oem = TessOcrEngineMode.OEM_DEFAULT;
         PointerByReference configs = null;
         int configs_size = 0;
 
@@ -631,14 +509,14 @@ public class TessAPI1Test {
         TessAPI1.TessResultRendererInsert(renderer, TessAPI1.TessTextRendererCreate(outputbase));
         String dataPath = TessAPI1.TessBaseAPIGetDatapath(handle);
         TessAPI1.TessResultRendererInsert(renderer, TessAPI1.TessPDFRendererCreate(outputbase, dataPath));
-
+        TessAPI1.TessResultRendererBeginDocument(renderer, image);
         int result = TessAPI1.TessBaseAPIProcessPages(handle, image, null, 0, renderer);
+        TessAPI1.TessResultRendererEndDocument(renderer);
 
-        if (result != TRUE) {
-            System.err.println("Error during processing.");
-            return;
-        }
-
+//        if (result == FALSE) {
+//            System.err.println("Error during processing.");
+//            return;
+//        }
         for (; renderer != null; renderer = TessAPI1.TessResultRendererNext(renderer)) {
             String ext = TessAPI1.TessResultRendererExtention(renderer).getString(0);
             System.out.println(String.format("TessResultRendererExtention: %s\nTessResultRendererTitle: %s\nTessResultRendererImageNum: %d",
@@ -646,27 +524,8 @@ public class TessAPI1Test {
                     TessAPI1.TessResultRendererTitle(renderer).getString(0),
                     TessAPI1.TessResultRendererImageNum(renderer)));
 
+            TessAPI1.TessDeleteResultRenderer(renderer);
+            assertTrue(new File(outputbase + ".pdf").exists());
         }
-
-        TessAPI1.TessDeleteResultRenderer(renderer);
-        assertTrue(new File(outputbase + ".pdf").exists());
-    }
-
-    /**
-     * Test of TessBaseAPIClear method, of class TessAPI1.
-     */
-    @Test
-    public void testTessBaseAPIClear() {
-        System.out.println("TessBaseAPIClear");
-        TessAPI1.TessBaseAPIClear(handle);
-    }
-
-    /**
-     * Test of TessBaseAPIEnd method, of class TessAPI1.
-     */
-    @Test
-    public void testTessBaseAPIEnd() {
-        System.out.println("TessBaseAPIEnd");
-        TessAPI1.TessBaseAPIEnd(handle);
     }
 }

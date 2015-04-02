@@ -17,7 +17,6 @@ package net.sourceforge.tess4j;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.awt.image.BufferedImage;
@@ -48,6 +47,8 @@ import com.sun.jna.Pointer;
 import com.sun.jna.StringArray;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import net.sourceforge.tess4j.ITessAPI.*;
 import static net.sourceforge.tess4j.ITessAPI.FALSE;
@@ -91,8 +92,7 @@ public class TessAPITest {
     public void testTessBaseAPIRect() throws Exception {
         System.out.println("TessBaseAPIRect");
         String expResult = expOCRResult;
-        String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
-        File tiff = new File(filename);
+        File tiff = new File(this.testResourcesDataPath, "eurotext.tif");
         BufferedImage image = ImageIO.read(tiff); // require jai-imageio lib to read TIFF
         ByteBuffer buf = ImageIOHelper.convertImageData(image);
         int bpp = image.getColorModel().getPixelSize();
@@ -116,8 +116,7 @@ public class TessAPITest {
     public void testTessBaseAPIGetUTF8Text() throws Exception {
         System.out.println("TessBaseAPIGetUTF8Text");
         String expResult = expOCRResult;
-        String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
-        File tiff = new File(filename);
+        File tiff = new File(this.testResourcesDataPath, "eurotext.tif");
         BufferedImage image = ImageIO.read(new FileInputStream(tiff)); // require jai-imageio lib to read TIFF
         ByteBuffer buf = ImageIOHelper.convertImageData(image);
         int bpp = image.getColorModel().getPixelSize();
@@ -144,49 +143,6 @@ public class TessAPITest {
         String result = api.TessVersion();
         System.out.println(result);
         assertTrue(result.startsWith(expResult));
-    }
-
-    /**
-     * Test of TessBaseAPICreate method, of class TessAPI.
-     */
-    @Test
-    public void testTessBaseAPICreate() {
-        System.out.println("TessBaseAPICreate");
-        TessAPI api = new TessDllAPIImpl().getInstance();
-        TessBaseAPI handle = api.TessBaseAPICreate();
-        assertNotNull(handle);
-        api.TessBaseAPIDelete(handle);
-    }
-
-    /**
-     * Test of TessBaseAPIDelete method, of class TessAPI.
-     */
-    @Test
-    public void testTessBaseAPIDelete() {
-        System.out.println("TessBaseAPIDelete");
-        TessAPI api = new TessDllAPIImpl().getInstance();
-        TessBaseAPI handle = api.TessBaseAPICreate();
-        api.TessBaseAPIDelete(handle);
-    }
-
-    /**
-     * Test of TessBaseAPISetInputName method, of class TessAPI.
-     */
-    @Test
-    public void testTessBaseAPISetInputName() {
-        System.out.println("TessBaseAPISetInputName");
-        String name = "eurotext.tif";
-        api.TessBaseAPISetInputName(handle, name);
-    }
-
-    /**
-     * Test of TessBaseAPISetOutputName method, of class TessAPI.
-     */
-    @Test
-    public void testTessBaseAPISetOutputName() {
-        System.out.println("TessBaseAPISetOutputName");
-        String name = "out";
-        api.TessBaseAPISetOutputName(handle, name);
     }
 
     /**
@@ -294,8 +250,21 @@ public class TessAPITest {
         int oem = TessOcrEngineMode.OEM_DEFAULT;
         PointerByReference configs = null;
         int configs_size = 0;
+        // disable loading dictionaries
+        String[] args = new String[]{"load_system_dawg", "load_freq_dawg"};
+        StringArray sarray = new StringArray(args);
+        PointerByReference vars_vec = new PointerByReference();
+        vars_vec.setPointer(sarray);
+
+        args = new String[]{"F", "F"};
+        sarray = new StringArray(args);
+        PointerByReference vars_values = new PointerByReference();
+        vars_values.setPointer(sarray);
+
+        NativeSize vars_vec_size = new NativeSize(args.length);
+
         int expResult = 0;
-        int result = api.TessBaseAPIInit4(handle, datapath, language, oem, configs, configs_size, null, null, new NativeSize(), FALSE);
+        int result = api.TessBaseAPIInit4(handle, datapath, language, oem, configs, configs_size, vars_vec, vars_values, vars_vec_size, FALSE);
         assertEquals(expResult, result);
     }
 
@@ -336,16 +305,6 @@ public class TessAPITest {
     }
 
     /**
-     * Test of TessBaseAPISetPageSegMode method, of class TessAPI.
-     */
-    @Test
-    public void testTessBaseAPISetPageSegMode() {
-        System.out.println("TessBaseAPISetPageSegMode");
-        int mode = TessPageSegMode.PSM_AUTO;
-        api.TessBaseAPISetPageSegMode(handle, mode);
-    }
-
-    /**
      * Test of TessBaseAPIGetPageSegMode method, of class TessAPI.
      */
     @Test
@@ -358,47 +317,20 @@ public class TessAPITest {
     }
 
     /**
-     * Test of TessBaseAPISetImage method, of class TessAPI.
-     */
-    @Test
-    public void testTessBaseAPISetImage() {
-        System.out.println("TessBaseAPISetImage");
-        ByteBuffer imagedata = null;
-        int width = 0;
-        int height = 0;
-        int bytes_per_pixel = 0;
-        int bytes_per_line = 0;
-        api.TessBaseAPIInit3(handle, datapath, language);
-        api.TessBaseAPISetImage(handle, imagedata, width, height, bytes_per_pixel, bytes_per_line);
-    }
-
-    /**
-     * Test of TessBaseAPISetRectangle method, of class TessAPI.
-     */
-    @Test
-    public void testTessBaseAPISetRectangle() {
-        System.out.println("TessBaseAPISetRectangle");
-        int left = 0;
-        int top = 0;
-        int width = 0;
-        int height = 0;
-        api.TessBaseAPISetRectangle(handle, left, top, width, height);
-    }
-
-    /**
      * Test of TessBaseAPIProcessPages method, of class TessAPI.
      */
     @Test
     public void testTessBaseAPIProcessPages() {
         System.out.println("TessBaseAPIProcessPages");
+        String expResult = expOCRResult;
         String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
         String retry_config = null;
         int timeout_millisec = 0;
-        String outputbase = "target/test-classes/test-results/eurotext";
-        TessResultRenderer renderer = api.TessTextRendererCreate(outputbase);
         api.TessBaseAPIInit3(handle, datapath, language);
-        int rc = api.TessBaseAPIProcessPages(handle, filename, retry_config, timeout_millisec, renderer);
-        assertEquals(TessAPI1.TRUE, rc);
+        Pointer utf8Text = api.TessBaseAPIProcessPages(handle, filename, retry_config, timeout_millisec);
+        String result = utf8Text.getString(0);
+        api.TessDeleteText(utf8Text);
+        assertTrue(result.startsWith(expResult));
     }
 
     /**
@@ -439,8 +371,7 @@ public class TessAPITest {
         IntBuffer direction = IntBuffer.allocate(1);
         IntBuffer order = IntBuffer.allocate(1);
         FloatBuffer deskew_angle = FloatBuffer.allocate(1);
-        String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
-        File tiff = new File(filename);
+        File tiff = new File(this.testResourcesDataPath, "eurotext.tif");
         BufferedImage image = ImageIO.read(new FileInputStream(tiff)); // require jai-imageio lib to read TIFF
         ByteBuffer buf = ImageIOHelper.convertImageData(image);
         int bpp = image.getColorModel().getPixelSize();
@@ -473,8 +404,7 @@ public class TessAPITest {
     @Test
     public void testResultIterator() throws Exception {
         System.out.println("TessBaseAPIGetIterator");
-        String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
-        File tiff = new File(filename);
+        File tiff = new File(this.testResourcesDataPath, "eurotext.tif");
         BufferedImage image = ImageIO.read(new FileInputStream(tiff)); // require jai-imageio lib to read TIFF
         ByteBuffer buf = ImageIOHelper.convertImageData(image);
         int bpp = image.getColorModel().getPixelSize();
@@ -630,16 +560,17 @@ public class TessAPITest {
             return;
         }
 
-        String outputbase = "test/test-results/outputbase";
+        String outputbase = "target/test-classes/test-results/outputbase";
         TessResultRenderer renderer = api.TessHOcrRendererCreate(outputbase);
         api.TessResultRendererInsert(renderer, api.TessBoxTextRendererCreate(outputbase));
         api.TessResultRendererInsert(renderer, api.TessTextRendererCreate(outputbase));
         String dataPath = api.TessBaseAPIGetDatapath(handle);
         api.TessResultRendererInsert(renderer, api.TessPDFRendererCreate(outputbase, dataPath));
-
+        api.TessResultRendererBeginDocument(renderer, image);
         int result = api.TessBaseAPIProcessPages(handle, image, null, 0, renderer);
+        api.TessResultRendererEndDocument(renderer);
 
-        if (result != TRUE) {
+        if (result == FALSE) {
             System.err.println("Error during processing.");
             return;
         }
@@ -656,534 +587,515 @@ public class TessAPITest {
         assertTrue(new File(outputbase + ".pdf").exists());
     }
 
-    /**
-     * Test of TessBaseAPIClear method, of class TessAPI.
-     */
-    @Test
-    public void testTessBaseAPIClear() {
-        System.out.println("TessBaseAPIClear");
-        api.TessBaseAPIClear(handle);
-    }
-
-    /**
-     * Test of TessBaseAPIEnd method, of class TessAPI.
-     */
-    @Test
-    public void testTessBaseAPIEnd() {
-        System.out.println("TessBaseAPIEnd");
-        api.TessBaseAPIEnd(handle);
-    }
-
     public class TessDllAPIImpl implements TessAPI {
 
         public TessAPI getInstance() {
             return INSTANCE;
         }
 
-        @Override
+        public void TessDllEndPage() {
+        }
+
+        public void TessDllRelease() {
+        }     
+        
+         @Override
         public String TessVersion() {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        public void TessDeleteText(String text) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public void TessDeleteIntArray(IntBuffer arr) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public TessBaseAPI TessBaseAPICreate() {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public void TessBaseAPIDelete(TessBaseAPI handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public void TessBaseAPISetInputName(TessBaseAPI handle, String name) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public void TessBaseAPISetOutputName(TessBaseAPI handle, String name) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public int TessBaseAPISetVariable(TessBaseAPI handle, String name, String value) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public int TessBaseAPIGetIntVariable(TessBaseAPI handle, String name, IntBuffer value) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public int TessBaseAPIGetBoolVariable(TessBaseAPI handle, String name, IntBuffer value) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public int TessBaseAPIGetDoubleVariable(TessBaseAPI handle, String name, DoubleBuffer value) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public String TessBaseAPIGetStringVariable(TessBaseAPI handle, String name) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public void TessBaseAPIPrintVariablesToFile(TessBaseAPI handle, String filename) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public int TessBaseAPIInit1(TessBaseAPI handle, String datapath, String language, int oem,
-                PointerByReference configs, int configs_size) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public int TessBaseAPIInit2(TessBaseAPI handle, String datapath, String language, int oem) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public int TessBaseAPIInit3(TessBaseAPI handle, String datapath, String language) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public int TessBaseAPIInit4(TessBaseAPI handle, String datapath, String language, int oem, PointerByReference configs, int configs_size, PointerByReference vars_vec, PointerByReference vars_values, NativeSize vars_vec_size, int set_only_non_debug_params) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public int TessBaseAPIInitLangMod(TessBaseAPI handle, String datapath, String language) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public void TessBaseAPIInitForAnalysePage(TessBaseAPI handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public void TessBaseAPIReadConfigFile(TessBaseAPI handle, String filename, int init_only) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public void TessBaseAPISetPageSegMode(TessBaseAPI handle, int mode) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public int TessBaseAPIGetPageSegMode(TessBaseAPI handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public Pointer TessBaseAPIRect(TessBaseAPI handle, ByteBuffer imagedata, int bytes_per_pixel,
-                int bytes_per_line, int left, int top, int width, int height) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public void TessBaseAPIClearAdaptiveClassifier(TessBaseAPI handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public void TessBaseAPISetImage(TessBaseAPI handle, ByteBuffer imagedata, int width, int height,
-                int bytes_per_pixel, int bytes_per_line) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public void TessBaseAPISetRectangle(TessBaseAPI handle, int left, int top, int width, int height) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public void TessBaseAPIDumpPGM(TessBaseAPI handle, String filename) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public TessPageIterator TessBaseAPIAnalyseLayout(TessBaseAPI handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public int TessBaseAPIRecognize(TessBaseAPI handle, ETEXT_DESC monitor) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public int TessBaseAPIRecognizeForChopTest(TessBaseAPI handle, ETEXT_DESC monitor) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public TessResultIterator TessBaseAPIGetIterator(TessBaseAPI handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public Pointer TessBaseAPIGetUTF8Text(TessBaseAPI handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public Pointer TessBaseAPIGetHOCRText(TessBaseAPI handle, int page_number) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public Pointer TessBaseAPIGetBoxText(TessBaseAPI handle, int page_number) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public Pointer TessBaseAPIGetUNLVText(TessBaseAPI handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public int TessBaseAPIMeanTextConf(TessBaseAPI handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public IntByReference TessBaseAPIAllWordConfidences(TessBaseAPI handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public int TessBaseAPIAdaptToWordStr(TessBaseAPI handle, int mode, String wordstr) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public void TessBaseAPIClear(TessBaseAPI handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public void TessBaseAPIEnd(TessBaseAPI handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public int TessBaseAPIIsValidWord(TessBaseAPI handle, String word) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public int TessBaseAPIGetTextDirection(TessBaseAPI handle, IntBuffer out_offset, FloatBuffer out_slope) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public String TessBaseAPIGetUnichar(TessBaseAPI handle, int unichar_id) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public void TessPageIteratorDelete(TessPageIterator handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public TessPageIterator TessPageIteratorCopy(TessPageIterator handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public void TessPageIteratorBegin(TessPageIterator handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public int TessPageIteratorNext(TessPageIterator handle, int level) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public int TessPageIteratorIsAtBeginningOf(TessPageIterator handle, int level) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public int TessPageIteratorIsAtFinalElement(TessPageIterator handle, int level, int element) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public int TessPageIteratorBoundingBox(TessPageIterator handle, int level, IntBuffer left, IntBuffer top,
-                IntBuffer right, IntBuffer bottom) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public int TessPageIteratorBlockType(TessPageIterator handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public int TessPageIteratorBaseline(TessPageIterator handle, int level, IntBuffer x1, IntBuffer y1,
-                IntBuffer x2, IntBuffer y2) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public void TessPageIteratorOrientation(TessPageIterator handle, IntBuffer orientation,
-                IntBuffer writing_direction, IntBuffer textline_order, FloatBuffer deskew_angle) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public void TessResultIteratorDelete(TessResultIterator handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public TessResultIterator TessResultIteratorCopy(TessResultIterator handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public TessPageIterator TessResultIteratorGetPageIterator(TessResultIterator handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public TessPageIterator TessResultIteratorGetPageIteratorConst(TessResultIterator handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public Pointer TessResultIteratorGetUTF8Text(TessResultIterator handle, int level) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public float TessResultIteratorConfidence(TessResultIterator handle, int level) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public String TessResultIteratorWordFontAttributes(TessResultIterator handle, IntBuffer is_bold,
-                IntBuffer is_italic, IntBuffer is_underlined, IntBuffer is_monospace, IntBuffer is_serif,
-                IntBuffer is_smallcaps, IntBuffer pointsize, IntBuffer font_id) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public int TessResultIteratorWordIsFromDictionary(TessResultIterator handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public int TessResultIteratorWordIsNumeric(TessResultIterator handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public int TessResultIteratorSymbolIsSuperscript(TessResultIterator handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public int TessResultIteratorSymbolIsSubscript(TessResultIterator handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public int TessResultIteratorSymbolIsDropcap(TessResultIterator handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public String TessBaseAPIGetInitLanguagesAsString(TessBaseAPI handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public PointerByReference TessBaseAPIGetLoadedLanguagesAsVector(TessBaseAPI handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public PointerByReference TessBaseAPIGetAvailableLanguagesAsVector(TessBaseAPI handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public void TessBaseAPISetSourceResolution(TessBaseAPI handle, int ppi) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
         public void TessDeleteText(Pointer text) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
         public void TessDeleteTextArray(PointerByReference arr) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
-        public int TessBaseAPIGetThresholdedImageScaleFactor(TessBaseAPI handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public TessMutableIterator TessBaseAPIGetMutableIterator(TessBaseAPI handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
+        public void TessDeleteIntArray(IntBuffer arr) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
         public TessResultRenderer TessTextRendererCreate(String outputbase) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
         public TessResultRenderer TessHOcrRendererCreate(String outputbase) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
         public TessResultRenderer TessPDFRendererCreate(String outputbase, String datadir) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
         public TessResultRenderer TessUnlvRendererCreate(String outputbase) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
         public TessResultRenderer TessBoxTextRendererCreate(String outputbase) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
         public void TessDeleteResultRenderer(TessResultRenderer renderer) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
         public void TessResultRendererInsert(TessResultRenderer renderer, TessResultRenderer next) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
         public TessResultRenderer TessResultRendererNext(TessResultRenderer renderer) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
         public int TessResultRendererBeginDocument(TessResultRenderer renderer, String title) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
         public int TessResultRendererAddImage(TessResultRenderer renderer, PointerByReference api) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
         public int TessResultRendererEndDocument(TessResultRenderer renderer) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
         public Pointer TessResultRendererExtention(TessResultRenderer renderer) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
         public Pointer TessResultRendererTitle(TessResultRenderer renderer) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
         public int TessResultRendererImageNum(TessResultRenderer renderer) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public TessBaseAPI TessBaseAPICreate() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void TessBaseAPIDelete(TessBaseAPI handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void TessBaseAPISetInputName(TessBaseAPI handle, String name) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
         public String TessBaseAPIGetInputName(TessBaseAPI handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
         public int TessBaseAPIGetSourceYResolution(TessBaseAPI handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
         public String TessBaseAPIGetDatapath(TessBaseAPI handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void TessBaseAPISetOutputName(TessBaseAPI handle, String name) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public int TessBaseAPISetVariable(TessBaseAPI handle, String name, String value) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public int TessBaseAPIGetIntVariable(TessBaseAPI handle, String name, IntBuffer value) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public int TessBaseAPIGetBoolVariable(TessBaseAPI handle, String name, IntBuffer value) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public int TessBaseAPIGetDoubleVariable(TessBaseAPI handle, String name, DoubleBuffer value) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public String TessBaseAPIGetStringVariable(TessBaseAPI handle, String name) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void TessBaseAPIPrintVariablesToFile(TessBaseAPI handle, String filename) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public int TessBaseAPIInit1(TessBaseAPI handle, String datapath, String language, int oem, PointerByReference configs, int configs_size) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public int TessBaseAPIInit2(TessBaseAPI handle, String datapath, String language, int oem) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public int TessBaseAPIInit3(TessBaseAPI handle, String datapath, String language) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public int TessBaseAPIInit4(TessBaseAPI handle, String datapath, String language, int oem, PointerByReference configs, int configs_size, PointerByReference vars_vec, PointerByReference vars_values, NativeSize vars_vec_size, int set_only_non_debug_params) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public String TessBaseAPIGetInitLanguagesAsString(TessBaseAPI handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public PointerByReference TessBaseAPIGetLoadedLanguagesAsVector(TessBaseAPI handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public PointerByReference TessBaseAPIGetAvailableLanguagesAsVector(TessBaseAPI handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public int TessBaseAPIInitLangMod(TessBaseAPI handle, String datapath, String language) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void TessBaseAPIInitForAnalysePage(TessBaseAPI handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void TessBaseAPIReadConfigFile(TessBaseAPI handle, String filename, int init_only) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void TessBaseAPISetPageSegMode(TessBaseAPI handle, int mode) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public int TessBaseAPIGetPageSegMode(TessBaseAPI handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public Pointer TessBaseAPIRect(TessBaseAPI handle, ByteBuffer imagedata, int bytes_per_pixel, int bytes_per_line, int left, int top, int width, int height) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void TessBaseAPIClearAdaptiveClassifier(TessBaseAPI handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void TessBaseAPISetImage(TessBaseAPI handle, ByteBuffer imagedata, int width, int height, int bytes_per_pixel, int bytes_per_line) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void TessBaseAPISetSourceResolution(TessBaseAPI handle, int ppi) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void TessBaseAPISetRectangle(TessBaseAPI handle, int left, int top, int width, int height) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public int TessBaseAPIGetThresholdedImageScaleFactor(TessBaseAPI handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void TessBaseAPIDumpPGM(TessBaseAPI handle, String filename) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public TessPageIterator TessBaseAPIAnalyseLayout(TessBaseAPI handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public int TessBaseAPIRecognize(TessBaseAPI handle, ETEXT_DESC monitor) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public int TessBaseAPIRecognizeForChopTest(TessBaseAPI handle, ETEXT_DESC monitor) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public TessResultIterator TessBaseAPIGetIterator(TessBaseAPI handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public TessMutableIterator TessBaseAPIGetMutableIterator(TessBaseAPI handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
         public int TessBaseAPIProcessPages(TessBaseAPI handle, String filename, String retry_config, int timeout_millisec, TessResultRenderer renderer) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
-        public int TessResultIteratorNext(TessResultIterator handle, int level) {
-            throw new UnsupportedOperationException("Not supported yet.");
+        public Pointer TessBaseAPIGetUTF8Text(TessBaseAPI handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
-        public TessChoiceIterator TessResultIteratorGetChoiceIterator(TessResultIterator handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
+        public Pointer TessBaseAPIGetHOCRText(TessBaseAPI handle, int page_number) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
-        public void TessChoiceIteratorDelete(TessChoiceIterator handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
+        public Pointer TessBaseAPIGetBoxText(TessBaseAPI handle, int page_number) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
-        public int TessChoiceIteratorNext(TessChoiceIterator handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
+        public Pointer TessBaseAPIGetUNLVText(TessBaseAPI handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
-        public String TessChoiceIteratorGetUTF8Text(TessChoiceIterator handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
+        public int TessBaseAPIMeanTextConf(TessBaseAPI handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
-        public float TessChoiceIteratorConfidence(TessChoiceIterator handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
+        public IntByReference TessBaseAPIAllWordConfidences(TessBaseAPI handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public int TessBaseAPIAdaptToWordStr(TessBaseAPI handle, int mode, String wordstr) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void TessBaseAPIClear(TessBaseAPI handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void TessBaseAPIEnd(TessBaseAPI handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public int TessBaseAPIIsValidWord(TessBaseAPI handle, String word) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public int TessBaseAPIGetTextDirection(TessBaseAPI handle, IntBuffer out_offset, FloatBuffer out_slope) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
         public void TessBaseAPIClearPersistentCache(TessBaseAPI handle) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public String TessBaseAPIGetUnichar(TessBaseAPI handle, int unichar_id) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void TessPageIteratorDelete(TessPageIterator handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public TessPageIterator TessPageIteratorCopy(TessPageIterator handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void TessPageIteratorBegin(TessPageIterator handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public int TessPageIteratorNext(TessPageIterator handle, int level) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public int TessPageIteratorIsAtBeginningOf(TessPageIterator handle, int level) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public int TessPageIteratorIsAtFinalElement(TessPageIterator handle, int level, int element) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public int TessPageIteratorBoundingBox(TessPageIterator handle, int level, IntBuffer left, IntBuffer top, IntBuffer right, IntBuffer bottom) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public int TessPageIteratorBlockType(TessPageIterator handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public int TessPageIteratorBaseline(TessPageIterator handle, int level, IntBuffer x1, IntBuffer y1, IntBuffer x2, IntBuffer y2) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void TessPageIteratorOrientation(TessPageIterator handle, IntBuffer orientation, IntBuffer writing_direction, IntBuffer textline_order, FloatBuffer deskew_angle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
         public void TessPageIteratorParagraphInfo(TessPageIterator handle, IntBuffer justification, IntBuffer is_list_item, IntBuffer is_crown, IntBuffer first_line_indent) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void TessResultIteratorDelete(TessResultIterator handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public TessResultIterator TessResultIteratorCopy(TessResultIterator handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public TessPageIterator TessResultIteratorGetPageIterator(TessResultIterator handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public TessPageIterator TessResultIteratorGetPageIteratorConst(TessResultIterator handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public int TessResultIteratorNext(TessResultIterator handle, int level) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public Pointer TessResultIteratorGetUTF8Text(TessResultIterator handle, int level) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public float TessResultIteratorConfidence(TessResultIterator handle, int level) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
         public String TessResultIteratorWordRecognitionLanguage(TessResultIterator handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public String TessResultIteratorWordFontAttributes(TessResultIterator handle, IntBuffer is_bold, IntBuffer is_italic, IntBuffer is_underlined, IntBuffer is_monospace, IntBuffer is_serif, IntBuffer is_smallcaps, IntBuffer pointsize, IntBuffer font_id) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public int TessResultIteratorWordIsFromDictionary(TessResultIterator handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public int TessResultIteratorWordIsNumeric(TessResultIterator handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public int TessResultIteratorSymbolIsSuperscript(TessResultIterator handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public int TessResultIteratorSymbolIsSubscript(TessResultIterator handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public int TessResultIteratorSymbolIsDropcap(TessResultIterator handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public TessChoiceIterator TessResultIteratorGetChoiceIterator(TessResultIterator handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void TessChoiceIteratorDelete(TessChoiceIterator handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public int TessChoiceIteratorNext(TessChoiceIterator handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public String TessChoiceIteratorGetUTF8Text(TessChoiceIterator handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public float TessChoiceIteratorConfidence(TessChoiceIterator handle) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+        
+        @Override
+        public Pointer TessBaseAPIProcessPages(TessBaseAPI handle, String filename, String retry_config, int timeout_millisec) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
     }

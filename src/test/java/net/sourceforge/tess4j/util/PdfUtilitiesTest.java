@@ -26,9 +26,10 @@ import org.junit.Ignore;
 
 public class PdfUtilitiesTest {
 
-    private final String testResourcesDataPath = "src/test/resources/test-data";
+    private final String testResourcesDataPath;
 
     public PdfUtilitiesTest() {
+        testResourcesDataPath = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), "test-data").getPath();
     }
 
     @BeforeClass
@@ -53,8 +54,7 @@ public class PdfUtilitiesTest {
     @Test
     public void testConvertPdf2Tiff() throws Exception {
         System.out.println("convertPdf2Tiff");
-        String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.pdf");
-        File inputPdfFile = new File(filename);
+        File inputPdfFile = new File(this.testResourcesDataPath, "eurotext.pdf");
         File result = PdfUtilities.convertPdf2Tiff(inputPdfFile);
         result.deleteOnExit();
         assertTrue(result.exists());
@@ -66,8 +66,7 @@ public class PdfUtilitiesTest {
     @Test
     public void testConvertPdf2Png() {
         System.out.println("convertPdf2Png");
-        String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.pdf");
-        File inputPdfFile = new File(filename);
+        File inputPdfFile = new File(this.testResourcesDataPath, "eurotext.pdf");
         File[] results = PdfUtilities.convertPdf2Png(inputPdfFile);
         for (File result : results) {
             result.deleteOnExit();
@@ -95,9 +94,9 @@ public class PdfUtilitiesTest {
     @Test
     public void testGetPdfPageCount() {
         System.out.println("getPdfPageCount");
-        String inputPdfFile = String.format("%s/%s", this.testResourcesDataPath, "eurotext.pdf");
+        File inputPdfFile = new File(this.testResourcesDataPath, "eurotext.pdf");
         int expResult = 1;
-        int result = PdfUtilities.getPdfPageCount(inputPdfFile);
+        int result = PdfUtilities.getPdfPageCount(inputPdfFile.getPath());
         assertEquals(expResult, result);
     }
 

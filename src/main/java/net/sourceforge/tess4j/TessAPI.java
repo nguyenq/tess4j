@@ -29,7 +29,7 @@ import com.ochafik.lang.jnaerator.runtime.NativeSize;
 import net.sourceforge.tess4j.util.LoadLibs;
 
 /**
- * A Java wrapper for <code>Tesseract OCR 3.03 API</code> using
+ * A Java wrapper for <code>Tesseract OCR 3.04 API</code> using
  * <code>JNA Interface Mapping</code>.
  */
 public interface TessAPI extends Library, ITessAPI {
@@ -112,7 +112,7 @@ public interface TessAPI extends Library, ITessAPI {
 
     /**
      * Set the name of the input file. Needed only for training and reading a
-     * UNLV zone file.
+     * UNLV zone file, and for searchable PDF output.
      *
      * @param handle the TesseractAPI instance
      * @param name name of the input file
@@ -125,6 +125,8 @@ public interface TessAPI extends Library, ITessAPI {
      * transcoding. If that is not possible, we need the original image.
      * Finally, resolution metadata is stored in the PDF so we need that as
      * well.
+     * @param handle the TesseractAPI instance
+     * @return input file name
      */
     String TessBaseAPIGetInputName(TessBaseAPI handle);
 
@@ -591,6 +593,8 @@ public interface TessAPI extends Library, ITessAPI {
      * @param renderer result renderer
      * @return the status
      */
+    Pointer TessBaseAPIProcessPages(TessBaseAPI handle, String filename, String retry_config, int timeout_millisec);
+
     int TessBaseAPIProcessPages(TessBaseAPI handle, String filename, String retry_config, int timeout_millisec, TessResultRenderer renderer);
 
     /**
@@ -719,6 +723,7 @@ public interface TessAPI extends Library, ITessAPI {
      * that are cached globally -- surviving the <code>Init()</code> and
      * <code>End()</code> of individual TessBaseAPI's. This function allows the
      * clearing of these caches.
+     * @param handle  the TesseractAPI instance
      */
     void TessBaseAPIClearPersistentCache(TessBaseAPI handle);
 

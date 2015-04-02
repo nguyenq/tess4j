@@ -171,6 +171,13 @@ public class PdfUtilities {
         }
     }
 
+    private static final String PS_FILE = "lib/pdfpagecount.ps";
+    private static final String pdfPageCountFilePath;
+
+    static {
+        pdfPageCountFilePath = LoadLibs.extractTessResources(PS_FILE).getPath();
+    }
+
     /**
      * Gets PDF Page Count.
      *
@@ -180,7 +187,6 @@ public class PdfUtilities {
     public static int getPdfPageCount(String inputPdfFile) {
         //get Ghostscript instance
         Ghostscript gs = Ghostscript.getInstance();
-        String pdfPageCountFilePath = LoadLibs.extractTessResources("pdfpagecount.ps").getAbsolutePath();
 
         //prepare Ghostscript interpreter parameters
         //refer to Ghostscript documentation for parameter usage
@@ -191,7 +197,7 @@ public class PdfUtilities {
         gsArgs.add("-dQUIET");
         gsArgs.add("-dBATCH");
         gsArgs.add("-sPDFname=" + inputPdfFile);
-		gsArgs.add(pdfPageCountFilePath);
+        gsArgs.add(pdfPageCountFilePath);
 
         int pageCount = 0;
         ByteArrayOutputStream os;
@@ -213,6 +219,26 @@ public class PdfUtilities {
         return pageCount;
     }
 
+//    /**
+//     * Gets PDF Page Count using Ghost4J's new high-level API available in Ghost4J 0.4.0.
+//     * (Taken out due to many required additional libraries.)
+//     *
+//     * @param inputPdfFile
+//     * @return number of pages
+//     */
+//    public static int getPdfPageCount1(String inputPdfFile) {
+//        int pageCount = 0;
+//
+//        try {
+//            // load PDF document
+//            PDFDocument document = new PDFDocument();
+//            document.load(new File(inputPdfFile));
+//            pageCount = document.getPageCount();
+//        } catch (Exception e) {
+//            logger.log(Level.SEVERE, e.getMessage(), e);
+//        }
+//        return pageCount;
+//    }
     /**
      * Merge PDF files.
      *

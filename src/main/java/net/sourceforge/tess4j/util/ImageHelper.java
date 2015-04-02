@@ -60,7 +60,7 @@ public class ImageHelper {
             throw new IllegalArgumentException("RenderedImage in IIOImage must be BufferedImage");
         }
 
-        if (scale == 1.0) {
+        if (Math.abs(scale - 1.0) < 0.001) {
             return iioSource;
         }
 

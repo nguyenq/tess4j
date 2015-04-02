@@ -72,6 +72,22 @@ public class ImageIOHelper {
      * @throws IOException
      */
     public static List<File> createTiffFiles(File imageFile, int index) throws IOException {
+        return createTiffFiles(imageFile, index, false);
+    }
+
+    /**
+     * Creates a list of TIFF image files from an image file. It basically
+     * converts images of other formats to TIFF format, or a multi-page TIFF
+     * image to multiple TIFF image files.
+     *
+     * @param imageFile input image file
+     * @param index an index of the page; -1 means all pages, as in a multi-page
+     * TIFF image
+     * @param preserve preserve compression mode
+     * @return a list of TIFF image files
+     * @throws IOException
+     */
+    public static List<File> createTiffFiles(File imageFile, int index, boolean preserve) throws IOException {
         List<File> tiffFiles = new ArrayList<File>();
 
         String imageFileName = imageFile.getName();
@@ -92,7 +108,10 @@ public class ImageIOHelper {
 
         //Set up the writeParam
         TIFFImageWriteParam tiffWriteParam = new TIFFImageWriteParam(Locale.US);
-        tiffWriteParam.setCompressionMode(ImageWriteParam.MODE_DISABLED);
+
+        if (!preserve) {
+            tiffWriteParam.setCompressionMode(ImageWriteParam.MODE_DISABLED); // not preserve original sizes; decompress
+        }
 
         //Get tif writer and set output to file
         Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName(TIFF_FORMAT);
@@ -183,7 +202,7 @@ public class ImageIOHelper {
     }
 
     /**
-     * Sets DPI using API.
+     * Set DPI using API.
      *
      * @param imageMetadata original IIOMetadata
      * @param dpiX horizontal resolution
@@ -304,7 +323,7 @@ public class ImageIOHelper {
      *
      * @param imageFile input image file. It can be any of the supported
      * formats, including TIFF, JPEG, GIF, PNG, BMP, JPEG, and PDF if GPL
-     * GhostScript is installed
+     * Ghostscript is installed
      * @return a list of <code>IIOImage</code> objects
      * @throws IOException
      */
@@ -327,7 +346,7 @@ public class ImageIOHelper {
             String imageFormat = imageFileName.substring(imageFileName.lastIndexOf('.') + 1);
             if (imageFormat.matches("(pbm|pgm|ppm)")) {
                 imageFormat = "pnm";
-            } else if (imageFormat.equals("jp2")) {
+            } else if (imageFormat.matches("(jp2|j2k|jpf|jpx|jpm)")) {
                 imageFormat = "jpeg2000";
             }
             Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName(imageFormat);
@@ -357,7 +376,7 @@ public class ImageIOHelper {
                 if (reader != null) {
                     reader.dispose();
                 }
-            } catch (IOException e) {
+            } catch (Exception e) {
                 // ignore
             }
             if (workingTiffFile != null && workingTiffFile.exists()) {

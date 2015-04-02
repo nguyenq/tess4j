@@ -118,12 +118,13 @@
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
+				 <debug>false</debug>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.6</version>
+				<version>2.7</version>
 				<configuration>
 					<includeEmptyDirs>true</includeEmptyDirs>
 				</configuration>

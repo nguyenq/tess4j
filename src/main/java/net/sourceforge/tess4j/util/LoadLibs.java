@@ -46,11 +46,8 @@ public class LoadLibs {
 
     private static final String JNA_LIBRARY_PATH = "jna.library.path";
     public static final String TESS4J_TEMP_DIR = new File(System.getProperty("java.io.tmpdir"), "tess4j").getPath();
-    private static File targetTempFolder = null;
 
-    
-
-	/**
+    /**
      * Native library name.
      */
     public static final String LIB_NAME = "libtesseract304";
@@ -60,7 +57,7 @@ public class LoadLibs {
 
     static {
         System.setProperty("jna.encoding", "UTF8");
-        targetTempFolder = extractTessResources(Platform.RESOURCE_PREFIX);
+        File targetTempFolder = extractTessResources(Platform.RESOURCE_PREFIX);
         if (targetTempFolder != null && targetTempFolder.exists()) {
             String userCustomizedPath = System.getProperty(JNA_LIBRARY_PATH);
             if (null == userCustomizedPath || userCustomizedPath.isEmpty()) {
@@ -94,16 +91,16 @@ public class LoadLibs {
     /**
      * Extracts tesseract resources to temp folder.
      *
-     * @param dirname resource location
-     * @return target location
+     * @param resourceName name of file or directory
+     * @return target path, which could be file or directory
      */
-    public static File extractTessResources(String dirname) {
-        
+    public static File extractTessResources(String resourceName) {
+        File targetPath = null;
 
         try {
-        	targetTempFolder = new File(TESS4J_TEMP_DIR, dirname);
+            targetPath = new File(TESS4J_TEMP_DIR, resourceName);
 
-            URL tessResourceUrl = LoadLibs.class.getResource(dirname.startsWith("/") ? dirname : "/" + dirname);
+            URL tessResourceUrl = LoadLibs.class.getResource(resourceName.startsWith("/") ? resourceName : "/" + resourceName);
             if (tessResourceUrl == null) {
                 return null;
             }
@@ -111,34 +108,33 @@ public class LoadLibs {
             URLConnection urlConnection = tessResourceUrl.openConnection();
 
             /**
-             * Either load from resources from jar or project resource folder.
+             * Copy resources either from inside jar or from project folder.
              */
             if (urlConnection instanceof JarURLConnection) {
-                copyJarResourceToDirectory((JarURLConnection) urlConnection, targetTempFolder);
+                copyJarResourceToPath((JarURLConnection) urlConnection, targetPath);
             } else {
-                File tmp = new File(tessResourceUrl.getPath());
-                if(tmp.isDirectory()) {
-                	FileUtils.copyDirectory(tmp, targetTempFolder);
-                }else {
-                	FileUtils.copyFile(tmp, targetTempFolder);
+                File file = new File(tessResourceUrl.getPath());
+                if (file.isDirectory()) {
+                    FileUtils.copyDirectory(file, targetPath);
+                } else {
+                    FileUtils.copyFile(file, targetPath);
                 }
-                
             }
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
         }
 
-        return targetTempFolder;
+        return targetPath;
     }
 
     /**
      * Copies resources from the jar file of the current thread and extract it
-     * to the destination directory.
+     * to the destination path.
      *
      * @param jarConnection
-     * @param destDir
+     * @param destPath destination file or directory
      */
-    static void copyJarResourceToDirectory(JarURLConnection jarConnection, File destDir) {
+    static void copyJarResourceToPath(JarURLConnection jarConnection, File destPath) {
         try {
             JarFile jarFile = jarConnection.getJarFile();
             String jarConnectionEntryName = jarConnection.getEntryName();
@@ -155,7 +151,7 @@ public class LoadLibs {
                  */
                 if (jarEntryName.startsWith(jarConnectionEntryName)) {
                     String filename = jarEntryName.substring(jarConnectionEntryName.length());
-                    File currentFile = new File(destDir, filename);
+                    File currentFile = new File(destPath, filename);
 
                     if (jarEntry.isDirectory()) {
                         currentFile.mkdirs();
@@ -173,13 +169,4 @@ public class LoadLibs {
             logger.log(Level.SEVERE, e.getMessage(), e);
         }
     }
-    
-    /**
-     * 
-     * @return The name of the tess4j target temporary working folder, where
-     * the resource files are getting extracted to.
-     */
-    public static File getTargetTempFolder() {
-		return targetTempFolder;
-	}
 }
