@@ -593,8 +593,6 @@ public interface TessAPI extends Library, ITessAPI {
      * @param renderer result renderer
      * @return the status
      */
-    Pointer TessBaseAPIProcessPages(TessBaseAPI handle, String filename, String retry_config, int timeout_millisec);
-
     int TessBaseAPIProcessPages(TessBaseAPI handle, String filename, String retry_config, int timeout_millisec, TessResultRenderer renderer);
 
     /**

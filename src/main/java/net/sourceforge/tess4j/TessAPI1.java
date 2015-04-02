@@ -594,8 +594,6 @@ public class TessAPI1 implements Library, ITessAPI {
      * @param renderer result renderer
      * @return the status
      */
-    public static native Pointer TessBaseAPIProcessPages(TessBaseAPI handle, String filename, String retry_config, int timeout_millisec);
-
     public static native int TessBaseAPIProcessPages(TessBaseAPI handle, String filename, String retry_config, int timeout_millisec, TessResultRenderer renderer);
 
     /**
