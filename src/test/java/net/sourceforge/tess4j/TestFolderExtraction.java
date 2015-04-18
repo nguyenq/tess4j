@@ -55,7 +55,7 @@ public class TestFolderExtraction {
             /**
              * Gets tesseract instance and sets data path.
              */
-            Tesseract instance = Tesseract.getInstance();
+            ITesseract instance = new Tesseract();
             
             if (tessDataFolder != null) {
                 System.out.println(tessDataFolder.getAbsolutePath());
