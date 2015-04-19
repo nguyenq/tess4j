@@ -121,7 +121,7 @@ public class LoadLibs {
                 }
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
+            logger.log(Level.WARNING, e.getMessage(), e);
         }
 
         return targetPath;
@@ -166,7 +166,7 @@ public class LoadLibs {
                 }
             }
         } catch (IOException e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
+            logger.log(Level.WARNING, e.getMessage(), e);
         }
     }
 }
