@@ -175,7 +175,12 @@ public class PdfUtilities {
     private static final String pdfPageCountFilePath;
 
     static {
-        pdfPageCountFilePath = LoadLibs.extractTessResources(PS_FILE).getPath();
+        File postscriptFile = LoadLibs.extractTessResources(PS_FILE);
+        if (postscriptFile != null) {
+            pdfPageCountFilePath = postscriptFile.getPath();
+        } else {
+            pdfPageCountFilePath = PS_FILE;
+        }
     }
 
     /**
