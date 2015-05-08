@@ -226,9 +226,9 @@
 			<version>3.5.2</version>
 		</dependency>
 		<dependency>
-			<groupId>net.java.dev.jai-imageio</groupId>
-			<artifactId>jai-imageio-core-standalone</artifactId>
-			<version>1.2-pre-dr-b04-2011-07-04</version>
+		    <groupId>com.github.jai-imageio</groupId>
+		    <artifactId>jai-imageio-core</artifactId>
+		    <version>1.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.ghost4j</groupId>
