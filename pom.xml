@@ -221,19 +221,24 @@
 			<version>4.1.0</version>
 		</dependency>
 		<dependency>
-			<groupId>net.java.dev.jna</groupId>
-			<artifactId>platform</artifactId>
-			<version>3.5.2</version>
+	    <groupId>net.java.dev.jna</groupId>
+		    <artifactId>jna-platform</artifactId>
+		    <version>4.1.0</version>
 		</dependency>
 		<dependency>
-			<groupId>net.java.dev.jai-imageio</groupId>
-			<artifactId>jai-imageio-core-standalone</artifactId>
-			<version>1.2-pre-dr-b04-2011-07-04</version>
+		    <groupId>com.github.jai-imageio</groupId>
+		    <artifactId>jai-imageio-core</artifactId>
+		    <version>1.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.ghost4j</groupId>
 			<artifactId>ghost4j</artifactId>
 			<version>0.5.1</version>
+		</dependency>
+		<dependency>
+		    <groupId>commons-io</groupId>
+		    <artifactId>commons-io</artifactId>
+		    <version>2.4</version>
 		</dependency>
 	</dependencies>
 
