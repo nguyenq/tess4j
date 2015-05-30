@@ -15,17 +15,42 @@
  */
 package net.sourceforge.tess4j.util;
 
-import java.io.*;
-import java.util.*;
-import javax.imageio.*;
-import javax.imageio.stream.*;
-import javax.imageio.metadata.*;
-import com.sun.media.imageio.plugins.tiff.*;
 import java.awt.Toolkit;
-import java.awt.image.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferByte;
+import java.awt.image.RenderedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.ImageTypeSpecifier;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.metadata.IIOInvalidTreeException;
+import javax.imageio.metadata.IIOMetadata;
+import javax.imageio.metadata.IIOMetadataNode;
+import javax.imageio.stream.ImageInputStream;
+import javax.imageio.stream.ImageOutputStream;
+
 import org.w3c.dom.NodeList;
+
+import com.sun.media.imageio.plugins.tiff.BaselineTIFFTagSet;
+import com.sun.media.imageio.plugins.tiff.TIFFDirectory;
+import com.sun.media.imageio.plugins.tiff.TIFFField;
+import com.sun.media.imageio.plugins.tiff.TIFFImageWriteParam;
+import com.sun.media.imageio.plugins.tiff.TIFFTag;
 
 public class ImageIOHelper {
 
