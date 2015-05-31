@@ -34,6 +34,11 @@ public class Utils {
         FileOutputStream fos = null;
 
         try {
+            // create parent dirs when necessary
+            if (outFile.getParentFile() != null) {
+                outFile.getParentFile().mkdirs();
+            }
+
             fos = new FileOutputStream(outFile);
             fos.write(data);
         } finally {

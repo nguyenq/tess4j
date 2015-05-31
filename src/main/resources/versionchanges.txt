@@ -52,6 +52,11 @@ Version 1.4 (18 January 2015)
 Version 1.4.1 (24 January 2015)
 - Enable use of jna.library.path system property for user-customizable path
 
-Version 2.0 (22 February 2015)
+Version 1.5 (13 March 2015)
+- Add UNLV zone file support
+- Refactor
+
+Version 2.0 (29 March 2015)
 - Upgrade to Tesseract 3.03 (r1050), which is compatible with Tesseract 3.03RC on Linux
-- Include English language data for Tesseract 3.02
+- Refactor Tesseract class for extensibility and thread-safety
+- Update English language data for Tesseract 3.02
