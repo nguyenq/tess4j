@@ -408,13 +408,7 @@ public class ImageIOHelper {
      * @throws IOException
      */
     public static void mergeTiff(File[] inputImages, File outputTiff) throws IOException {
-        List<IIOImage> imageList = new ArrayList<IIOImage>();
-
-        for (File inputImage : inputImages) {
-            imageList.addAll(getIIOImageList(inputImage));
-        }
-
-        if (imageList.isEmpty()) {
+        if (inputImages.length == 0) {
             // if no image
             return;
         }
@@ -437,13 +431,20 @@ public class ImageIOHelper {
         ImageOutputStream ios = ImageIO.createImageOutputStream(outputTiff);
         writer.setOutput(ios);
 
-        IIOImage firstIioImage = imageList.remove(0);
-        writer.write(streamMetadata, firstIioImage, tiffWriteParam);
-
-        int i = 1;
-        for (IIOImage iioImage : imageList) {
-            writer.writeInsert(i++, iioImage, tiffWriteParam);
+        boolean firstPage = true;
+        int index = 1;
+        for (File inputImage : inputImages) {
+            List<IIOImage> iioImages = getIIOImageList(inputImage);
+            for (IIOImage iioImage : iioImages) {
+                if (firstPage) {
+                    writer.write(streamMetadata, iioImage, tiffWriteParam);
+                    firstPage = false;
+                } else {
+                    writer.writeInsert(index++, iioImage, tiffWriteParam);
+                }
+            }
         }
+
         ios.close();
 
         writer.dispose();
