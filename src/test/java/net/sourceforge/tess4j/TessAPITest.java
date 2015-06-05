@@ -47,6 +47,8 @@ import com.sun.jna.Pointer;
 import com.sun.jna.StringArray;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
+import net.sourceforge.lept4j.Boxa;
+import net.sourceforge.lept4j.Pix;
 
 import net.sourceforge.tess4j.ITessAPI.*;
 import static net.sourceforge.tess4j.ITessAPI.FALSE;
@@ -72,7 +74,7 @@ public class TessAPITest {
 
     @Before
     public void setUp() {
-        api = new TessDllAPIImpl().getInstance();
+        api = new TessAPIImpl().getInstance();
         handle = api.TessBaseAPICreate();
     }
 
@@ -568,16 +570,16 @@ public class TessAPITest {
         assertTrue(new File(outputbase + ".pdf").exists());
     }
 
-    public class TessDllAPIImpl implements TessAPI {
+    public class TessAPIImpl implements TessAPI {
 
         public TessAPI getInstance() {
             return INSTANCE;
         }
 
-        public void TessDllEndPage() {
+        public void TessAPIEndPage() {
         }
 
-        public void TessDllRelease() {
+        public void TessAPIRelease() {
         }
 
         @Override
@@ -687,6 +689,16 @@ public class TessAPITest {
 
         @Override
         public String TessBaseAPIGetInputName(TessBaseAPI handle) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public void TessBaseAPISetInputImage(TessBaseAPI handle, Pix pix) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public Pix TessBaseAPIGetInputImage(TessBaseAPI handle) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
@@ -811,12 +823,62 @@ public class TessAPITest {
         }
 
         @Override
+        public void TessBaseAPISetImage2(TessBaseAPI handle, Pix pix) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
         public void TessBaseAPISetSourceResolution(TessBaseAPI handle, int ppi) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
         @Override
         public void TessBaseAPISetRectangle(TessBaseAPI handle, int left, int top, int width, int height) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public Pix TessBaseAPIGetThresholdedImage(TessBaseAPI handle) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public Boxa TessBaseAPIGetRegions(TessBaseAPI handle, PointerByReference pixa) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public Boxa TessBaseAPIGetTextlines(TessBaseAPI handle, PointerByReference pixa, PointerByReference blockids) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public Boxa TessBaseAPIGetTextlines1(TessBaseAPI handle, int raw_image, int raw_padding, PointerByReference pixa, PointerByReference blockids, PointerByReference paraids) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public Boxa TessBaseAPIGetStrips(TessBaseAPI handle, PointerByReference pixa, PointerByReference blockids) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public Boxa TessBaseAPIGetWords(TessBaseAPI handle, PointerByReference pixa) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public Boxa TessBaseAPIGetConnectedComponents(TessBaseAPI handle, PointerByReference cc) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public Boxa TessBaseAPIGetComponentImages(TessBaseAPI handle, int level, int text_only, PointerByReference pixa, PointerByReference blockids) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public Boxa TessBaseAPIGetComponentImages1(TessBaseAPI handle, int level, int text_only, int raw_image, int raw_padding, PointerByReference pixa, PointerByReference blockids, PointerByReference paraids) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
@@ -857,6 +919,11 @@ public class TessAPITest {
 
         @Override
         public int TessBaseAPIProcessPages(TessBaseAPI handle, String filename, String retry_config, int timeout_millisec, TessResultRenderer renderer) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public int TessBaseAPIProcessPage(TessBaseAPI handle, Pix pix, int page_index, String filename, String retry_config, int timeout_millisec, TessResultRenderer renderer) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
@@ -962,6 +1029,16 @@ public class TessAPITest {
 
         @Override
         public int TessPageIteratorBlockType(TessPageIterator handle) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public Pix TessPageIteratorGetBinaryImage(TessPageIterator handle, int level) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public Pix TessPageIteratorGetImage(TessPageIterator handle, int level, int padding, Pix original_image, IntBuffer left, IntBuffer top) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 

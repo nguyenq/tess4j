@@ -27,6 +27,8 @@ import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 
 import com.ochafik.lang.jnaerator.runtime.NativeSize;
+import net.sourceforge.lept4j.Boxa;
+import net.sourceforge.lept4j.Pix;
 import net.sourceforge.tess4j.util.LoadLibs;
 
 /**
@@ -125,10 +127,15 @@ public class TessAPI1 implements Library, ITessAPI {
      * transcoding. If that is not possible, we need the original image.
      * Finally, resolution metadata is stored in the PDF so we need that as
      * well.
+     *
      * @param handle the TesseractAPI instance
      * @return input file name
      */
     public static native String TessBaseAPIGetInputName(TessBaseAPI handle);
+
+    public static native void TessBaseAPISetInputImage(TessBaseAPI handle, Pix pix);
+
+    public static native Pix TessBaseAPIGetInputImage(TessBaseAPI handle);
 
     public static native int TessBaseAPIGetSourceYResolution(TessBaseAPI handle);
 
@@ -252,9 +259,9 @@ public class TessAPI1 implements Library, ITessAPI {
      * <i>/</i>. Any name after the last <i>/</i> will be stripped.
      * @param language The language is (usually) an <code>ISO 639-3</code>
      * string or <code>NULL</code> will default to <code>eng</code>. The
-     * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;] indicating
-     * that multiple languages are to be loaded. E.g., <code>hin+eng</code> will
-     * load Hindi and English.
+     * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;]
+     * indicating that multiple languages are to be loaded. E.g.,
+     * <code>hin+eng</code> will load Hindi and English.
      * @param oem ocr engine mode
      * @param configs pointer configuration
      * @param configs_size pointer configuration size
@@ -270,9 +277,9 @@ public class TessAPI1 implements Library, ITessAPI {
      * <i>/</i>. Any name after the last <i>/</i> will be stripped.
      * @param language The language is (usually) an <code>ISO 639-3</code>
      * string or <code>NULL</code> will default to <code>eng</code>. The
-     * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;] indicating
-     * that multiple languages are to be loaded. E.g., <code>hin+eng</code> will
-     * load Hindi and English.
+     * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;]
+     * indicating that multiple languages are to be loaded. E.g.,
+     * <code>hin+eng</code> will load Hindi and English.
      * @param oem ocr engine mode
      * @return 0 on success and -1 on initialization failure
      */
@@ -285,9 +292,9 @@ public class TessAPI1 implements Library, ITessAPI {
      * <i>/</i>. Any name after the last <i>/</i> will be stripped.
      * @param language The language is (usually) an <code>ISO 639-3</code>
      * string or <code>NULL</code> will default to <code>eng</code>. The
-     * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;] indicating
-     * that multiple languages are to be loaded. E.g., <code>hin+eng</code> will
-     * load Hindi and English.
+     * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;]
+     * indicating that multiple languages are to be loaded. E.g.,
+     * <code>hin+eng</code> will load Hindi and English.
      * @return 0 on success and -1 on initialization failure
      */
     public static native int TessBaseAPIInit3(TessBaseAPI handle, String datapath, String language);
@@ -300,9 +307,9 @@ public class TessAPI1 implements Library, ITessAPI {
      * <i>/</i>. Any name after the last <i>/</i> will be stripped.
      * @param language The language is (usually) an <code>ISO 639-3</code>
      * string or <code>NULL</code> will default to <code>eng</code>. The
-     * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;] indicating
-     * that multiple languages are to be loaded. E.g., <code>hin+eng</code> will
-     * load Hindi and English.
+     * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;]
+     * indicating that multiple languages are to be loaded. E.g.,
+     * <code>hin+eng</code> will load Hindi and English.
      * @param oem ocr engine mode
      * @param configs pointer configuration
      * @param configs_size pointer configuration size
@@ -357,8 +364,9 @@ public class TessAPI1 implements Library, ITessAPI {
      * <i>/</i>. Any name after the last <i>/</i> will be stripped.
      * @param language The language is (usually) an <code>ISO 639-3</code>
      * string or <code>NULL</code> will default to eng. The language may be a
-     * string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;] indicating that multiple
-     * languages are to be loaded. E.g., hin+eng will load Hindi and English.
+     * string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;] indicating that
+     * multiple languages are to be loaded. E.g., hin+eng will load Hindi and
+     * English.
      * @return api init language mode
      */
     public static native int TessBaseAPIInitLangMod(TessBaseAPI handle, String datapath, String language);
@@ -463,6 +471,22 @@ public class TessAPI1 implements Library, ITessAPI {
             int height, int bytes_per_pixel, int bytes_per_line);
 
     /**
+     * Provide an image for Tesseract to recognize. As with
+     * <code>SetImage</code> above, Tesseract doesn't take a copy or ownership
+     * or <code>pixDestroy</code> the image, so it must persist until after
+     * <code>Recognize</code>. <code>Pix</code> vs raw, which to use? Use
+     * <code>Pix</code> where possible. A future version of Tesseract may choose
+     * to use <code>Pix</code> as its internal representation and discard
+     * <code>IMAGE</code> altogether. Because of that, an implementation that
+     * sources and targets <code>Pix</code> may end up with less copies than an
+     * implementation that does not.
+     *
+     * @param handle the TesseractAPI instance
+     * @param pix
+     */
+    public static native void TessBaseAPISetImage2(TessBaseAPI handle, Pix pix);
+
+    /**
      * Set the resolution of the source image in pixels per inch so font size
      * information can be calculated in results. Call this after
      * <code>SetImage()</code>.
@@ -486,6 +510,143 @@ public class TessAPI1 implements Library, ITessAPI {
      */
     public static native void TessBaseAPISetRectangle(TessBaseAPI handle, int left, int top, int width,
             int height);
+
+    /**
+     * ONLY available after <code>SetImage</code> if you have Leptonica
+     * installed. Get a copy of the internal thresholded image from Tesseract.
+     *
+     * @param handle the TesseractAPI instance
+     * @return internal thresholded image
+     */
+    public static native Pix TessBaseAPIGetThresholdedImage(TessBaseAPI handle);
+
+    /**
+     * Get the result of page layout analysis as a Leptonica-style
+     * <code>Boxa</code>, <code>Pixa</code> pair, in reading order. Can be
+     * called before or after <code>Recognize</code>.
+     *
+     * @param handle the TesseractAPI instance
+     * @param pixa array of Pix
+     * @return array of Box
+     */
+    public static native Boxa TessBaseAPIGetRegions(TessBaseAPI handle, PointerByReference pixa);
+
+    /**
+     * Get the textlines as a Leptonica-style <code>Boxa</code>,
+     * <code>Pixa</code> pair, in reading order. Can be called before or after
+     * Recognize. If <code>blockids</code> is not <code>NULL</code>, the
+     * block-id of each line is also returned as an array of one element per
+     * line. delete [] after use. If <code>paraids</code> is not
+     * <code>NULL</code>, the paragraph-id of each line within its block is also
+     * returned as an array of one element per line. delete [] after use.<br>
+     * Helper method to extract from the thresholded image (most common usage).
+     *
+     * @param handle the TesseractAPI instance
+     * @param pixa array of Pix
+     * @param blockids
+     * @return array of Box
+     */
+    public static native Boxa TessBaseAPIGetTextlines(TessBaseAPI handle, PointerByReference pixa, PointerByReference blockids);
+
+    /**
+     * Get the textlines as a Leptonica-style <code>Boxa</code>,
+     * <code>Pixa</code> pair, in reading order. Can be called before or after
+     * Recognize. If <code>blockids</code> is not <code>NULL</code>, the
+     * block-id of each line is also returned as an array of one element per
+     * line. delete [] after use. If <code>paraids</code> is not
+     * <code>NULL</code>, the paragraph-id of each line within its block is also
+     * returned as an array of one element per line. delete [] after use.
+     *
+     * @param handle the TesseractAPI instance
+     * @param raw_image
+     * @param raw_padding
+     * @param pixa array of Pix
+     * @param blockids
+     * @param paraids
+     * @return array of Box
+     */
+    public static native Boxa TessBaseAPIGetTextlines1(TessBaseAPI handle, int raw_image, int raw_padding, PointerByReference pixa, PointerByReference blockids, PointerByReference paraids);
+
+    /**
+     * Get textlines and strips of image regions as a Leptonica-style
+     * <code>Boxa</code>, <code>Pixa</code> pair, in reading order. Enables
+     * downstream handling of non-rectangular regions. Can be called before or
+     * after Recognize. If <code>blockids</code> is not NULL, the block-id of
+     * each line is also returned as an array of one element per line. delete []
+     * after use.
+     *
+     * @param handle the TesseractAPI instance
+     * @param pixa array of Pix
+     * @param blockids
+     * @return array of Box
+     */
+    public static native Boxa TessBaseAPIGetStrips(TessBaseAPI handle, PointerByReference pixa, PointerByReference blockids);
+
+    /**
+     * Get the words as a Leptonica-style <code>Boxa</code>, <code>Pixa</code>
+     * pair, in reading order. Can be called before or after
+     * <code>Recognize</code>.
+     *
+     * @param handle the TesseractAPI instance
+     * @param pixa array of Pix
+     * @return array of Box
+     */
+    public static native Boxa TessBaseAPIGetWords(TessBaseAPI handle, PointerByReference pixa);
+
+    /**
+     * Gets the individual connected (text) components (created after pages
+     * segmentation step, but before recognition) as a Leptonica-style
+     * <code>Boxa</code>, <code>Pixa</code> pair, in reading order. Can be
+     * called before or after <code>Recognize</code>.
+     *
+     * @param handle the TesseractAPI instance
+     * @param cc array of Pix
+     * @return array of Box
+     */
+    public static native Boxa TessBaseAPIGetConnectedComponents(TessBaseAPI handle, PointerByReference cc);
+
+    /**
+     * Get the given level kind of components (block, textline, word etc.) as a
+     * Leptonica-style <code>Boxa</code>, <code>Pixa</code> pair, in reading
+     * order. Can be called before or after Recognize. If <code>blockids</code>
+     * is not <code>NULL</code>, the block-id of each component is also returned
+     * as an array of one element per component. delete [] after use. If
+     * <code>text_only</code> is true, then only text components are returned.
+     * Helper function to get binary images with no padding (most common usage).
+     *
+     * @param handle the TesseractAPI instance
+     * @param level PageIteratorLevel
+     * @param text_only
+     * @param pixa array of Pix
+     * @param blockids
+     * @return array of Box
+     */
+    public static native Boxa TessBaseAPIGetComponentImages(TessBaseAPI handle, int level, int text_only, PointerByReference pixa, PointerByReference blockids);
+
+    /**
+     * Get the given level kind of components (block, textline, word etc.) as a
+     * Leptonica-style <code>Boxa</code>, <code>Pixa</code> pair, in reading
+     * order. Can be called before or after Recognize. If <code>blockids</code>
+     * is not <code>NULL</code>, the block-id of each component is also returned
+     * as an array of one element per component. delete [] after use. If
+     * <code>paraids</code> is not <code>NULL</code>, the paragraph-id of each
+     * component with its block is also returned as an array of one element per
+     * component. delete [] after use. If <code>raw_image</code> is true, then
+     * portions of the original image are extracted instead of the thresholded
+     * image and padded with raw_padding. If <code>text_only</code> is true,
+     * then only text components are returned.
+     *
+     * @param handle the TesseractAPI instance
+     * @param level PageIteratorLevel
+     * @param text_only
+     * @param raw_image
+     * @param raw_padding
+     * @param pixa array of Pix
+     * @param blockids
+     * @param paraids
+     * @return
+     */
+    public static native Boxa TessBaseAPIGetComponentImages1(TessBaseAPI handle, int level, int text_only, int raw_image, int raw_padding, PointerByReference pixa, PointerByReference blockids, PointerByReference paraids);
 
     /**
      * @param handle the TesseractAPI instance
@@ -595,6 +756,8 @@ public class TessAPI1 implements Library, ITessAPI {
      * @return the status
      */
     public static native int TessBaseAPIProcessPages(TessBaseAPI handle, String filename, String retry_config, int timeout_millisec, TessResultRenderer renderer);
+
+    public static native int TessBaseAPIProcessPage(TessBaseAPI handle, Pix pix, int page_index, String filename, String retry_config, int timeout_millisec, TessResultRenderer renderer);
 
     /**
      * The recognized text is returned as a char* which is coded as UTF-8 and
@@ -723,6 +886,7 @@ public class TessAPI1 implements Library, ITessAPI {
      * that are cached globally -- surviving the <code>Init()</code> and
      * <code>End()</code> of individual TessBaseAPI's. This function allows the
      * clearing of these caches.
+     *
      * @param handle the TesseractAPI instance
      */
     public static native void TessBaseAPIClearPersistentCache(TessBaseAPI handle);
@@ -823,12 +987,59 @@ public class TessAPI1 implements Library, ITessAPI {
     public static native int TessPageIteratorBlockType(TessPageIterator handle);
 
     /**
+     * Returns a binary image of the current object at the given level. The
+     * position and size match the return from BoundingBoxInternal, and so this
+     * could be upscaled with respect to the original input image. Use
+     * <code>pixDestroy</code> to delete the image after use. The following
+     * methods are used to generate the images: <code>RIL_BLOCK</code>: mask the
+     * page image with the block polygon. <code>RIL_TEXTLINE</code>: Clip the
+     * rectangle of the line box from the page image. TODO(rays) fix this to
+     * generate and use a line polygon. <code>RIL_WORD</code>: Clip the
+     * rectangle of the word box from the page image. <code>RIL_SYMBOL</code>:
+     * Render the symbol outline to an image for cblobs (prior to recognition)
+     * or the bounding box otherwise. A reconstruction of the original image
+     * (using xor to check for double representation) should be reasonably
+     * accurate, apart from removed noise, at the block level. Below the block
+     * level, the reconstruction will be missing images and line separators. At
+     * the symbol level, kerned characters will be invade the bounding box if
+     * rendered after recognition, making an xor reconstruction inaccurate, but
+     * an or construction better. Before recognition, symbol-level
+     * reconstruction should be good, even with xor, since the images come from
+     * the connected components.
+     *
+     * @param handle the TessPageIterator instance
+     * @param level PageIteratorLevel
+     * @return
+     */
+    public static native Pix TessPageIteratorGetBinaryImage(TessPageIterator handle, int level);
+
+    /**
+     * Returns an image of the current object at the given level in greyscale if
+     * available in the input. To guarantee a binary image use BinaryImage. NOTE
+     * that in order to give the best possible image, the bounds are expanded
+     * slightly over the binary connected component, by the supplied padding, so
+     * the top-left position of the returned image is returned in (left,top).
+     * These will most likely not match the coordinates returned by BoundingBox.
+     * If you do not supply an original image, you will get a binary one. Use
+     * <code>pixDestroy</code> to delete the image after use.
+     *
+     * @param handle the TessPageIterator instance
+     * @param level PageIteratorLevel
+     * @param padding
+     * @param original_image
+     * @param left
+     * @param top
+     * @return
+     */
+    public static native Pix TessPageIteratorGetImage(TessPageIterator handle, int level, int padding, Pix original_image, IntBuffer left, IntBuffer top);
+
+    /**
      * Returns the baseline of the current object at the given level. The
      * baseline is the line that passes through (x1, y1) and (x2, y2).<br>
      * WARNING: with vertical text, baselines may be vertical!
      *
      * @param handle the TessPageIterator instance
-     * @param level tesseract page level
+     * @param level PageIteratorLevel
      * @param x1 int buffer position
      * @param y1 int buffer position
      * @param x2 int buffer position
