@@ -100,31 +100,45 @@ public class LoadLibs {
         try {
             targetPath = new File(TESS4J_TEMP_DIR, resourceName);
 
-            URL tessResourceUrl = LoadLibs.class.getResource(resourceName.startsWith("/") ? resourceName : "/" + resourceName);
-            if (tessResourceUrl == null) {
-                return null;
+            Enumeration<URL> resources = LoadLibs.class.getClassLoader().getResources(resourceName);
+            while (resources.hasMoreElements()) {
+                URL resourceUrl = resources.nextElement();
+                copyResources(resourceUrl, targetPath);
             }
-
-            URLConnection urlConnection = tessResourceUrl.openConnection();
-
-            /**
-             * Copy resources either from inside jar or from project folder.
-             */
-            if (urlConnection instanceof JarURLConnection) {
-                copyJarResourceToPath((JarURLConnection) urlConnection, targetPath);
-            } else {
-                File file = new File(tessResourceUrl.getPath());
-                if (file.isDirectory()) {
-                    FileUtils.copyDirectory(file, targetPath);
-                } else {
-                    FileUtils.copyFile(file, targetPath);
-                }
-            }
-        } catch (Exception e) {
+        } catch (IOException e) {
             logger.log(Level.WARNING, e.getMessage(), e);
         }
 
         return targetPath;
+    }
+
+    /**
+     * Copies resources to target folder.
+     *
+     * @param resourceUrl
+     * @param resourceName
+     * @return
+     */
+    static void copyResources(URL resourceUrl, File targetPath) throws IOException {
+        if (resourceUrl == null) {
+            return;
+        }
+
+        URLConnection urlConnection = resourceUrl.openConnection();
+
+        /**
+         * Copy resources either from inside jar or from project folder.
+         */
+        if (urlConnection instanceof JarURLConnection) {
+            copyJarResourceToPath((JarURLConnection) urlConnection, targetPath);
+        } else {
+            File file = new File(resourceUrl.getPath());
+            if (file.isDirectory()) {
+                FileUtils.copyDirectory(file, targetPath);
+            } else {
+                FileUtils.copyFile(file, targetPath);
+            }
+        }
     }
 
     /**
@@ -149,7 +163,7 @@ public class LoadLibs {
                 /**
                  * Extract files only if they match the path.
                  */
-                if (jarEntryName.startsWith(jarConnectionEntryName)) {
+                if (jarEntryName.startsWith(jarConnectionEntryName + "/")) {
                     String filename = jarEntryName.substring(jarConnectionEntryName.length());
                     File currentFile = new File(destPath, filename);
 
