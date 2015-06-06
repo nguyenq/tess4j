@@ -401,10 +401,10 @@ public class ImageIOHelper {
     }
 
     /**
-     * Merges multiple images into one TIFF image.
+     * Merges multiple images into one multi-page TIFF image.
      *
      * @param inputImages an array of image files
-     * @param outputTiff the output TIFF file
+     * @param outputTiff the output multi-page TIFF file
      * @throws IOException
      */
     public static void mergeTiff(File[] inputImages, File outputTiff) throws IOException {
