@@ -15,12 +15,18 @@
  */
 package net.sourceforge.tess4j;
 
+import net.sourceforge.tess4j.util.LoggHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import static net.sourceforge.tess4j.ITessAPI.TRUE;
 
 class ProgressMonitor extends Thread {
 
     ITessAPI.ETEXT_DESC monitor;
     StringBuilder outputMessage = new StringBuilder();
+
+    private static final Logger logger = LoggerFactory.getLogger(new LoggHelper().toString());
 
     ProgressMonitor(ITessAPI.ETEXT_DESC monitor) {
         this.monitor = monitor;
@@ -34,8 +40,8 @@ class ProgressMonitor extends Thread {
     public void run() {
         try {
             while (true) {
-                System.err.println("ocr alive: " + (monitor.ocr_alive == TRUE));
-                System.err.println("progress: " + monitor.progress);
+                logger.error("ocr alive: " + (monitor.ocr_alive == TRUE));
+                logger.error("progress: " + monitor.progress);
                 outputMessage.append(monitor.more_to_come);
                 if (monitor.progress >= 100) {
                     break;
