@@ -16,8 +16,6 @@
 package net.sourceforge.tess4j;
 
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -47,12 +45,17 @@ import com.sun.jna.Pointer;
 import com.sun.jna.StringArray;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
+import net.sourceforge.lept4j.Box;
 import net.sourceforge.lept4j.Boxa;
+import static net.sourceforge.lept4j.ILeptonica.L_CLONE;
+import net.sourceforge.lept4j.Leptonica;
 import net.sourceforge.lept4j.Pix;
 
 import net.sourceforge.tess4j.ITessAPI.*;
 import static net.sourceforge.tess4j.ITessAPI.FALSE;
 import static net.sourceforge.tess4j.ITessAPI.TRUE;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class TessAPITest {
 
@@ -131,6 +134,61 @@ public class TessAPITest {
         api.TessDeleteText(utf8Text);
         System.out.println(result);
         assertTrue(result.startsWith(expResult));
+    }
+
+    /**
+     * Test of TessBaseAPIGetUTF8Text method, of class TessAPI.
+     *
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testTessBaseAPIGetUTF8Text_Pix() throws Exception {
+        System.out.println("TessBaseAPIGetUTF8Text_Pix");
+        String expResult = expOCRResult;
+        File tiff = new File(this.testResourcesDataPath, "eurotext.tif");
+        Leptonica leptInstance = Leptonica.INSTANCE;
+        Pix pix = leptInstance.pixRead(tiff.getPath());
+        api.TessBaseAPIInit3(handle, datapath, language);
+        api.TessBaseAPISetImage2(handle, pix);
+        Pointer utf8Text = api.TessBaseAPIGetUTF8Text(handle);
+        String result = utf8Text.getString(0);
+        api.TessDeleteText(utf8Text);
+        System.out.println(result);
+        assertTrue(result.startsWith(expResult));
+    }
+
+    /**
+     * Test of TessBaseAPIGetComponentImages method, of class TessAPI.
+     *
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testTessBaseAPIGetComponentImages() throws Exception {
+        System.out.println("TessBaseAPIGetComponentImages");
+        File image = new File(this.testResourcesDataPath, "eurotext.png");
+        int expResult = 12; // number of lines in the test image
+        Leptonica leptInstance = Leptonica.INSTANCE;
+        Pix pix = leptInstance.pixRead(image.getPath());
+        api.TessBaseAPIInit3(handle, datapath, language);
+        api.TessBaseAPISetImage2(handle, pix);
+        PointerByReference pixa = null;
+        PointerByReference blockids = null;
+        Boxa boxes = api.TessBaseAPIGetComponentImages(handle, TessPageIteratorLevel.RIL_TEXTLINE, TRUE, pixa, blockids);
+//        boxes = api.TessBaseAPIGetRegions(handle, pixa); // equivalent to TessPageIteratorLevel.RIL_BLOCK
+        int boxCount = leptInstance.boxaGetCount(boxes);
+        for (int i = 0; i < boxCount; i++) {
+            Box box = leptInstance.boxaGetBox(boxes, i, L_CLONE);
+            if (box == null) {
+                continue;
+            }
+            api.TessBaseAPISetRectangle(handle, box.x, box.y, box.w, box.h);
+            Pointer utf8Text = api.TessBaseAPIGetUTF8Text(handle);
+            String ocrResult = utf8Text.getString(0);
+            api.TessDeleteText(utf8Text);
+            int conf = api.TessBaseAPIMeanTextConf(handle);
+            System.out.print(String.format("Box[%d]: x=%d, y=%d, w=%d, h=%d, confidence: %d, text: %s", i, box.x, box.y, box.w, box.h, conf, ocrResult));
+        }
+        assertEquals(expResult, boxCount);
     }
 
     /**
