@@ -16,7 +16,6 @@
 package net.sourceforge.tess4j;
 
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
