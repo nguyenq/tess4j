@@ -83,11 +83,11 @@ public class Tesseract1Test {
      */
     @Test
     public void testDoOCR_File() throws Exception {
-        System.out.println("doOCR on a PNG image");
+        logger.info("doOCR on a PNG image");
         File imageFile = new File(this.testResourcesDataPath, "eurotext.png");
         String expResult = "The (quick) [brown] {fox} jumps!\nOver the $43,456.78 <lazy> #90 dog";
         String result = instance.doOCR(imageFile);
-        System.out.println(result);
+        logger.info(result);
         assertEquals(expResult, result.substring(0, expResult.length()));
     }
 
@@ -98,7 +98,7 @@ public class Tesseract1Test {
      */
     @Test
     public void testDoOCR_UNLV_Zone_File() throws Exception {
-        System.out.println("doOCR on a PNG image with UNLV zone file .uzn");
+        logger.info("doOCR on a PNG image with UNLV zone file .uzn");
         //UNLV zone format: left top width height label
         String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext_unlv.png");
         File imageFile = new File(filename);
@@ -107,7 +107,7 @@ public class Tesseract1Test {
                 + "The (quick) [brown] {fox} jumps!\n"
                 + "Over the $43,456.78 <lazy> #90 dog";
         String result = instance.doOCR(imageFile);
-        System.out.println(result);
+        logger.info(result);
         assertEquals(expResult, result.trim());
     }
 
@@ -118,13 +118,13 @@ public class Tesseract1Test {
      */
     @Test
     public void testDoOCR_File_With_Configs() throws Exception {
-        System.out.println("doOCR with configs");
+        logger.info("doOCR with configs");
         File imageFile = new File(this.testResourcesDataPath, "eurotext.png");
         String expResult = "[-0123456789.\n ]+";
         List<String> configs = Arrays.asList("digits");
         instance.setConfigs(configs);
         String result = instance.doOCR(imageFile);
-        System.out.println(result);
+        logger.info(result);
         assertTrue(result.matches(expResult));
     }
 
@@ -135,12 +135,12 @@ public class Tesseract1Test {
      */
     @Test
     public void testDoOCR_File_Rectangle() throws Exception {
-        System.out.println("doOCR on a BMP image with bounding rectangle");
+        logger.info("doOCR on a BMP image with bounding rectangle");
         File imageFile = new File(this.testResourcesDataPath, "eurotext.bmp");
         Rectangle rect = new Rectangle(0, 0, 1024, 800); // define an equal or smaller region of interest on the image
         String expResult = "The (quick) [brown] {fox} jumps!\nOver the $43,456.78 <lazy> #90 dog";
         String result = instance.doOCR(imageFile, rect);
-        System.out.println(result);
+        logger.info(result);
         assertEquals(expResult, result.substring(0, expResult.length()));
     }
 
@@ -151,12 +151,12 @@ public class Tesseract1Test {
      */
     @Test
     public void testDoOCR_List_Rectangle() throws Exception {
-        System.out.println("doOCR on a PDF document");
+        logger.info("doOCR on a PDF document");
         File imageFile = new File(this.testResourcesDataPath, "eurotext.pdf");
         List<IIOImage> imageList = ImageIOHelper.getIIOImageList(imageFile);
         String expResult = "The (quick) [brown] {fox} jumps!\nOver the $43,456.78 <lazy> #90 dog";
         String result = instance.doOCR(imageList, null);
-        System.out.println(result);
+        logger.info(result);
         assertEquals(expResult, result.substring(0, expResult.length()));
     }
 
@@ -167,12 +167,12 @@ public class Tesseract1Test {
      */
     @Test
     public void testDoOCR_BufferedImage() throws Exception {
-        System.out.println("doOCR on a buffered image of a PNG");
+        logger.info("doOCR on a buffered image of a PNG");
         File imageFile = new File(this.testResourcesDataPath, "eurotext.png");
         BufferedImage bi = ImageIO.read(imageFile);
         String expResult = "The (quick) [brown] {fox} jumps!\nOver the $43,456.78 <lazy> #90 dog";
         String result = instance.doOCR(bi);
-        System.out.println(result);
+        logger.info(result);
         assertEquals(expResult, result.substring(0, expResult.length()));
     }
 
@@ -183,7 +183,7 @@ public class Tesseract1Test {
      */
     @Test
     public void testDoOCR_SkewedImage() throws Exception {
-        System.out.println("doOCR on a skewed PNG image");
+        logger.info("doOCR on a skewed PNG image");
         File imageFile = new File(this.testResourcesDataPath, "eurotext_deskew.png");
         BufferedImage bi = ImageIO.read(imageFile);
         ImageDeskew id = new ImageDeskew(bi);
@@ -194,7 +194,7 @@ public class Tesseract1Test {
 
         String expResult = "The (quick) [brown] {fox} jumps!\nOver the $43,456.78 <lazy> #90 dog";
         String result = instance.doOCR(bi);
-        System.out.println(result);
+        logger.info(result);
         assertEquals(expResult, result.substring(0, expResult.length()));
     }
 
@@ -205,7 +205,7 @@ public class Tesseract1Test {
      */
     @Test
     public void testCreateDocuments() throws Exception {
-        System.out.println("createDocuments for an image");
+        logger.info("createDocuments for an image");
         File imageFile1 = new File(this.testResourcesDataPath, "eurotext.pdf");
         File imageFile2 = new File(this.testResourcesDataPath, "eurotext.png");
         String outputbase1 = "target/test-classes/test-results/docrenderer1-1";
@@ -222,7 +222,7 @@ public class Tesseract1Test {
      */
     @Test
     public void testExtendingTesseract1() throws Exception {
-        System.out.println("Extends Tesseract1");
+        logger.info("Extends Tesseract1");
         File imageFile = new File(this.testResourcesDataPath, "eurotext.tif");
 
         String expResult = "The (quick) [brown] {fox} jumps!\nOver the $43,456.78 <lazy> #90 dog";
@@ -231,13 +231,13 @@ public class Tesseract1Test {
         Tess1Extension instance1 = new Tess1Extension();
         instance1.setDatapath(new File(datapath).getPath());
         int pageIteratorLevel = TessPageIteratorLevel.RIL_WORD;
-        System.out.println("PageIteratorLevel: "
+        logger.info("PageIteratorLevel: "
                 + Utils.getConstantName(pageIteratorLevel, TessPageIteratorLevel.class));
         List<Word> result = instance1.getWords(imageFile, pageIteratorLevel);
 
         // print the complete result
         for (Word word : result) {
-            System.out.println(word);
+            logger.info(word.toString());
         }
 
         List<String> text = new ArrayList<String>();

@@ -98,7 +98,7 @@ public class TessAPITest {
      */
     @Test
     public void testTessBaseAPIRect() throws Exception {
-        System.out.println("TessBaseAPIRect");
+        logger.info("TessBaseAPIRect");
         String expResult = expOCRResult;
         File tiff = new File(this.testResourcesDataPath, "eurotext.tif");
         BufferedImage image = ImageIO.read(tiff); // require jai-imageio lib to read TIFF
@@ -111,7 +111,7 @@ public class TessAPITest {
         Pointer utf8Text = api.TessBaseAPIRect(handle, buf, bytespp, bytespl, 90, 50, 862, 614);
         String result = utf8Text.getString(0);
         api.TessDeleteText(utf8Text);
-        System.out.println(result);
+        logger.info(result);
         assertTrue(result.startsWith(expResult));
     }
 
@@ -122,7 +122,7 @@ public class TessAPITest {
      */
     @Test
     public void testTessBaseAPIGetUTF8Text() throws Exception {
-        System.out.println("TessBaseAPIGetUTF8Text");
+        logger.info("TessBaseAPIGetUTF8Text");
         String expResult = expOCRResult;
         File tiff = new File(this.testResourcesDataPath, "eurotext.tif");
         BufferedImage image = ImageIO.read(new FileInputStream(tiff)); // require jai-imageio lib to read TIFF
@@ -137,7 +137,7 @@ public class TessAPITest {
         Pointer utf8Text = api.TessBaseAPIGetUTF8Text(handle);
         String result = utf8Text.getString(0);
         api.TessDeleteText(utf8Text);
-        System.out.println(result);
+        logger.info(result);
         assertTrue(result.startsWith(expResult));
     }
 
@@ -148,7 +148,7 @@ public class TessAPITest {
      */
     @Test
     public void testTessBaseAPIGetUTF8Text_Pix() throws Exception {
-        System.out.println("TessBaseAPIGetUTF8Text_Pix");
+        logger.info("TessBaseAPIGetUTF8Text_Pix");
         String expResult = expOCRResult;
         File tiff = new File(this.testResourcesDataPath, "eurotext.tif");
         Leptonica leptInstance = Leptonica.INSTANCE;
@@ -158,7 +158,7 @@ public class TessAPITest {
         Pointer utf8Text = api.TessBaseAPIGetUTF8Text(handle);
         String result = utf8Text.getString(0);
         api.TessDeleteText(utf8Text);
-        System.out.println(result);
+        logger.info(result);
         assertTrue(result.startsWith(expResult));
     }
 
@@ -169,7 +169,7 @@ public class TessAPITest {
      */
     @Test
     public void testTessBaseAPIGetComponentImages() throws Exception {
-        System.out.println("TessBaseAPIGetComponentImages");
+        logger.info("TessBaseAPIGetComponentImages");
         File image = new File(this.testResourcesDataPath, "eurotext.png");
         int expResult = 12; // number of lines in the test image
         Leptonica leptInstance = Leptonica.INSTANCE;
@@ -201,10 +201,10 @@ public class TessAPITest {
      */
     @Test
     public void testTessVersion() {
-        System.out.println("TessVersion");
+        logger.info("TessVersion");
         String expResult = "3.04";
         String result = api.TessVersion();
-        System.out.println(result);
+        logger.info(result);
         assertTrue(result.startsWith(expResult));
     }
 
@@ -213,7 +213,7 @@ public class TessAPITest {
      */
     @Test
     public void testTessBaseAPISetVariable() {
-        System.out.println("TessBaseAPISetVariable");
+        logger.info("TessBaseAPISetVariable");
         String name = "tessedit_create_hocr";
         String value = "1";
         int expResult = 1;
@@ -226,7 +226,7 @@ public class TessAPITest {
      */
     @Test
     public void testTessBaseAPIGetBoolVariable() {
-        System.out.println("TessBaseAPIGetBoolVariable");
+        logger.info("TessBaseAPIGetBoolVariable");
         String name = "tessedit_create_hocr";
         api.TessBaseAPISetVariable(handle, name, "1");
         IntBuffer value = IntBuffer.allocate(1);
@@ -245,7 +245,7 @@ public class TessAPITest {
      */
     @Test
     public void testTessBaseAPIPrintVariablesToFile() throws Exception {
-        System.out.println("TessBaseAPIPrintVariablesToFile");
+        logger.info("TessBaseAPIPrintVariablesToFile");
         String var = "tessedit_char_whitelist";
         String value = "0123456789";
         api.TessBaseAPISetVariable(handle, var, value);
@@ -269,7 +269,7 @@ public class TessAPITest {
      */
     @Test
     public void testTessBaseAPIInit1() {
-        System.out.println("TessBaseAPIInit1");
+        logger.info("TessBaseAPIInit1");
         int oem = TessOcrEngineMode.OEM_DEFAULT;
         String[] args = {"hocr"};
         StringArray sarray = new StringArray(args);
@@ -286,7 +286,7 @@ public class TessAPITest {
      */
     @Test
     public void testTessBaseAPIInit2() {
-        System.out.println("TessBaseAPIInit2");
+        logger.info("TessBaseAPIInit2");
         int oem = TessOcrEngineMode.OEM_DEFAULT;
         int expResult = 0;
         int result = api.TessBaseAPIInit2(handle, datapath, language, oem);
@@ -298,7 +298,7 @@ public class TessAPITest {
      */
     @Test
     public void testTessBaseAPIInit3() {
-        System.out.println("TessBaseAPIInit3");
+        logger.info("TessBaseAPIInit3");
         int expResult = 0;
         int result = api.TessBaseAPIInit3(handle, datapath, language);
         assertEquals(expResult, result);
@@ -309,7 +309,7 @@ public class TessAPITest {
      */
     @Test
     public void testTessBaseAPIInit4() {
-        System.out.println("TessBaseAPIInit4");
+        logger.info("TessBaseAPIInit4");
         int oem = TessOcrEngineMode.OEM_DEFAULT;
         PointerByReference configs = null;
         int configs_size = 0;
@@ -336,7 +336,7 @@ public class TessAPITest {
      */
     @Test
     public void testTessBaseAPIGetInitLanguagesAsString() {
-        System.out.println("TessBaseAPIGetInitLanguagesAsString");
+        logger.info("TessBaseAPIGetInitLanguagesAsString");
         String expResult = "";
         String result = api.TessBaseAPIGetInitLanguagesAsString(handle);
         assertEquals(expResult, result);
@@ -347,7 +347,7 @@ public class TessAPITest {
      */
     @Test
     public void testTessBaseAPIGetLoadedLanguagesAsVector() {
-        System.out.println("TessBaseAPIGetLoadedLanguagesAsVector");
+        logger.info("TessBaseAPIGetLoadedLanguagesAsVector");
         api.TessBaseAPIInit3(handle, datapath, language);
         String[] expResult = {"eng"};
         String[] result = api.TessBaseAPIGetLoadedLanguagesAsVector(handle).getPointer().getStringArray(0);
@@ -360,7 +360,7 @@ public class TessAPITest {
      */
     @Test
     public void testTessBaseAPIGetAvailableLanguagesAsVector() {
-        System.out.println("TessBaseAPIGetAvailableLanguagesAsVector");
+        logger.info("TessBaseAPIGetAvailableLanguagesAsVector");
         api.TessBaseAPIInit3(handle, datapath, language);
         String[] expResult = {"eng"};
         String[] result = api.TessBaseAPIGetAvailableLanguagesAsVector(handle).getPointer().getStringArray(0);
@@ -372,7 +372,7 @@ public class TessAPITest {
      */
     @Test
     public void testTessBaseAPIGetPageSegMode() {
-        System.out.println("TessBaseAPIGetPageSegMode");
+        logger.info("TessBaseAPIGetPageSegMode");
         api.TessBaseAPISetPageSegMode(handle, TessPageSegMode.PSM_SINGLE_CHAR);
         int expResult = TessPageSegMode.PSM_SINGLE_CHAR;
         int result = api.TessBaseAPIGetPageSegMode(handle);
@@ -386,7 +386,7 @@ public class TessAPITest {
      */
     @Test
     public void testTessBaseAPIGetHOCRText() throws Exception {
-        System.out.println("TessBaseAPIGetHOCRText");
+        logger.info("TessBaseAPIGetHOCRText");
         String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
         File tiff = new File(filename);
         BufferedImage image = ImageIO.read(new FileInputStream(tiff)); // require jai-imageio lib to read TIFF
@@ -411,7 +411,7 @@ public class TessAPITest {
      */
     @Test
     public void testOSD() throws Exception {
-        System.out.println("OSD");
+        logger.info("OSD");
         int expResult = TessPageSegMode.PSM_AUTO_OSD;
         IntBuffer orientation = IntBuffer.allocate(1);
         IntBuffer direction = IntBuffer.allocate(1);
@@ -426,13 +426,13 @@ public class TessAPITest {
         api.TessBaseAPIInit3(handle, datapath, language);
         api.TessBaseAPISetPageSegMode(handle, TessPageSegMode.PSM_AUTO_OSD);
         int actualResult = api.TessBaseAPIGetPageSegMode(handle);
-        System.out.println("PSM: " + Utils.getConstantName(actualResult, TessPageSegMode.class));
+        logger.info("PSM: " + Utils.getConstantName(actualResult, TessPageSegMode.class));
         api.TessBaseAPISetImage(handle, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
         int success = api.TessBaseAPIRecognize(handle, null);
         if (success == 0) {
             TessPageIterator pi = api.TessBaseAPIAnalyseLayout(handle);
             api.TessPageIteratorOrientation(pi, orientation, direction, order, deskew_angle);
-            System.out.println(String.format(
+            logger.info(String.format(
                     "Orientation: %s\nWritingDirection: %s\nTextlineOrder: %s\nDeskew angle: %.4f\n",
                     Utils.getConstantName(orientation.get(), TessOrientation.class),
                     Utils.getConstantName(direction.get(), TessWritingDirection.class),
@@ -449,7 +449,7 @@ public class TessAPITest {
      */
     @Test
     public void testResultIterator() throws Exception {
-        System.out.println("TessBaseAPIGetIterator");
+        logger.info("TessBaseAPIGetIterator");
         File tiff = new File(this.testResourcesDataPath, "eurotext.tif");
         BufferedImage image = ImageIO.read(new FileInputStream(tiff)); // require jai-imageio lib to read TIFF
         ByteBuffer buf = ImageIOHelper.convertImageData(image);
@@ -470,7 +470,7 @@ public class TessAPITest {
         TessResultIterator ri = api.TessBaseAPIGetIterator(handle);
         TessPageIterator pi = api.TessResultIteratorGetPageIterator(ri);
         api.TessPageIteratorBegin(pi);
-        System.out.println("Bounding boxes:\nchar(s) left top right bottom confidence font-attributes");
+        logger.info("Bounding boxes:\nchar(s) left top right bottom confidence font-attributes");
         int level = TessPageIteratorLevel.RIL_WORD;
 
         // int height = image.getHeight();
@@ -489,7 +489,7 @@ public class TessAPITest {
             int right = rightB.get();
             int bottom = bottomB.get();
             System.out.print(String.format("%s %d %d %d %d %f", word, left, top, right, bottom, confidence));
-            // System.out.println(String.format("%s %d %d %d %d", str, left, height - bottom, right, height - top)); //
+            // logger.info(String.format("%s %d %d %d %d", str, left, height - bottom, right, height - top)); //
             // training box coordinates
 
             IntBuffer boldB = IntBuffer.allocate(1);
@@ -510,7 +510,7 @@ public class TessAPITest {
             boolean smallcaps = smallcapsB.get() == TRUE;
             int pointSize = pointSizeB.get();
             int fontId = fontIdB.get();
-            System.out.println(String.format("  font: %s, size: %d, font id: %d, bold: %b,"
+            logger.info(String.format("  font: %s, size: %d, font id: %d, bold: %b,"
                     + " italic: %b, underlined: %b, monospace: %b, serif: %b, smallcap: %b", fontName, pointSize,
                     fontId, bold, italic, underlined, monospace, serif, smallcaps));
         } while (api.TessPageIteratorNext(pi, level) == TRUE);
@@ -525,7 +525,7 @@ public class TessAPITest {
      */
     @Test
     public void testChoiceIterator() throws Exception {
-        System.out.println("TessResultIteratorGetChoiceIterator");
+        logger.info("TessResultIteratorGetChoiceIterator");
         String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
         File tiff = new File(filename);
         BufferedImage image = ImageIO.read(new FileInputStream(tiff)); // require jai-imageio lib to read TIFF
@@ -541,7 +541,7 @@ public class TessAPITest {
         ProgressMonitor pmo = new ProgressMonitor(monitor);
         pmo.start();
         api.TessBaseAPIRecognize(handle, monitor);
-        System.out.println("Message: " + pmo.getMessage());
+        logger.info("Message: " + pmo.getMessage());
         TessResultIterator ri = api.TessBaseAPIGetIterator(handle);
         int level = TessPageIteratorLevel.RIL_SYMBOL;
 
@@ -550,7 +550,7 @@ public class TessAPITest {
                 Pointer symbol = api.TessResultIteratorGetUTF8Text(ri, level);
                 float conf = api.TessResultIteratorConfidence(ri, level);
                 if (symbol != null) {
-                    System.out.println(String.format("symbol %s, conf: %f", symbol.getString(0), conf));
+                    logger.info(String.format("symbol %s, conf: %f", symbol.getString(0), conf));
                     boolean indent = false;
                     TessChoiceIterator ci = api.TessResultIteratorGetChoiceIterator(ri);
                     do {
@@ -559,12 +559,12 @@ public class TessAPITest {
                         }
                         System.out.print("\t- ");
                         String choice = api.TessChoiceIteratorGetUTF8Text(ci);
-                        System.out.println(String.format("%s conf: %f", choice, api.TessChoiceIteratorConfidence(ci)));
+                        logger.info(String.format("%s conf: %f", choice, api.TessChoiceIteratorConfidence(ci)));
                         indent = true;
                     } while (api.TessChoiceIteratorNext(ci) == TessAPI1.TRUE);
                     api.TessChoiceIteratorDelete(ci);
                 }
-                System.out.println("---------------------------------------------");
+                logger.info("---------------------------------------------");
                 api.TessDeleteText(symbol);
             } while (api.TessResultIteratorNext(ri, level) == TessAPI1.TRUE);
         }
@@ -579,7 +579,7 @@ public class TessAPITest {
      */
     @Test
     public void testResultRenderer() throws Exception {
-        System.out.println("TessResultRenderer");
+        logger.info("TessResultRenderer");
         String image = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
         String output = "capi-test.txt";
         int set_only_init_params = FALSE;
@@ -623,7 +623,7 @@ public class TessAPITest {
 
         for (; renderer != null; renderer = api.TessResultRendererNext(renderer)) {
             String ext = api.TessResultRendererExtention(renderer).getString(0);
-            System.out.println(String.format("TessResultRendererExtention: %s\nTessResultRendererTitle: %s\nTessResultRendererImageNum: %d",
+            logger.info(String.format("TessResultRendererExtention: %s\nTessResultRendererTitle: %s\nTessResultRendererImageNum: %d",
                     ext,
                     api.TessResultRendererTitle(renderer).getString(0),
                     api.TessResultRendererImageNum(renderer)));

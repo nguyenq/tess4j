@@ -60,7 +60,7 @@ public class TestFolderExtraction {
             ITesseract instance = new Tesseract();
             
             if (tessDataFolder != null) {
-                System.out.println(tessDataFolder.getAbsolutePath());
+                logger.info(tessDataFolder.getAbsolutePath());
                 instance.setDatapath(tessDataFolder.getAbsolutePath());
             }
 
@@ -68,7 +68,7 @@ public class TestFolderExtraction {
              * Performs OCR on the image.
              */
             String result = instance.doOCR(imageFile);
-            System.out.println(result);
+            logger.info(result);
 
         } catch (TesseractException e) {
             logger.error(e.getMessage());

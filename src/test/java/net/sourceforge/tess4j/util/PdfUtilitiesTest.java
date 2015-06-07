@@ -56,7 +56,7 @@ public class PdfUtilitiesTest {
      */
     @Test
     public void testConvertPdf2Tiff() throws Exception {
-        System.out.println("convertPdf2Tiff");
+        logger.info("convertPdf2Tiff");
         File inputPdfFile = new File(this.testResourcesDataPath, "eurotext.pdf");
         File result = PdfUtilities.convertPdf2Tiff(inputPdfFile);
         result.deleteOnExit();
@@ -68,7 +68,7 @@ public class PdfUtilitiesTest {
      */
     @Test
     public void testConvertPdf2Png() {
-        System.out.println("convertPdf2Png");
+        logger.info("convertPdf2Png");
         File inputPdfFile = new File(this.testResourcesDataPath, "eurotext.pdf");
         File[] results = PdfUtilities.convertPdf2Png(inputPdfFile);
         for (File result : results) {
@@ -83,7 +83,7 @@ public class PdfUtilitiesTest {
     @Ignore
     @Test
     public void testSplitPdf() {
-        System.out.println("splitPdf");
+        logger.info("splitPdf");
         String inputPdfFile = "";
         String outputPdfFile = "";
         String firstPage = "";
@@ -96,7 +96,7 @@ public class PdfUtilitiesTest {
      */
     @Test
     public void testGetPdfPageCount() {
-        System.out.println("getPdfPageCount");
+        logger.info("getPdfPageCount");
         File inputPdfFile = new File(this.testResourcesDataPath, "eurotext.pdf");
         int expResult = 1;
         int result = PdfUtilities.getPdfPageCount(inputPdfFile.getPath());
@@ -109,7 +109,7 @@ public class PdfUtilitiesTest {
     @Ignore
     @Test
     public void testMergePdf() {
-        System.out.println("mergePdf");
+        logger.info("mergePdf");
         File[] inputPdfFiles = null;
         File outputPdfFile = null;
         PdfUtilities.mergePdf(inputPdfFiles, outputPdfFile);
