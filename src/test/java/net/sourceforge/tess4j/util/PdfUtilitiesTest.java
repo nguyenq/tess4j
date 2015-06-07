@@ -23,10 +23,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PdfUtilitiesTest {
 
     private final String testResourcesDataPath;
+    private static final Logger logger = LoggerFactory.getLogger(new LoggHelper().toString());
 
     public PdfUtilitiesTest() {
         testResourcesDataPath = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), "test-data").getPath();

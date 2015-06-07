@@ -21,16 +21,18 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 import net.sourceforge.tess4j.util.LoadLibs;
 
+import net.sourceforge.tess4j.util.LoggHelper;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TestFolderExtraction {
 
-    private final static Logger logger = Logger.getLogger(TestFolderExtraction.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(new LoggHelper().toString());
 
     @Test
     public void testFolderExtraction() {
@@ -49,7 +51,7 @@ public class TestFolderExtraction {
             /**
              * Extracts <code>tessdata</code> folder into a temp folder.
              */
-            logger.log(Level.INFO, "Loading the tessdata folder into a temporary folder.");
+            logger.info("Loading the tessdata folder into a temporary folder.");
             tessDataFolder = LoadLibs.extractTessResources("tessdata");
             
             /**
@@ -69,10 +71,10 @@ public class TestFolderExtraction {
             System.out.println(result);
 
         } catch (TesseractException e) {
-            System.err.println(e.getMessage());
-            logger.log(Level.SEVERE, e.getMessage(), e);
+            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
         } catch (URISyntaxException e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
         
         // checks if tessdata folder exists

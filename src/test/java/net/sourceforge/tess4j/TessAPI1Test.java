@@ -29,6 +29,7 @@ import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 
+import net.sourceforge.tess4j.util.LoggHelper;
 import net.sourceforge.tess4j.util.Utils;
 import net.sourceforge.tess4j.util.ImageIOHelper;
 
@@ -52,6 +53,9 @@ import net.sourceforge.lept4j.Leptonica1;
 import net.sourceforge.lept4j.Pix;
 
 import net.sourceforge.tess4j.ITessAPI.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import static net.sourceforge.tess4j.ITessAPI.FALSE;
 import static net.sourceforge.tess4j.ITessAPI.TRUE;
 import static org.junit.Assert.assertEquals;
@@ -59,6 +63,7 @@ import static org.junit.Assert.assertTrue;
 
 public class TessAPI1Test {
 
+    private static final Logger logger = LoggerFactory.getLogger(new LoggHelper().toString());
     private final String datapath = "src/main/resources";
     private final String testResourcesDataPath = "src/test/resources/test-data";
     String language = "eng";
@@ -457,7 +462,7 @@ public class TessAPI1Test {
         ProgressMonitor pmo = new ProgressMonitor(monitor);
         pmo.start();
         TessAPI1.TessBaseAPIRecognize(handle, monitor);
-        System.err.println("Message: " + pmo.getMessage());
+        logger.error("Message: " + pmo.getMessage());
         TessResultIterator ri = TessAPI1.TessBaseAPIGetIterator(handle);
         TessPageIterator pi = TessAPI1.TessResultIteratorGetPageIterator(ri);
         TessAPI1.TessPageIteratorBegin(pi);
@@ -593,7 +598,7 @@ public class TessAPI1Test {
 
         if (rc != 0) {
             TessAPI1.TessBaseAPIDelete(handle);
-            System.err.println("Could not initialize tesseract.");
+            logger.error("Could not initialize tesseract.");
             return;
         }
 
@@ -608,7 +613,7 @@ public class TessAPI1Test {
         TessAPI1.TessResultRendererEndDocument(renderer);
 
 //        if (result == FALSE) {
-//            System.err.println("Error during processing.");
+//            logger.error("Error during processing.");
 //            return;
 //        }
         for (; renderer != null; renderer = TessAPI1.TessResultRendererNext(renderer)) {

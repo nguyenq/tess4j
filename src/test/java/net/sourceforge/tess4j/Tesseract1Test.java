@@ -28,6 +28,7 @@ import javax.imageio.ImageIO;
 
 import com.sun.jna.Pointer;
 
+import net.sourceforge.tess4j.util.LoggHelper;
 import net.sourceforge.tess4j.util.Utils;
 import net.sourceforge.tess4j.util.ImageHelper;
 import net.sourceforge.tess4j.util.ImageIOHelper;
@@ -41,6 +42,8 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -48,6 +51,7 @@ import static org.junit.Assert.assertTrue;
 
 public class Tesseract1Test {
 
+    private static final Logger logger = LoggerFactory.getLogger(new LoggHelper().toString());
     static final double MINIMUM_DESKEW_THRESHOLD = 0.05d;
     ITesseract instance;
 
