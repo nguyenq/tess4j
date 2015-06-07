@@ -157,6 +157,12 @@ public class TessAPI1Test {
         String result = utf8Text.getString(0);
         TessAPI1.TessDeleteText(utf8Text);
         logger.info(result);
+
+        //release Pix resource
+        PointerByReference pRef = new PointerByReference();
+        pRef.setValue(pix.getPointer());
+        leptInstance.pixDestroy(pRef);
+
         assertEquals(expResult, result.substring(0, expResult.length()));
     }
 
@@ -190,6 +196,12 @@ public class TessAPI1Test {
             int conf = TessAPI1.TessBaseAPIMeanTextConf(handle);
             System.out.print(String.format("Box[%d]: x=%d, y=%d, w=%d, h=%d, confidence: %d, text: %s", i, box.x, box.y, box.w, box.h, conf, ocrResult));
         }
+
+        //release Pix resource
+        PointerByReference pRef = new PointerByReference();
+        pRef.setValue(pix.getPointer());
+        Leptonica1.pixDestroy(pRef);
+
         assertEquals(expResult, boxCount);
     }
 
