@@ -15,6 +15,9 @@
  */
 package net.sourceforge.tess4j.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
@@ -26,6 +29,8 @@ import java.awt.image.*;
 import javax.imageio.IIOImage;
 
 public class ImageHelper {
+
+    private static final Logger logger = LoggerFactory.getLogger(new LoggHelper().toString());
 
     /**
      * Convenience method that returns a scaled instance of the provided

@@ -15,6 +15,9 @@
  */
 package net.sourceforge.tess4j.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -22,6 +25,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 public class Utils {
+
+    private static final Logger logger = LoggerFactory.getLogger(new LoggHelper().toString());
 
     /**
      * Writes byte array to file.

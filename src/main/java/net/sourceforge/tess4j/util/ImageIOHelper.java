@@ -44,6 +44,8 @@ import javax.imageio.metadata.IIOMetadataNode;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.ImageOutputStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.NodeList;
 
 import com.sun.media.imageio.plugins.tiff.BaselineTIFFTagSet;
@@ -53,6 +55,8 @@ import com.sun.media.imageio.plugins.tiff.TIFFImageWriteParam;
 import com.sun.media.imageio.plugins.tiff.TIFFTag;
 
 public class ImageIOHelper {
+
+    private static final Logger logger = LoggerFactory.getLogger(new LoggHelper().toString());
 
     final static String OUTPUT_FILE_NAME = "Tesstmp";
     final static String TIFF_EXT = ".tif";

@@ -23,11 +23,12 @@ import java.awt.image.*;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.util.*;
-import java.util.logging.*;
 import javax.imageio.IIOImage;
 
 import net.sourceforge.tess4j.util.ImageIOHelper;
+import net.sourceforge.tess4j.util.LoggHelper;
 import net.sourceforge.tess4j.util.PdfUtilities;
+import org.slf4j.*;
 
 /**
  * An object layer on top of <code>TessAPI1</code>, provides character
@@ -57,7 +58,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
 
     private TessBaseAPI handle;
 
-    private final static Logger logger = Logger.getLogger(Tesseract1.class.getName());
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(new LoggHelper().toString());
 
     /**
      * Returns API handle.
@@ -172,7 +173,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
         try {
             return doOCR(ImageIOHelper.getIIOImageList(imageFile), imageFile.getPath(), rect);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
+            logger.error(e.getMessage(), e);
             throw new TesseractException(e);
         }
     }
@@ -204,7 +205,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
         try {
             return doOCR(ImageIOHelper.getIIOImageList(bi), rect);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
+            logger.error(e.getMessage(), e);
             throw new TesseractException(e);
         }
     }
@@ -251,7 +252,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
                     sb.append(getOCRText(filename, pageNum));
                 } catch (IOException ioe) {
                     // skip the problematic image
-                    logger.log(Level.SEVERE, ioe.getMessage(), ioe);
+                    logger.error(ioe.getMessage(), ioe);
                 }
             }
 
@@ -313,7 +314,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
             setImage(xsize, ysize, buf, rect, bpp);
             return getOCRText(filename, 1);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
+            logger.error(e.getMessage(), e);
             throw new TesseractException(e);
         } finally {
             dispose();
@@ -498,7 +499,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
                     createDocuments(filename, renderer);
                 } catch (Exception e) {
                     // skip the problematic image file
-                    logger.log(Level.SEVERE, e.getMessage(), e);
+                    logger.error(e.getMessage(), e);
                 } finally {
                     if (workingTiffFile != null && workingTiffFile.exists()) {
                         workingTiffFile.delete();

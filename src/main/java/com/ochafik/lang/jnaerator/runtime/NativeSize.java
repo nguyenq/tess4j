@@ -5,6 +5,9 @@ package com.ochafik.lang.jnaerator.runtime;
 
 import com.sun.jna.IntegerType;
 import com.sun.jna.Native;
+import net.sourceforge.tess4j.util.LoggHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 'size_t' C type (32 bits on 32 bits platforms, 64 bits on 64 bits platforms).
@@ -15,6 +18,7 @@ import com.sun.jna.Native;
 public class NativeSize extends IntegerType {
     /** Size of a size_t integer, in bytes. */
     public static int SIZE = Native.SIZE_T_SIZE;//Platform.is64Bit() ? 8 : 4;
+    private static final Logger logger = LoggerFactory.getLogger(new LoggHelper().toString());
 
     /** Create a zero-valued Size. */
     public NativeSize() {

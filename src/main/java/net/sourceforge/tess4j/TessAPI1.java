@@ -30,12 +30,17 @@ import com.ochafik.lang.jnaerator.runtime.NativeSize;
 import net.sourceforge.lept4j.Boxa;
 import net.sourceforge.lept4j.Pix;
 import net.sourceforge.tess4j.util.LoadLibs;
+import net.sourceforge.tess4j.util.LoggHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A Java wrapper for <code>Tesseract OCR 3.04 API</code> using
  * <code>JNA Direct Mapping</code>.
  */
 public class TessAPI1 implements Library, ITessAPI {
+
+    private static final Logger logger = LoggerFactory.getLogger(new LoggHelper().toString());
 
     static {
         Native.register(LoadLibs.getTesseractLibName());

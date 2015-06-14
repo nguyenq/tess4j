@@ -7,6 +7,10 @@ package com.recognition.software.jdeskew;
 //import java.awt.Graphics2D;
 //import java.awt.RenderingHints;
 //import java.awt.geom.AffineTransform;
+import net.sourceforge.tess4j.util.LoggHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 //import java.io.File;
@@ -18,6 +22,8 @@ public class ImageUtil {
 //    public static BufferedImage readImageFile(File imageFile) throws IOException {
 //        return ImageIO.read(imageFile);
 //    }
+
+    private static final Logger logger = LoggerFactory.getLogger(new LoggHelper().toString());
 
     public static boolean isBlack(BufferedImage image, int x, int y) {
         if (image.getType() == BufferedImage.TYPE_BYTE_BINARY) {

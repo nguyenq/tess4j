@@ -27,6 +27,7 @@ public class ImageDeskew {
     }
 
     private static final Logger logger = LoggerFactory.getLogger(new LoggHelper().toString());
+    
     // the source image
     private BufferedImage cImage;
     // the range of angles to search for lines

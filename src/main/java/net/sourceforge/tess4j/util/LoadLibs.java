@@ -25,8 +25,6 @@ import java.net.URLConnection;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.logging.Logger;
-import java.util.logging.Level;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -35,6 +33,7 @@ import com.sun.jna.Native;
 import com.sun.jna.Platform;
 
 import net.sourceforge.tess4j.TessAPI;
+import org.slf4j.LoggerFactory;
 
 /**
  * Loads native libraries from JAR or project folder.
@@ -53,7 +52,7 @@ public class LoadLibs {
     public static final String LIB_NAME = "libtesseract304";
     public static final String LIB_NAME_NON_WIN = "tesseract";
 
-    private final static Logger logger = Logger.getLogger(LoadLibs.class.getName());
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(new LoggHelper().toString());
 
     static {
         System.setProperty("jna.encoding", "UTF8");
@@ -106,7 +105,7 @@ public class LoadLibs {
                 copyResources(resourceUrl, targetPath);
             }
         } catch (IOException e) {
-            logger.log(Level.WARNING, e.getMessage(), e);
+            logger.warn(e.getMessage(), e);
         }
 
         return targetPath;
@@ -116,7 +115,6 @@ public class LoadLibs {
      * Copies resources to target folder.
      *
      * @param resourceUrl
-     * @param resourceName
      * @return
      */
     static void copyResources(URL resourceUrl, File targetPath) throws IOException {
@@ -180,7 +178,7 @@ public class LoadLibs {
                 }
             }
         } catch (IOException e) {
-            logger.log(Level.WARNING, e.getMessage(), e);
+            logger.warn(e.getMessage(), e);
         }
     }
 }
