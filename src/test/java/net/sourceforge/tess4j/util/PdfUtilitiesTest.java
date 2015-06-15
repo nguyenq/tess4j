@@ -15,41 +15,27 @@
  */
 package net.sourceforge.tess4j.util;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import java.io.IOException;
+
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.rendering.ImageType;
+import org.apache.pdfbox.rendering.PDFRenderer;
+import org.apache.pdfbox.tools.imageio.ImageIOUtil;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
+
 import org.junit.Ignore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PdfUtilitiesTest {
 
-    private final String testResourcesDataPath;
     private static final Logger logger = LoggerFactory.getLogger(new LoggHelper().toString());
-
-    public PdfUtilitiesTest() {
-        testResourcesDataPath = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), "test-data").getPath();
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
+    private static final String TEST_RESOURCES_DATA_PATH = "src/test/resources/test-data/";
+    private final String TEST_RESOURCES_RESULTS_PATH = "src/test/resources/test-results/";
 
     /**
      * Test of convertPdf2Tiff method, of class PdfUtilities.
@@ -57,7 +43,7 @@ public class PdfUtilitiesTest {
     @Test
     public void testConvertPdf2Tiff() throws Exception {
         logger.info("convertPdf2Tiff");
-        File inputPdfFile = new File(this.testResourcesDataPath, "eurotext.pdf");
+        File inputPdfFile = new File(this.TEST_RESOURCES_DATA_PATH, "eurotext.pdf");
         File result = PdfUtilities.convertPdf2Tiff(inputPdfFile);
         result.deleteOnExit();
         assertTrue(result.exists());
@@ -69,7 +55,7 @@ public class PdfUtilitiesTest {
     @Test
     public void testConvertPdf2Png() {
         logger.info("convertPdf2Png");
-        File inputPdfFile = new File(this.testResourcesDataPath, "eurotext.pdf");
+        File inputPdfFile = new File(this.TEST_RESOURCES_DATA_PATH, "eurotext.pdf");
         File[] results = PdfUtilities.convertPdf2Png(inputPdfFile);
         for (File result : results) {
             result.deleteOnExit();
@@ -80,15 +66,23 @@ public class PdfUtilitiesTest {
     /**
      * Test of splitPdf method, of class PdfUtilities.
      */
-    @Ignore
     @Test
     public void testSplitPdf() {
         logger.info("splitPdf");
-        String inputPdfFile = "";
-        String outputPdfFile = "";
-        String firstPage = "";
-        String lastPage = "";
-        PdfUtilities.splitPdf(inputPdfFile, outputPdfFile, firstPage, lastPage);
+        PDDocument document = null;
+
+        try {
+            File inputPdfFile = new File(String.format("%s/%s", TEST_RESOURCES_DATA_PATH, "multipage-pdf.pdf"));
+            File outputPdfFile = new File(String.format("%s/%s", TEST_RESOURCES_RESULTS_PATH, "multipage-pdf_splitted.pdf"));
+            int startPage = 2;
+            int endPage = 3;
+            PdfUtilities.splitPdf(inputPdfFile, outputPdfFile, startPage, endPage);
+            document = PDDocument.load(outputPdfFile);
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        assertTrue(2 == document.getNumberOfPages());
     }
 
     /**
@@ -97,7 +91,7 @@ public class PdfUtilitiesTest {
     @Test
     public void testGetPdfPageCount() {
         logger.info("getPdfPageCount");
-        File inputPdfFile = new File(this.testResourcesDataPath, "eurotext.pdf");
+        File inputPdfFile = new File(this.TEST_RESOURCES_DATA_PATH, "eurotext.pdf");
         int expResult = 1;
         int result = PdfUtilities.getPdfPageCount(inputPdfFile.getPath());
         assertEquals(expResult, result);
@@ -106,13 +100,15 @@ public class PdfUtilitiesTest {
     /**
      * Test of mergePdf method, of class PdfUtilities.
      */
-    @Ignore
     @Test
     public void testMergePdf() {
         logger.info("mergePdf");
-        File[] inputPdfFiles = null;
-        File outputPdfFile = null;
+        File pdfPartOne = new File(String.format("%s/%s", TEST_RESOURCES_DATA_PATH, "eurotext.pdf"));
+        File pdfPartTwo = new File(String.format("%s/%s", TEST_RESOURCES_DATA_PATH, "multipage-pdf.pdf"));
+        File outputPdfFile = new File(String.format("%s/%s", TEST_RESOURCES_RESULTS_PATH, "multipage-pdf_merged.pdf"));
+        File[] inputPdfFiles = {pdfPartOne, pdfPartTwo};
         PdfUtilities.mergePdf(inputPdfFiles, outputPdfFile);
+        assertTrue(6 == PdfUtilities.getPdfPageCount(outputPdfFile.getPath()));
     }
 
 }
