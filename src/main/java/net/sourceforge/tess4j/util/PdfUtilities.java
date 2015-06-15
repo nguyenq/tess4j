@@ -15,10 +15,13 @@
  */
 package net.sourceforge.tess4j.util;
 
+import org.apache.pdfbox.pdfwriter.COSWriter;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
+import org.apache.pdfbox.multipdf.Splitter;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
+import org.apache.pdfbox.tools.PDFSplit;
 import org.apache.pdfbox.tools.imageio.ImageIOUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,14 +71,16 @@ public class PdfUtilities {
      * @return an array of PNG images
      */
     public static File[] convertPdf2Png(File inputPdfFile) {
-        File imageDir = inputPdfFile.getParentFile();
-
-        if (imageDir == null) {
-            String userDir = System.getProperty("user.dir");
-            imageDir = new File(userDir);
-        }
-
+        File imageDir = null;
         try {
+
+            if (null == inputPdfFile.getParentFile()) {
+                String userDir = System.getProperty("user.dir");
+                imageDir = new File(userDir);
+                logger.debug("Using image dir folder: '{}'.", imageDir.getAbsoluteFile());
+            } else {
+                imageDir = inputPdfFile.getParentFile();
+            }
 
             PDDocument document = PDDocument.load(inputPdfFile);
             ImageType imageType = ImageType.BINARY;
@@ -99,7 +104,7 @@ public class PdfUtilities {
 
             @Override
             public boolean accept(File dir, String name) {
-                return name.toLowerCase().matches("workingimage\\d{3}\\.png$");
+                return name.toLowerCase().matches("workingimage\\d\\.png$");
             }
         });
 
@@ -118,33 +123,31 @@ public class PdfUtilities {
      *
      * @param inputPdfFile
      * @param outputPdfFile
-     * @param firstPage
-     * @param lastPage
+     * @param startPage
+     * @param endPage
      */
-    public static void splitPdf(String inputPdfFile, String outputPdfFile, String firstPage, String lastPage) {
-        //TODO #20
-        //get Ghostscript instance
+    public static void splitPdf(File inputPdfFile, File outputPdfFile, int startPage, int endPage) {
+        List<PDDocument> documents = null;
+        try {
 
-        //prepare Ghostscript interpreter parameters
-        //refer to Ghostscript documentation for parameter usage
-        //gs -sDEVICE=pdfwrite -dNOPAUSE -dQUIET -dBATCH -dFirstPage=m -dLastPage=n -sOutputFile=out.pdf in.pdf
-        List<String> gsArgs = new ArrayList<String>();
-        gsArgs.add("-gs");
-        gsArgs.add("-dNOPAUSE");
-        gsArgs.add("-dQUIET");
-        gsArgs.add("-dBATCH");
-        gsArgs.add("-sDEVICE=pdfwrite");
+            logger.info("Splitting file: '{}' from page '{}' to page '{}' into file '{}'.", inputPdfFile.getAbsoluteFile(), startPage, endPage, outputPdfFile.getAbsoluteFile());
 
-        if (!firstPage.trim().isEmpty()) {
-            gsArgs.add("-dFirstPage=" + firstPage);
+            PDDocument document = PDDocument.load(inputPdfFile);
+            Splitter splitter = new Splitter();
+            splitter.setStartPage(startPage);
+            splitter.setEndPage(endPage);
+            documents = splitter.split(document);
+
+            PDDocument doc = new PDDocument();
+            for (int i = 0; i < documents.size(); i++) {
+                doc.addPage(documents.get(i).getPage(0));
+            }
+            writeDocument(doc, outputPdfFile.getAbsolutePath());
+            doc.close();
+
+        } catch (IOException e) {
+            logger.error(e.getCause().toString(), e);
         }
-
-        if (!lastPage.trim().isEmpty()) {
-            gsArgs.add("-dLastPage=" + lastPage);
-        }
-
-        gsArgs.add("-sOutputFile=" + outputPdfFile);
-        gsArgs.add(inputPdfFile);
 
 
     }
@@ -211,19 +214,48 @@ public class PdfUtilities {
      * @param outputPdfFile
      */
     public static void mergePdf(File[] inputPdfFiles, File outputPdfFile) {
+        logger.debug("Merginging PDF Files '{}' into one: '{}'.", inputPdfFiles, outputPdfFile);
         PDFMergerUtility mergePdf = new PDFMergerUtility();
 
         try {
+
             for (File inputPdfFile : inputPdfFiles) {
-                mergePdf.addSource(outputPdfFile.getPath() + File.separator + inputPdfFile.getAbsolutePath());
+                mergePdf.addSource(inputPdfFile.getAbsoluteFile());
             }
+
+            mergePdf.setDestinationFileName(outputPdfFile.getAbsolutePath());
             mergePdf.mergeDocuments();
+
         } catch (FileNotFoundException e) {
             logger.error(e.getCause().toString(), e);
         } catch (IOException e) {
             logger.error(e.getCause().toString(), e);
         }
 
+    }
+
+    /**
+     * Helper method to persist the PDF Document into the File System.
+     *
+     * @param doc
+     * @param fileName
+     * @throws IOException
+     */
+    private static void writeDocument(PDDocument doc, String fileName) throws IOException {
+        FileOutputStream output = null;
+        COSWriter writer = null;
+        try {
+            output = new FileOutputStream(fileName);
+            writer = new COSWriter(output);
+            writer.write(doc);
+        } finally {
+            if (output != null) {
+                output.close();
+            }
+            if (writer != null) {
+                writer.close();
+            }
+        }
     }
 
 }
