@@ -21,14 +21,12 @@ import org.apache.pdfbox.multipdf.Splitter;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
-import org.apache.pdfbox.tools.PDFSplit;
 import org.apache.pdfbox.tools.imageio.ImageIOUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -185,27 +183,6 @@ public class PdfUtilities {
         logger.debug("Return PDF Page count: '{}'", result);
         return result;
     }
-
-//    /**
-//     * Gets PDF Page Count using Ghost4J's new high-level API available in Ghost4J 0.4.0.
-//     * (Taken out due to many required additional libraries.)
-//     *
-//     * @param inputPdfFile
-//     * @return number of pages
-//     */
-//    public static int getPdfPageCount1(String inputPdfFile) {
-//        int pageCount = 0;
-//
-//        try {
-//            // load PDF document
-//            PDFDocument document = new PDFDocument();
-//            document.load(new File(inputPdfFile));
-//            pageCount = document.getPageCount();
-//        } catch (Exception e) {
-//            logger.log(Level.SEVERE, e.getMessage(), e);
-//        }
-//        return pageCount;
-//    }
 
     /**
      * Merge PDF files.
