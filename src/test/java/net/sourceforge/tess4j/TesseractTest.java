@@ -1,12 +1,12 @@
 /**
  * Copyright @ 2010 Quan Nguyen
- *
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- *
+ * <p/>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -18,6 +18,7 @@ package net.sourceforge.tess4j;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.nio.IntBuffer;
 import java.util.List;
 import java.util.ArrayList;
@@ -35,7 +36,9 @@ import net.sourceforge.tess4j.util.Utils;
 
 import net.sourceforge.tess4j.ITesseract.RenderedFormat;
 import net.sourceforge.tess4j.ITessAPI.TessPageIteratorLevel;
+
 import static net.sourceforge.tess4j.ITessAPI.TRUE;
+import static org.junit.Assert.*;
 
 import com.recognition.software.jdeskew.ImageDeskew;
 import net.sourceforge.tess4j.ITessAPI.TessPageIterator;
@@ -43,15 +46,12 @@ import net.sourceforge.tess4j.ITessAPI.TessResultIterator;
 
 import org.junit.After;
 import org.junit.AfterClass;
-import static org.junit.Assert.assertArrayEquals;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
 
 public class TesseractTest {
 
@@ -156,13 +156,27 @@ public class TesseractTest {
      */
     @Test
     public void testDoOCR_List_Rectangle() throws Exception {
-        logger.info("doOCR on a PDF document");
-        File imageFile = new File(this.testResourcesDataPath, "eurotext.pdf");
-        List<IIOImage> imageList = ImageIOHelper.getIIOImageList(imageFile);
+        File imageFile = null;
         String expResult = "The (quick) [brown] {fox} jumps!\nOver the $43,456.78 <lazy> #90 dog";
-        String result = instance.doOCR(imageList, null);
-        logger.info(result);
-        assertEquals(expResult, result.substring(0, expResult.length()));
+        String result = "<empty>";
+        try {
+            logger.info("doOCR on a PDF document");
+            imageFile = new File(this.testResourcesDataPath, "eurotext.pdf");
+            List<IIOImage> imageList = ImageIOHelper.getIIOImageList(imageFile);
+            result = instance.doOCR(imageList, null);
+            logger.info(result);
+            assertEquals(expResult, result.substring(0, expResult.length()));
+        } catch (IOException e) {
+            logger.error("Exception-Message: '{}'. Imagefile: '{}'", e.getMessage(), imageFile.getAbsoluteFile(), e);
+            fail();
+        } catch (TesseractException e) {
+            logger.error("Exception-Message: '{}'. Imagefile: '{}'", e.getMessage(), imageFile.getAbsoluteFile(), e);
+            fail();
+        } catch (StringIndexOutOfBoundsException e) {
+            logger.error("Exception-Message: '{}'. Imagefile: '{}'", e.getMessage(), imageFile.getAbsoluteFile(), e);
+            fail();
+        }
+
     }
 
     /**
