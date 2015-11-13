@@ -192,20 +192,20 @@ public class PdfUtilities {
      */
     public static void mergePdf(File[] inputPdfFiles, File outputPdfFile) {
         logger.debug("Merginging PDF Files '{}' into one: '{}'.", inputPdfFiles, outputPdfFile);
-        PDFMergerUtility mergePdf = new PDFMergerUtility();
+        final PDFMergerUtility mergePdf = new PDFMergerUtility();
 
         try {
 
-            for (File inputPdfFile : inputPdfFiles) {
+            for (final File inputPdfFile : inputPdfFiles) {
                 mergePdf.addSource(inputPdfFile.getAbsoluteFile());
             }
 
             mergePdf.setDestinationFileName(outputPdfFile.getAbsolutePath());
-            mergePdf.mergeDocuments();
+            mergePdf.mergeDocuments(null);
 
-        } catch (FileNotFoundException e) {
+        } catch (final FileNotFoundException e) {
             logger.error(e.getCause().toString(), e);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             logger.error(e.getCause().toString(), e);
         }
 
