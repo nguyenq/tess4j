@@ -15,21 +15,16 @@
  */
 package net.sourceforge.tess4j.util;
 
-import java.awt.image.BufferedImage;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.rendering.ImageType;
-import org.apache.pdfbox.rendering.PDFRenderer;
-import org.apache.pdfbox.tools.imageio.ImageIOUtil;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import org.junit.Ignore;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class PdfUtilitiesTest {
 

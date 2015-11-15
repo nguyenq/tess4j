@@ -48,11 +48,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.NodeList;
 
-import com.sun.media.imageio.plugins.tiff.BaselineTIFFTagSet;
-import com.sun.media.imageio.plugins.tiff.TIFFDirectory;
-import com.sun.media.imageio.plugins.tiff.TIFFField;
-import com.sun.media.imageio.plugins.tiff.TIFFImageWriteParam;
-import com.sun.media.imageio.plugins.tiff.TIFFTag;
+import com.github.jaiimageio.plugins.tiff.BaselineTIFFTagSet;
+import com.github.jaiimageio.plugins.tiff.TIFFDirectory;
+import com.github.jaiimageio.plugins.tiff.TIFFField;
+import com.github.jaiimageio.plugins.tiff.TIFFImageWriteParam;
+import com.github.jaiimageio.plugins.tiff.TIFFTag;
 
 public class ImageIOHelper {
 

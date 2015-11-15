@@ -1,12 +1,12 @@
 /**
  * Copyright @ 2009 Quan Nguyen
- * <p/>
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * <p/>
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p/>
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -15,9 +15,9 @@
  */
 package net.sourceforge.tess4j.util;
 
-import org.apache.pdfbox.pdfwriter.COSWriter;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.multipdf.Splitter;
+import org.apache.pdfbox.pdfwriter.COSWriter;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
@@ -93,6 +93,8 @@ public class PdfUtilities {
                 success &= ImageIOUtil.writeImage(image, fileName, 300);
             }
 
+            document.close();
+
         } catch (IOException e) {
             logger.error(e.getCause().toString(), e);
         }
@@ -150,17 +152,6 @@ public class PdfUtilities {
 
     }
 
-    private static final String PS_FILE = "lib/pdfpagecount.ps";
-    private static final String pdfPageCountFilePath;
-
-    static {
-        File postscriptFile = LoadLibs.extractTessResources(PS_FILE);
-        if (postscriptFile != null) {
-            pdfPageCountFilePath = postscriptFile.getPath();
-        } else {
-            pdfPageCountFilePath = PS_FILE;
-        }
-    }
 
     /**
      * Gets PDF Page Count.
