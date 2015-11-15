@@ -58,18 +58,14 @@
             <name>Quan Nguyen</name>
             <email>nguyenq@users.sf.net</email>
         </developer>
+		<developer>
+            <name>O.J. Sousa Rodrigues</name>
+            <email>osoriojaques@gmail.com</email>
+            <timezone>+1</timezone>
+        </developer>
     </developers>
 
     <contributors>
-        <contributor>
-            <name>O.J. Sousa Rodrigues</name>
-            <email>osoriojaques@gmail.com</email>
-            <roles>
-                <role>developer</role>
-                <role>contributor</role>
-            </roles>
-            <timezone>+1</timezone>
-        </contributor>
         <contributor>
             <name>Dmitry Katsubo</name>
             <email>dma_k@users.sf.net</email>
