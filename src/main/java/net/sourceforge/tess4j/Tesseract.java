@@ -554,9 +554,7 @@ public class Tesseract implements ITesseract {
      */
     private void createDocuments(String filename, TessResultRenderer renderer) throws TesseractException {
         api.TessBaseAPISetInputName(handle, filename); //for reading a UNLV zone file
-        api.TessResultRendererBeginDocument(renderer, filename);
         int result = api.TessBaseAPIProcessPages(handle, filename, null, 0, renderer);
-        api.TessResultRendererEndDocument(renderer);
 
         if (result == ITessAPI.FALSE) {
             throw new TesseractException("Error during processing page.");
