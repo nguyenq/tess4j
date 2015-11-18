@@ -624,9 +624,7 @@ public class TessAPITest {
         api.TessResultRendererInsert(renderer, api.TessTextRendererCreate(outputbase));
         String dataPath = api.TessBaseAPIGetDatapath(handle);
         api.TessResultRendererInsert(renderer, api.TessPDFRendererCreate(outputbase, dataPath));
-        api.TessResultRendererBeginDocument(renderer, image);
         int result = api.TessBaseAPIProcessPages(handle, image, null, 0, renderer);
-        api.TessResultRendererEndDocument(renderer);
 
         if (result == FALSE) {
             logger.error("Error during processing.");

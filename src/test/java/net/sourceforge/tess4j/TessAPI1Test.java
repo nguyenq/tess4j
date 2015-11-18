@@ -620,9 +620,7 @@ public class TessAPI1Test {
         TessAPI1.TessResultRendererInsert(renderer, TessAPI1.TessTextRendererCreate(outputbase));
         String dataPath = TessAPI1.TessBaseAPIGetDatapath(handle);
         TessAPI1.TessResultRendererInsert(renderer, TessAPI1.TessPDFRendererCreate(outputbase, dataPath));
-        TessAPI1.TessResultRendererBeginDocument(renderer, image);
         int result = TessAPI1.TessBaseAPIProcessPages(handle, image, null, 0, renderer);
-        TessAPI1.TessResultRendererEndDocument(renderer);
 
 //        if (result == FALSE) {
 //            logger.error("Error during processing.");
