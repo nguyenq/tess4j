@@ -24,6 +24,11 @@ import java.io.*;
 import java.nio.ByteBuffer;
 import java.util.*;
 import javax.imageio.IIOImage;
+import net.sourceforge.lept4j.Box;
+import net.sourceforge.lept4j.Boxa;
+import static net.sourceforge.lept4j.ILeptonica.L_CLONE;
+import net.sourceforge.lept4j.Leptonica1;
+import static net.sourceforge.tess4j.ITessAPI.TRUE;
 
 import net.sourceforge.tess4j.util.ImageIOHelper;
 import net.sourceforge.tess4j.util.LoggHelper;
@@ -525,6 +530,43 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
 //        if (result == ITessAPI.FALSE) {
 //            throw new TesseractException("Error during processing page.");
 //        }
+    }
+
+    /**
+     * Gets segmented regions.
+     *
+     * @param bi input image
+     * @param level TessPageIteratorLevel enum
+     * @return
+     * @throws TesseractException
+     */
+    @Override
+    public List<Rectangle> getRegions(BufferedImage bi, int level) throws TesseractException {
+        init();
+        setTessVariables();
+
+        try {
+            List<Rectangle> list = new ArrayList<Rectangle>();
+            setImage(bi, null);
+
+            Boxa boxes = TessBaseAPIGetComponentImages(handle, level, TRUE, null, null);
+            int boxCount = Leptonica1.boxaGetCount(boxes);
+            for (int i = 0; i < boxCount; i++) {
+                Box box = Leptonica1.boxaGetBox(boxes, i, L_CLONE);
+                if (box == null) {
+                    continue;
+                }
+                list.add(new Rectangle(box.x, box.y, box.w, box.h));
+            }
+
+            return list;
+        } catch (IOException ioe) {
+            // skip the problematic image
+            logger.error(ioe.getMessage(), ioe);
+            throw new TesseractException(ioe);
+        } finally {
+            dispose();
+        }
     }
 
     /**

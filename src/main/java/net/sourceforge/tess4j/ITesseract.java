@@ -214,4 +214,14 @@ public interface ITesseract {
      * @throws TesseractException
      */
     void createDocuments(String[] filenames, String[] outputbases, List<RenderedFormat> formats) throws TesseractException;
+
+    /**
+     * Gets segmented regions.
+     *
+     * @param bi input image
+     * @param level TessPageIteratorLevel enum
+     * @return
+     * @throws TesseractException
+     */
+    List<Rectangle> getRegions(BufferedImage bi, int level) throws TesseractException;
 }

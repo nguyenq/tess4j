@@ -312,4 +312,23 @@ public class TesseractTest {
             }
         }
     }
+
+    /**
+     * Test of getRegions method, of class Tesseract.
+     */
+    @Test
+    public void testGetRegions() throws Exception {
+        logger.info("getRegions at given TessPageIteratorLevel");
+        File imageFile = new File(testResourcesDataPath, "eurotext.png");
+        BufferedImage bi = ImageIO.read(imageFile);
+        int level = TessPageIteratorLevel.RIL_SYMBOL;
+        logger.info("PageIteratorLevel: " + Utils.getConstantName(level, TessPageIteratorLevel.class));
+        List<Rectangle> result = instance.getRegions(bi, level);
+        for (int i = 0; i < result.size(); i++) {
+            Rectangle rect = result.get(i);
+            logger.info(String.format("Box[%d]: x=%d, y=%d, w=%d, h=%d", i, rect.x, rect.y, rect.width, rect.height));
+        }
+
+        assertTrue(result.size() > 0);
+    }
 }
