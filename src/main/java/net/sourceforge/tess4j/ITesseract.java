@@ -219,9 +219,18 @@ public interface ITesseract {
      * Gets segmented regions.
      *
      * @param bi input image
-     * @param level TessPageIteratorLevel enum
-     * @return
+     * @param pageIteratorLevel TessPageIteratorLevel enum
+     * @return list of <code>Rectangle</code>
      * @throws TesseractException
      */
-    List<Rectangle> getSegmentedRegions(BufferedImage bi, int level) throws TesseractException;
+    List<Rectangle> getSegmentedRegions(BufferedImage bi, int pageIteratorLevel) throws TesseractException;
+    
+    /**
+     * Gets recognized words at specific page iterator level.
+     * 
+     * @param bi input image
+     * @param pageIteratorLevel TessPageIteratorLevel enum
+     * @return list of <code>Word</code>
+     */
+    List<Word> getWords(BufferedImage bi, int pageIteratorLevel);
 }

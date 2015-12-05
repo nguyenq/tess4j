@@ -202,7 +202,7 @@ public class Tesseract1Test {
     }
 
     /**
-     * Test of createDocuments method, of class Tesseract.
+     * Test of createDocuments method, of class Tesseract1.
      *
      * @throws java.lang.Exception
      */
@@ -219,25 +219,22 @@ public class Tesseract1Test {
     }
 
     /**
-     * Test of extending Tesseract1.
+     * Test of getWords method, of class Tesseract1.
      *
      * @throws Exception while processing image.
      */
     @Test
-    public void testExtendingTesseract1() throws Exception {
-        logger.info("Extends Tesseract1");
+    public void testGetWords() throws Exception {
+        logger.info("getWords");
         File imageFile = new File(this.testResourcesDataPath, "eurotext.tif");
 
         String expResult = "The (quick) [brown] {fox} jumps!\nOver the $43,456.78 <lazy> #90 dog";
         String[] expResults = expResult.split("\\s");
 
-        Tess1Extension instance1 = new Tess1Extension();
-        instance1.setDatapath(new File(datapath).getPath());
         int pageIteratorLevel = TessPageIteratorLevel.RIL_WORD;
-        logger.info("PageIteratorLevel: "
-                + Utils.getConstantName(pageIteratorLevel, TessPageIteratorLevel.class));
+        logger.info("PageIteratorLevel: " + Utils.getConstantName(pageIteratorLevel, TessPageIteratorLevel.class));
         BufferedImage bi = ImageIO.read(imageFile);
-        List<Word> result = instance1.getWords(bi, pageIteratorLevel);
+        List<Word> result = instance.getWords(bi, pageIteratorLevel);
 
         // print the complete result
         for (Word word : result) {
@@ -252,53 +249,11 @@ public class Tesseract1Test {
         assertArrayEquals(expResults, text.toArray());
     }
 
-    class Tess1Extension extends Tesseract1 {
-
-        public List<Word> getWords(BufferedImage bi, int pageIteratorLevel) {
-            this.init();
-            this.setTessVariables();
-
-            List<Word> words = new ArrayList<Word>();
-            try {
-                setImage(bi, null);
-
-                TessBaseAPIRecognize(this.getHandle(), null);
-                TessResultIterator ri = TessBaseAPIGetIterator(this.getHandle());
-                TessPageIterator pi = TessResultIteratorGetPageIterator(ri);
-                TessPageIteratorBegin(pi);
-
-                do {
-                    Pointer ptr = TessResultIteratorGetUTF8Text(ri, pageIteratorLevel);
-                    String text = ptr.getString(0);
-                    TessAPI1.TessDeleteText(ptr);
-                    float confidence = TessResultIteratorConfidence(ri, pageIteratorLevel);
-                    IntBuffer leftB = IntBuffer.allocate(1);
-                    IntBuffer topB = IntBuffer.allocate(1);
-                    IntBuffer rightB = IntBuffer.allocate(1);
-                    IntBuffer bottomB = IntBuffer.allocate(1);
-                    TessPageIteratorBoundingBox(pi, pageIteratorLevel, leftB, topB, rightB, bottomB);
-                    int left = leftB.get();
-                    int top = topB.get();
-                    int right = rightB.get();
-                    int bottom = bottomB.get();
-                    Word word = new Word(text, confidence, new Rectangle(left, top, right - left, bottom - top));
-                    words.add(word);
-                } while (TessPageIteratorNext(pi, pageIteratorLevel) == TRUE);
-
-                return words;
-            } catch (Exception e) {
-                return words;
-            } finally {
-                this.dispose();
-            }
-        }
-    }
-
     /**
      * Test of getSegmentedRegions method, of class Tesseract1.
      */
     @Test
-    public void testGetRegions() throws Exception {
+    public void testGetSegmentedRegions() throws Exception {
         logger.info("getRegions at given TessPageIteratorLevel");
         File imageFile = new File(testResourcesDataPath, "eurotext.png");
         BufferedImage bi = ImageIO.read(imageFile);

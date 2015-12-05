@@ -18,7 +18,7 @@ package net.sourceforge.tess4j;
 import java.awt.Rectangle;
 
 /**
- * Encapsulates Tesseract results.
+ * Encapsulates Tesseract OCR results.
  */
 class Word {
 

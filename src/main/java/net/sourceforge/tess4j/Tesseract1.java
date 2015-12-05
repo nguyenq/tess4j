@@ -22,6 +22,7 @@ import java.awt.Rectangle;
 import java.awt.image.*;
 import java.io.*;
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.util.*;
 import javax.imageio.IIOImage;
 import net.sourceforge.lept4j.Box;
@@ -536,12 +537,12 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
      * Gets segmented regions.
      *
      * @param bi input image
-     * @param level TessPageIteratorLevel enum
-     * @return
+     * @param pageIteratorLevel TessPageIteratorLevel enum
+     * @return list of <code>Rectangle</code>
      * @throws TesseractException
      */
     @Override
-    public List<Rectangle> getSegmentedRegions(BufferedImage bi, int level) throws TesseractException {
+    public List<Rectangle> getSegmentedRegions(BufferedImage bi, int pageIteratorLevel) throws TesseractException {
         init();
         setTessVariables();
 
@@ -549,7 +550,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
             List<Rectangle> list = new ArrayList<Rectangle>();
             setImage(bi, null);
 
-            Boxa boxes = TessBaseAPIGetComponentImages(handle, level, TRUE, null, null);
+            Boxa boxes = TessBaseAPIGetComponentImages(handle, pageIteratorLevel, TRUE, null, null);
             int boxCount = Leptonica1.boxaGetCount(boxes);
             for (int i = 0; i < boxCount; i++) {
                 Box box = Leptonica1.boxaGetBox(boxes, i, L_CLONE);
@@ -564,6 +565,53 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
             // skip the problematic image
             logger.error(ioe.getMessage(), ioe);
             throw new TesseractException(ioe);
+        } finally {
+            dispose();
+        }
+    }
+
+    /**
+     * Gets recognized words at specific page iterator level.
+     *
+     * @param bi input image
+     * @param pageIteratorLevel TessPageIteratorLevel enum
+     * @return list of <code>Word</code>
+     */
+    public List<Word> getWords(BufferedImage bi, int pageIteratorLevel) {
+        this.init();
+        this.setTessVariables();
+
+        List<Word> words = new ArrayList<Word>();
+        
+        try {
+            setImage(bi, null);
+
+            TessBaseAPIRecognize(handle, null);
+            TessResultIterator ri = TessBaseAPIGetIterator(handle);
+            TessPageIterator pi = TessResultIteratorGetPageIterator(ri);
+            TessPageIteratorBegin(pi);
+
+            do {
+                Pointer ptr = TessResultIteratorGetUTF8Text(ri, pageIteratorLevel);
+                String text = ptr.getString(0);
+                TessAPI1.TessDeleteText(ptr);
+                float confidence = TessResultIteratorConfidence(ri, pageIteratorLevel);
+                IntBuffer leftB = IntBuffer.allocate(1);
+                IntBuffer topB = IntBuffer.allocate(1);
+                IntBuffer rightB = IntBuffer.allocate(1);
+                IntBuffer bottomB = IntBuffer.allocate(1);
+                TessPageIteratorBoundingBox(pi, pageIteratorLevel, leftB, topB, rightB, bottomB);
+                int left = leftB.get();
+                int top = topB.get();
+                int right = rightB.get();
+                int bottom = bottomB.get();
+                Word word = new Word(text, confidence, new Rectangle(left, top, right - left, bottom - top));
+                words.add(word);
+            } while (TessPageIteratorNext(pi, pageIteratorLevel) == TRUE);
+
+            return words;
+        } catch (Exception e) {
+            return words;
         } finally {
             dispose();
         }
