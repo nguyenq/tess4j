@@ -61,7 +61,7 @@ Version 2.0 (29 March 2015)
 - Refactor Tesseract class for extensibility and thread-safety
 - Update English language data for Tesseract 3.02
 
-Version 3.0 (13 November 2015)
+Version 3.0 (5 December 2015)
 - Upgrade to Tesseract 3.04 (953523b)
 - Include Lept4J library
 - Incorporate slf4j and logback libraries for logging
