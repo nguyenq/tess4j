@@ -40,8 +40,8 @@ class ProgressMonitor extends Thread {
     public void run() {
         try {
             while (true) {
-                logger.error("ocr alive: " + (monitor.ocr_alive == TRUE));
-                logger.error("progress: " + monitor.progress);
+                logger.info("ocr alive: " + (monitor.ocr_alive == TRUE));
+                logger.info("progress: " + monitor.progress);
                 outputMessage.append(monitor.more_to_come);
                 if (monitor.progress >= 100) {
                     break;

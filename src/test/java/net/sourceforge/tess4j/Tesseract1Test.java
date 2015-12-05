@@ -48,6 +48,9 @@ import org.slf4j.LoggerFactory;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class Tesseract1Test {
 
@@ -233,7 +236,8 @@ public class Tesseract1Test {
         int pageIteratorLevel = TessPageIteratorLevel.RIL_WORD;
         logger.info("PageIteratorLevel: "
                 + Utils.getConstantName(pageIteratorLevel, TessPageIteratorLevel.class));
-        List<Word> result = instance1.getWords(imageFile, pageIteratorLevel);
+        BufferedImage bi = ImageIO.read(imageFile);
+        List<Word> result = instance1.getWords(bi, pageIteratorLevel);
 
         // print the complete result
         for (Word word : result) {
@@ -250,13 +254,12 @@ public class Tesseract1Test {
 
     class Tess1Extension extends Tesseract1 {
 
-        public List<Word> getWords(File file, int pageIteratorLevel) {
+        public List<Word> getWords(BufferedImage bi, int pageIteratorLevel) {
             this.init();
             this.setTessVariables();
 
             List<Word> words = new ArrayList<Word>();
             try {
-                BufferedImage bi = ImageIO.read(file);
                 setImage(bi, null);
 
                 TessBaseAPIRecognize(this.getHandle(), null);
@@ -292,7 +295,7 @@ public class Tesseract1Test {
     }
 
     /**
-     * Test of getRegions method, of class Tesseract1.
+     * Test of getSegmentedRegions method, of class Tesseract1.
      */
     @Test
     public void testGetRegions() throws Exception {
@@ -301,7 +304,7 @@ public class Tesseract1Test {
         BufferedImage bi = ImageIO.read(imageFile);
         int level = TessPageIteratorLevel.RIL_SYMBOL;
         logger.info("PageIteratorLevel: " + Utils.getConstantName(level, TessPageIteratorLevel.class));
-        List<Rectangle> result = instance.getRegions(bi, level);
+        List<Rectangle> result = instance.getSegmentedRegions(bi, level);
         for (int i = 0; i < result.size(); i++) {
             Rectangle rect = result.get(i);
             logger.info(String.format("Box[%d]: x=%d, y=%d, w=%d, h=%d", i, rect.x, rect.y, rect.width, rect.height));

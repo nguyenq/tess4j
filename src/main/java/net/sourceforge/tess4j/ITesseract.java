@@ -223,5 +223,5 @@ public interface ITesseract {
      * @return
      * @throws TesseractException
      */
-    List<Rectangle> getRegions(BufferedImage bi, int level) throws TesseractException;
+    List<Rectangle> getSegmentedRegions(BufferedImage bi, int level) throws TesseractException;
 }

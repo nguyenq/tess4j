@@ -573,7 +573,7 @@ public class Tesseract implements ITesseract {
      * @throws TesseractException
      */
     @Override
-    public List<Rectangle> getRegions(BufferedImage bi, int level) throws TesseractException {
+    public List<Rectangle> getSegmentedRegions(BufferedImage bi, int level) throws TesseractException {
         init();
         setTessVariables();
 
