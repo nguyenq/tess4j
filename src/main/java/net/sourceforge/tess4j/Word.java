@@ -20,7 +20,7 @@ import java.awt.Rectangle;
 /**
  * Encapsulates Tesseract OCR results.
  */
-class Word {
+public class Word {
 
     private final String text;
     private final float confidence;
@@ -33,7 +33,7 @@ class Word {
      * @param confidence
      * @param boundingBox 
      */
-    Word(String text, float confidence, Rectangle boundingBox) {
+    public Word(String text, float confidence, Rectangle boundingBox) {
         this.text = text;
         this.confidence = confidence;
         this.rect = boundingBox;

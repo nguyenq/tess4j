@@ -1,5 +1,3 @@
-package net.sourceforge.tess4j.util;
-
 /**
  * Copyright @ 2015 Quan Nguyen
  * <p>
@@ -15,7 +13,13 @@ package net.sourceforge.tess4j.util;
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+package net.sourceforge.tess4j.util;
 
+/**
+ * Helper for logging.
+ *
+ * @author O.J. Sousa Rodrigues
+ */
 public class LoggHelper extends Exception {
 
     @Override

@@ -1,12 +1,12 @@
 /**
  * Copyright @ 2009 Quan Nguyen
- * <p>
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * <p>
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -31,7 +31,11 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-
+/**
+ * Convenient methods to PDFBox.
+ *
+ * @author O.J. Sousa Rodrigues
+ */
 public class PdfUtilities {
 
     private static final Logger logger = LoggerFactory.getLogger(new LoggHelper().toString());
@@ -83,11 +87,11 @@ public class PdfUtilities {
             PDDocument document = PDDocument.load(inputPdfFile);
             ImageType imageType = ImageType.BINARY;
 
-            int endPage = document.getNumberOfPages();
+            int pageCount = document.getNumberOfPages();
             PDFRenderer renderer = new PDFRenderer(document);
 
             boolean success = true;
-            for (int i = 0; i < endPage; i++) {
+            for (int i = 0; i < pageCount; i++) {
                 BufferedImage image = renderer.renderImageWithDPI(i, 300, imageType);
                 String fileName = String.format("%s/workingimage%d.png", imageDir.getPath(), i);
                 success &= ImageIOUtil.writeImage(image, fileName, 300);
@@ -128,8 +132,8 @@ public class PdfUtilities {
      */
     public static void splitPdf(File inputPdfFile, File outputPdfFile, int startPage, int endPage) {
         List<PDDocument> documents = null;
-        try {
 
+        try {
             logger.info("Splitting file: '{}' from page '{}' to page '{}' into file '{}'.", inputPdfFile.getAbsoluteFile(), startPage, endPage, outputPdfFile.getAbsoluteFile());
 
             PDDocument document = PDDocument.load(inputPdfFile);
@@ -142,16 +146,13 @@ public class PdfUtilities {
             for (int i = 0; i < documents.size(); i++) {
                 doc.addPage(documents.get(i).getPage(0));
             }
-            writeDocument(doc, outputPdfFile.getAbsolutePath());
+            writeDocument(doc, outputPdfFile);
             doc.close();
 
         } catch (IOException e) {
             logger.error(e.getCause().toString(), e);
         }
-
-
     }
-
 
     /**
      * Gets PDF Page Count.
@@ -159,20 +160,19 @@ public class PdfUtilities {
      * @param inputPdfFile
      * @return number of pages
      */
-    public static int getPdfPageCount(String inputPdfFile) {
-
-        int result = 0;
+    public static int getPdfPageCount(File inputPdfFile) {
+        int pageCount = 0;
         PDDocument document = null;
 
         try {
-            document = PDDocument.load(new File(inputPdfFile));
-            result = document.getNumberOfPages();
+            document = PDDocument.load(inputPdfFile);
+            pageCount = document.getNumberOfPages();
         } catch (IOException e) {
             logger.error(e.getCause().toString(), e);
         }
 
-        logger.debug("Return PDF Page count: '{}'", result);
-        return result;
+        logger.debug("Return PDF Page count: '{}'", pageCount);
+        return pageCount;
     }
 
     /**
@@ -183,37 +183,36 @@ public class PdfUtilities {
      */
     public static void mergePdf(File[] inputPdfFiles, File outputPdfFile) {
         logger.debug("Merginging PDF Files '{}' into one: '{}'.", inputPdfFiles, outputPdfFile);
-        final PDFMergerUtility mergePdf = new PDFMergerUtility();
+        PDFMergerUtility mergePdf = new PDFMergerUtility();
 
         try {
-
-            for (final File inputPdfFile : inputPdfFiles) {
+            for (File inputPdfFile : inputPdfFiles) {
                 mergePdf.addSource(inputPdfFile.getAbsoluteFile());
             }
 
             mergePdf.setDestinationFileName(outputPdfFile.getAbsolutePath());
             mergePdf.mergeDocuments(null);
 
-        } catch (final FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             logger.error(e.getCause().toString(), e);
-        } catch (final IOException e) {
+        } catch (IOException e) {
             logger.error(e.getCause().toString(), e);
         }
-
     }
 
     /**
-     * Helper method to persist the PDF Document into the File System.
+     * Helper method to persist the PDF Document into the filesystem.
      *
      * @param doc
-     * @param fileName
+     * @param outputPdfFile
      * @throws IOException
      */
-    private static void writeDocument(PDDocument doc, String fileName) throws IOException {
+    private static void writeDocument(PDDocument doc, File outputPdfFile) throws IOException {
         FileOutputStream output = null;
         COSWriter writer = null;
+
         try {
-            output = new FileOutputStream(fileName);
+            output = new FileOutputStream(outputPdfFile);
             writer = new COSWriter(output);
             writer.write(doc);
         } finally {
@@ -225,5 +224,4 @@ public class PdfUtilities {
             }
         }
     }
-
 }

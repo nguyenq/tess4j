@@ -43,7 +43,18 @@ public class PdfUtilitiesTest {
         result.deleteOnExit();
         assertTrue(result.exists());
     }
-
+//
+//    @Test
+//    public void testLoop() throws Exception {
+//        long t = System.currentTimeMillis();
+//        logger.info("test loop");
+//        for (int i = 0; i < 1000; i++)
+//            testConvertPdf2Tiff();
+//        
+//        logger.info("test loop ended");
+//        logger.info("duration: " + (System.currentTimeMillis() - t));
+//    }
+//    
     /**
      * Test of convertPdf2Png method, of class PdfUtilities.
      */
@@ -88,7 +99,7 @@ public class PdfUtilitiesTest {
         logger.info("getPdfPageCount");
         File inputPdfFile = new File(this.TEST_RESOURCES_DATA_PATH, "eurotext.pdf");
         int expResult = 1;
-        int result = PdfUtilities.getPdfPageCount(inputPdfFile.getPath());
+        int result = PdfUtilities.getPdfPageCount(inputPdfFile);
         assertEquals(expResult, result);
     }
 
@@ -103,7 +114,7 @@ public class PdfUtilitiesTest {
         File outputPdfFile = new File(String.format("%s/%s", TEST_RESOURCES_RESULTS_PATH, "multipage-pdf_merged.pdf"));
         File[] inputPdfFiles = {pdfPartOne, pdfPartTwo};
         PdfUtilities.mergePdf(inputPdfFiles, outputPdfFile);
-        assertTrue(6 == PdfUtilities.getPdfPageCount(outputPdfFile.getPath()));
+        assertTrue(6 == PdfUtilities.getPdfPageCount(outputPdfFile));
     }
 
 }
