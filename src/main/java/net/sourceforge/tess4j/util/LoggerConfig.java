@@ -18,20 +18,35 @@ package net.sourceforge.tess4j.util;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 /**
- * Helper for logging.
+ * Logging configuration.
  *
  * @author O.J. Sousa Rodrigues
  */
-public class LoggHelper extends Exception {
+public enum LoggerConfig {
 
-    @Override
-    public String toString() {
-	LoggerConfig.INSTANCE.loadConfig();
+    INSTANCE;
 
-        String className = this.getClass().getName();
-        StackTraceElement[] sTrace = this.getStackTrace();
-        className = sTrace[0].getClassName();
+    private boolean isLoaded = false;
 
-        return className;
+    /**
+     * This method loads the Logger configuration.
+     * 
+     * @return true if the Logger configuration is successful loaded.
+     */
+    public boolean loadConfig() {
+
+	try {
+	    if (!isLoaded) {
+		SLF4JBridgeHandler.removeHandlersForRootLogger();
+		SLF4JBridgeHandler.install();
+		this.isLoaded = true;
+		System.out.println("Logger configuration could be loaded succesfully.");
+	    }
+	} catch (final Exception e) {
+	    System.err.println("Logger configuration could not be loaded succesfully.");
+	}
+
+	return this.isLoaded;
     }
+
 }
