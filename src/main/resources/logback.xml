@@ -7,6 +7,8 @@
         </encoder>
     </appender>
 
+    <logger name="com.levigo" level="info" />
+
     <root level="info">
         <appender-ref ref="STDOUT"/>
     </root>
