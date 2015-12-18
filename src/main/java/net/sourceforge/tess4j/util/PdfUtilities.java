@@ -37,7 +37,7 @@ public class PdfUtilities {
     /**
      * Converts PDF to TIFF format.
      *
-     * @param inputPdfFile
+     * @param inputPdfFile input file
      * @return a multi-page TIFF image
      * @throws IOException
      */
@@ -68,7 +68,7 @@ public class PdfUtilities {
     /**
      * Converts PDF to PNG format.
      *
-     * @param inputPdfFile
+     * @param inputPdfFile input file
      * @return an array of PNG images
      */
     public static File[] convertPdf2Png(File inputPdfFile) {
@@ -87,6 +87,7 @@ public class PdfUtilities {
         List<String> gsArgs = new ArrayList<String>();
         gsArgs.add("-gs");
         gsArgs.add("-dNOPAUSE");
+//        gsArgs.add("-dQUIET");
         gsArgs.add("-dBATCH");
         gsArgs.add("-dSAFER");
         gsArgs.add("-sDEVICE=pnggray");
@@ -137,10 +138,10 @@ public class PdfUtilities {
      *
      * @deprecated As of Release 3.0.
      *
-     * @param inputPdfFile
-     * @param outputPdfFile
-     * @param firstPage
-     * @param lastPage
+     * @param inputPdfFile input file
+     * @param outputPdfFile output file
+     * @param firstPage begin page
+     * @param lastPage end page
      */
     public static void splitPdf(String inputPdfFile, String outputPdfFile, String firstPage, String lastPage) {
         if (!firstPage.trim().isEmpty()) {
@@ -157,10 +158,10 @@ public class PdfUtilities {
     /**
      * Splits PDF.
      *
-     * @param inputPdfFile
-     * @param outputPdfFile
-     * @param firstPage
-     * @param lastPage
+     * @param inputPdfFile input file
+     * @param outputPdfFile output file
+     * @param firstPage begin page
+     * @param lastPage end page
      */
     public static void splitPdf(File inputPdfFile, File outputPdfFile, int firstPage, int lastPage) {
         //get Ghostscript instance
@@ -220,7 +221,7 @@ public class PdfUtilities {
      *
      * @deprecated As of Release 3.0.
      *
-     * @param inputPdfFile
+     * @param inputPdfFile input file
      * @return number of pages
      */
     public static int getPdfPageCount(String inputPdfFile) {
@@ -230,7 +231,7 @@ public class PdfUtilities {
     /**
      * Gets PDF Page Count.
      *
-     * @param inputPdfFile
+     * @param inputPdfFile input file
      * @return number of pages
      */
     public static int getPdfPageCount(File inputPdfFile) {
@@ -272,16 +273,16 @@ public class PdfUtilities {
             } catch (GhostscriptException e) {
                 //nothing
             }
-
-            return pageCount;
         }
+        
+        return pageCount;
     }
 
     /**
      * Merges PDF files.
      *
-     * @param inputPdfFiles
-     * @param outputPdfFile
+     * @param inputPdfFiles array of input files
+     * @param outputPdfFile output file
      */
     public static void mergePdf(File[] inputPdfFiles, File outputPdfFile) {
         //get Ghostscript instance
