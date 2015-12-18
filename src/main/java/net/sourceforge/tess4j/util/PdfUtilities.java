@@ -98,10 +98,19 @@ public class PdfUtilities {
 
         //execute and exit interpreter
         try {
-            gs.initialize(gsArgs.toArray(new String[0]));
-            gs.exit();
+            synchronized (gs) {
+                gs.initialize(gsArgs.toArray(new String[0]));
+                gs.exit();
+            }
         } catch (GhostscriptException e) {
             logger.error(e.getCause().toString(), e);
+        } finally {
+            //delete interpreter instance (safer)
+            try {
+                Ghostscript.deleteInstance();
+            } catch (GhostscriptException e) {
+                //nothing
+            }
         }
 
         // find working files
@@ -126,12 +135,34 @@ public class PdfUtilities {
     /**
      * Splits PDF.
      *
+     * @deprecated As of Release 3.0.
+     *
      * @param inputPdfFile
      * @param outputPdfFile
      * @param firstPage
      * @param lastPage
      */
     public static void splitPdf(String inputPdfFile, String outputPdfFile, String firstPage, String lastPage) {
+        if (!firstPage.trim().isEmpty()) {
+            firstPage = "0";
+        }
+
+        if (!lastPage.trim().isEmpty()) {
+            lastPage = "10000";
+        }
+
+        splitPdf(new File(inputPdfFile), new File(outputPdfFile), Integer.parseInt(firstPage), Integer.parseInt(lastPage));
+    }
+
+    /**
+     * Splits PDF.
+     *
+     * @param inputPdfFile
+     * @param outputPdfFile
+     * @param firstPage
+     * @param lastPage
+     */
+    public static void splitPdf(File inputPdfFile, File outputPdfFile, int firstPage, int lastPage) {
         //get Ghostscript instance
         Ghostscript gs = Ghostscript.getInstance();
 
@@ -144,22 +175,17 @@ public class PdfUtilities {
         gsArgs.add("-dQUIET");
         gsArgs.add("-dBATCH");
         gsArgs.add("-sDEVICE=pdfwrite");
-
-        if (!firstPage.trim().isEmpty()) {
-            gsArgs.add("-dFirstPage=" + firstPage);
-        }
-
-        if (!lastPage.trim().isEmpty()) {
-            gsArgs.add("-dLastPage=" + lastPage);
-        }
-
-        gsArgs.add("-sOutputFile=" + outputPdfFile);
-        gsArgs.add(inputPdfFile);
+        gsArgs.add("-dFirstPage=" + firstPage);
+        gsArgs.add("-dLastPage=" + lastPage);
+        gsArgs.add("-sOutputFile=" + outputPdfFile.getPath());
+        gsArgs.add(inputPdfFile.getPath());
 
         //execute and exit interpreter
         try {
-            gs.initialize(gsArgs.toArray(new String[0]));
-            gs.exit();
+            synchronized (gs) {
+                gs.initialize(gsArgs.toArray(new String[0]));
+                gs.exit();
+            }
         } catch (GhostscriptException e) {
             logger.error(e.getCause().toString(), e);
             throw new RuntimeException(e.getMessage());
@@ -167,6 +193,13 @@ public class PdfUtilities {
             throw new RuntimeException(getMessage(ule.getMessage()));
         } catch (NoClassDefFoundError ncdfe) {
             throw new RuntimeException(getMessage(ncdfe.getMessage()));
+        } finally {
+            //delete interpreter instance (safer)
+            try {
+                Ghostscript.deleteInstance();
+            } catch (GhostscriptException e) {
+                //nothing
+            }
         }
     }
 
@@ -175,7 +208,7 @@ public class PdfUtilities {
 
     static {
         File postscriptFile = LoadLibs.extractTessResources(PS_FILE);
-        if (postscriptFile != null) {
+        if (postscriptFile != null && postscriptFile.exists()) {
             pdfPageCountFilePath = postscriptFile.getPath();
         } else {
             pdfPageCountFilePath = PS_FILE;
@@ -185,10 +218,22 @@ public class PdfUtilities {
     /**
      * Gets PDF Page Count.
      *
+     * @deprecated As of Release 3.0.
+     *
      * @param inputPdfFile
      * @return number of pages
      */
     public static int getPdfPageCount(String inputPdfFile) {
+        return getPdfPageCount(new File(inputPdfFile));
+    }
+
+    /**
+     * Gets PDF Page Count.
+     *
+     * @param inputPdfFile
+     * @return number of pages
+     */
+    public static int getPdfPageCount(File inputPdfFile) {
         //get Ghostscript instance
         Ghostscript gs = Ghostscript.getInstance();
 
@@ -208,19 +253,28 @@ public class PdfUtilities {
 
         //execute and exit interpreter
         try {
-            //output
-            os = new ByteArrayOutputStream();
-            gs.setStdOut(os);
-            gs.initialize(gsArgs.toArray(new String[0]));
-            pageCount = Integer.parseInt(os.toString().replace("%%Pages: ", ""));
-            os.close();
+            synchronized (gs) {
+                //output
+                os = new ByteArrayOutputStream();
+                gs.setStdOut(os);
+                gs.initialize(gsArgs.toArray(new String[0]));
+                pageCount = Integer.parseInt(os.toString().replace("%%Pages: ", ""));
+                os.close();
+            }
         } catch (GhostscriptException e) {
             logger.error(e.getCause().toString(), e);
         } catch (Exception e) {
             logger.error(e.getCause().toString(), e);
-        }
+        } finally {
+            //delete interpreter instance (safer)
+            try {
+                Ghostscript.deleteInstance();
+            } catch (GhostscriptException e) {
+                //nothing
+            }
 
-        return pageCount;
+            return pageCount;
+        }
     }
 
     /**
@@ -250,8 +304,10 @@ public class PdfUtilities {
 
         //execute and exit interpreter
         try {
-            gs.initialize(gsArgs.toArray(new String[0]));
-            gs.exit();
+            synchronized (gs) {
+                gs.initialize(gsArgs.toArray(new String[0]));
+                gs.exit();
+            }
         } catch (GhostscriptException e) {
             logger.error(e.getCause().toString(), e);
             throw new RuntimeException(e.getMessage());
@@ -259,6 +315,13 @@ public class PdfUtilities {
             throw new RuntimeException(getMessage(ule.getMessage()));
         } catch (NoClassDefFoundError ncdfe) {
             throw new RuntimeException(getMessage(ncdfe.getMessage()));
+        } finally {
+            //delete interpreter instance (safer)
+            try {
+                Ghostscript.deleteInstance();
+            } catch (GhostscriptException e) {
+                //nothing
+            }
         }
     }
 
