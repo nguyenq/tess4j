@@ -246,7 +246,7 @@ public class PdfUtilities {
         gsArgs.add("-dNOPAUSE");
         gsArgs.add("-dQUIET");
         gsArgs.add("-dBATCH");
-        gsArgs.add("-sPDFname=" + inputPdfFile);
+        gsArgs.add("-sPDFname=" + inputPdfFile.getPath());
         gsArgs.add(pdfPageCountFilePath);
 
         int pageCount = 0;

@@ -66,9 +66,10 @@ public class PdfUtilitiesTest {
         File outputPdfFile = new File(String.format("%s/%s", TEST_RESOURCES_RESULTS_PATH, "multipage-pdf_splitted.pdf"));
         int startPage = 2;
         int endPage = 3;
+        int expResult = 2;
         PdfUtilities.splitPdf(inputPdfFile, outputPdfFile, startPage, endPage);
         int pageCount = PdfUtilities.getPdfPageCount(outputPdfFile);
-        assertTrue(2 == pageCount);
+        assertEquals(expResult, pageCount);
     }
 
     /**
@@ -77,8 +78,8 @@ public class PdfUtilitiesTest {
     @Test
     public void testGetPdfPageCount() {
         logger.info("getPdfPageCount");
-        File inputPdfFile = new File(this.TEST_RESOURCES_DATA_PATH, "eurotext.pdf");
-        int expResult = 1;
+        File inputPdfFile = new File(this.TEST_RESOURCES_DATA_PATH, "multipage-pdf.pdf");
+        int expResult = 5;
         int result = PdfUtilities.getPdfPageCount(inputPdfFile);
         assertEquals(expResult, result);
     }
@@ -91,10 +92,11 @@ public class PdfUtilitiesTest {
         logger.info("mergePdf");
         File pdfPartOne = new File(String.format("%s/%s", TEST_RESOURCES_DATA_PATH, "eurotext.pdf"));
         File pdfPartTwo = new File(String.format("%s/%s", TEST_RESOURCES_DATA_PATH, "multipage-pdf.pdf"));
+        int expResult = 6;
         File outputPdfFile = new File(String.format("%s/%s", TEST_RESOURCES_RESULTS_PATH, "multipage-pdf_merged.pdf"));
         File[] inputPdfFiles = {pdfPartOne, pdfPartTwo};
         PdfUtilities.mergePdf(inputPdfFiles, outputPdfFile);
-        assertTrue(6 == PdfUtilities.getPdfPageCount(outputPdfFile));
+        assertEquals(expResult, PdfUtilities.getPdfPageCount(outputPdfFile));
     }
 
 }
