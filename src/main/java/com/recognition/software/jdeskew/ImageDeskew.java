@@ -3,10 +3,6 @@
  */
 package com.recognition.software.jdeskew;
 
-import net.sourceforge.tess4j.util.LoggHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.awt.image.BufferedImage;
 
 public class ImageDeskew {
@@ -26,8 +22,6 @@ public class ImageDeskew {
         public double d;
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(new LoggHelper().toString());
-    
     // the source image
     private BufferedImage cImage;
     // the range of angles to search for lines
@@ -142,7 +136,7 @@ public class ImageDeskew {
             try {
                 this.cHMatrix[index] += 1;
             } catch (Exception ex) {
-                logger.info(ex.toString());
+                System.out.println(ex.toString());
             }
         }
     }

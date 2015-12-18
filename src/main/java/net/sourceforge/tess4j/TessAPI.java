@@ -454,7 +454,7 @@ public interface TessAPI extends Library, ITessAPI {
     /**
      * Provide an image for Tesseract to recognize. Format is as
      * <code>TesseractRect</code> above. Does not copy the image buffer, or take
-     * ownership. The source image may be destroyed after Recognize is called,
+     * ownership. The source image may be destroyed after <code>Recognize</code> is called,
      * either explicitly or implicitly via one of the <code>Get*Text</code>
      * functions. <code>SetImage</code> clears all recognition results, and sets
      * the rectangle to the full image, so it may be followed immediately by a
@@ -533,7 +533,7 @@ public interface TessAPI extends Library, ITessAPI {
     /**
      * Get the textlines as a Leptonica-style <code>Boxa</code>,
      * <code>Pixa</code> pair, in reading order. Can be called before or after
-     * Recognize. If <code>blockids</code> is not <code>NULL</code>, the
+     * <code>Recognize</code>. If <code>blockids</code> is not <code>NULL</code>, the
      * block-id of each line is also returned as an array of one element per
      * line. delete [] after use. If <code>paraids</code> is not
      * <code>NULL</code>, the paragraph-id of each line within its block is also
@@ -550,7 +550,7 @@ public interface TessAPI extends Library, ITessAPI {
     /**
      * Get the textlines as a Leptonica-style <code>Boxa</code>,
      * <code>Pixa</code> pair, in reading order. Can be called before or after
-     * Recognize. If <code>blockids</code> is not <code>NULL</code>, the
+     * <code>Recognize</code>. If <code>blockids</code> is not <code>NULL</code>, the
      * block-id of each line is also returned as an array of one element per
      * line. delete [] after use. If <code>paraids</code> is not
      * <code>NULL</code>, the paragraph-id of each line within its block is also
@@ -570,7 +570,7 @@ public interface TessAPI extends Library, ITessAPI {
      * Get textlines and strips of image regions as a Leptonica-style
      * <code>Boxa</code>, <code>Pixa</code> pair, in reading order. Enables
      * downstream handling of non-rectangular regions. Can be called before or
-     * after Recognize. If <code>blockids</code> is not NULL, the block-id of
+     * after <code>Recognize</code>. If <code>blockids</code> is not NULL, the block-id of
      * each line is also returned as an array of one element per line. delete []
      * after use.
      *
@@ -607,7 +607,7 @@ public interface TessAPI extends Library, ITessAPI {
     /**
      * Get the given level kind of components (block, textline, word etc.) as a
      * Leptonica-style <code>Boxa</code>, <code>Pixa</code> pair, in reading
-     * order. Can be called before or after Recognize. If <code>blockids</code>
+     * order. Can be called before or after <code>Recognize</code>. If <code>blockids</code>
      * is not <code>NULL</code>, the block-id of each component is also returned
      * as an array of one element per component. delete [] after use. If
      * <code>text_only</code> is true, then only text components are returned.
@@ -625,7 +625,7 @@ public interface TessAPI extends Library, ITessAPI {
     /**
      * Get the given level kind of components (block, textline, word etc.) as a
      * Leptonica-style <code>Boxa</code>, <code>Pixa</code> pair, in reading
-     * order. Can be called before or after Recognize. If <code>blockids</code>
+     * order. Can be called before or after <code>Recognize</code>. If <code>blockids</code>
      * is not <code>NULL</code>, the block-id of each component is also returned
      * as an array of one element per component. delete [] after use. If
      * <code>paraids</code> is not <code>NULL</code>, the paragraph-id of each
@@ -693,7 +693,7 @@ public interface TessAPI extends Library, ITessAPI {
     int TessBaseAPIRecognize(TessBaseAPI handle, ETEXT_DESC monitor);
 
     /**
-     * Variant on Recognize used for testing chopper.
+     * Variant on <code>Recognize</code> used for testing chopper.
      *
      * @param handle the TesseractAPI instance
      * @param monitor the result as Tesseract internal structures

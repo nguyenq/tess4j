@@ -216,7 +216,7 @@ public interface ITesseract {
     void createDocuments(String[] filenames, String[] outputbases, List<RenderedFormat> formats) throws TesseractException;
 
     /**
-     * Gets segmented regions.
+     * Gets segmented regions at specified page iterator level.
      *
      * @param bi input image
      * @param pageIteratorLevel TessPageIteratorLevel enum
@@ -226,7 +226,7 @@ public interface ITesseract {
     List<Rectangle> getSegmentedRegions(BufferedImage bi, int pageIteratorLevel) throws TesseractException;
     
     /**
-     * Gets recognized words at specific page iterator level.
+     * Gets recognized words at specified page iterator level.
      * 
      * @param bi input image
      * @param pageIteratorLevel TessPageIteratorLevel enum

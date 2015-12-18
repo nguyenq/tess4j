@@ -95,7 +95,7 @@ public class Tesseract implements ITesseract {
     /**
      * Gets an instance of the class library.
      *
-     * @deprecated As of Release 2.0, use {@link Tesseract()} instead.
+     * @deprecated As of Release 2.0, use default constructor instead.
      * @return instance
      */
     @Deprecated
@@ -568,7 +568,7 @@ public class Tesseract implements ITesseract {
     }
 
     /**
-     * Gets segmented regions.
+     * Gets segmented regions at specified page iterator level.
      *
      * @param bi input image
      * @param pageIteratorLevel TessPageIteratorLevel enum
@@ -606,7 +606,7 @@ public class Tesseract implements ITesseract {
     }
 
     /**
-     * Gets recognized words at specific page iterator level.
+     * Gets recognized words at specified page iterator level.
      *
      * @param bi input image
      * @param pageIteratorLevel TessPageIteratorLevel enum

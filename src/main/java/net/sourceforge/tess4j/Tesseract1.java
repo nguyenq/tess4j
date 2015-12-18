@@ -534,7 +534,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     }
 
     /**
-     * Gets segmented regions.
+     * Gets segmented regions at specified page iterator level.
      *
      * @param bi input image
      * @param pageIteratorLevel TessPageIteratorLevel enum
@@ -571,7 +571,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     }
 
     /**
-     * Gets recognized words at specific page iterator level.
+     * Gets recognized words at specified page iterator level.
      *
      * @param bi input image
      * @param pageIteratorLevel TessPageIteratorLevel enum
