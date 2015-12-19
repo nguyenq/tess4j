@@ -254,7 +254,7 @@ public class Tesseract1Test {
      */
     @Test
     public void testGetSegmentedRegions() throws Exception {
-        logger.info("getRegions at given TessPageIteratorLevel");
+        logger.info("getSegmentedRegions at given TessPageIteratorLevel");
         File imageFile = new File(testResourcesDataPath, "eurotext.png");
         BufferedImage bi = ImageIO.read(imageFile);
         int level = TessPageIteratorLevel.RIL_SYMBOL;
