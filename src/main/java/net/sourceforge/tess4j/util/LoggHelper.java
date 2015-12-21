@@ -26,9 +26,8 @@ public class LoggHelper extends Exception {
     public String toString() {
         LoggerConfig.INSTANCE.loadConfig();
 
-        String className = this.getClass().getName();
         StackTraceElement[] sTrace = this.getStackTrace();
-        className = sTrace[0].getClassName();
+        String className = sTrace[0].getClassName();
 
         return className;
     }

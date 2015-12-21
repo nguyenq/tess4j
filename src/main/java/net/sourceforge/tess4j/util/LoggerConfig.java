@@ -31,7 +31,7 @@ public enum LoggerConfig {
     /**
      * This method loads the Logger configuration.
      *
-     * @return true if the Logger configuration is successful loaded.
+     * @return true if the Logger configuration was loaded successfully.
      */
     public boolean loadConfig() {
 
@@ -40,10 +40,10 @@ public enum LoggerConfig {
                 SLF4JBridgeHandler.removeHandlersForRootLogger();
                 SLF4JBridgeHandler.install();
                 this.isLoaded = true;
-                System.out.println("Logger configuration could be loaded succesfully.");
+//                System.out.println("Logger configuration was loaded successfully.");
             }
         } catch (final Exception e) {
-            System.err.println("Logger configuration could not be loaded succesfully.");
+            System.err.println("Logger configuration could not be loaded.");
         }
 
         return this.isLoaded;
