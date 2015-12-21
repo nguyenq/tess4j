@@ -478,7 +478,7 @@ public class TessAPITest {
         ProgressMonitor pmo = new ProgressMonitor(monitor);
         pmo.start();
         api.TessBaseAPIRecognize(handle, monitor);
-        logger.error("Message: " + pmo.getMessage());
+        logger.info("Message: " + pmo.getMessage());
         TessResultIterator ri = api.TessBaseAPIGetIterator(handle);
         TessPageIterator pi = api.TessResultIteratorGetPageIterator(ri);
         api.TessPageIteratorBegin(pi);
