@@ -18,15 +18,12 @@ package net.sourceforge.tess4j;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
-
-import com.sun.jna.Pointer;
 
 import net.sourceforge.tess4j.util.LoggHelper;
 import net.sourceforge.tess4j.util.Utils;
@@ -45,9 +42,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -221,7 +215,7 @@ public class Tesseract1Test {
     /**
      * Test of getWords method, of class Tesseract1.
      *
-     * @throws Exception while processing image.
+     * @throws java.lang.Exception
      */
     @Test
     public void testGetWords() throws Exception {
@@ -251,6 +245,8 @@ public class Tesseract1Test {
 
     /**
      * Test of getSegmentedRegions method, of class Tesseract1.
+     * 
+     * @throws java.lang.Exception
      */
     @Test
     public void testGetSegmentedRegions() throws Exception {

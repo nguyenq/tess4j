@@ -1,12 +1,12 @@
 /**
  * Copyright @ 2010 Quan Nguyen
- * <p/>
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * <p/>
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p/>
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -19,15 +19,12 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.IntBuffer;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
-
-import com.sun.jna.Pointer;
 
 import net.sourceforge.tess4j.util.ImageHelper;
 import net.sourceforge.tess4j.util.ImageIOHelper;
@@ -37,12 +34,9 @@ import net.sourceforge.tess4j.util.Utils;
 import net.sourceforge.tess4j.ITesseract.RenderedFormat;
 import net.sourceforge.tess4j.ITessAPI.TessPageIteratorLevel;
 
-import static net.sourceforge.tess4j.ITessAPI.TRUE;
 import static org.junit.Assert.*;
 
 import com.recognition.software.jdeskew.ImageDeskew;
-import net.sourceforge.tess4j.ITessAPI.TessPageIterator;
-import net.sourceforge.tess4j.ITessAPI.TessResultIterator;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -267,6 +261,8 @@ public class TesseractTest {
 
     /**
      * Test of getSegmentedRegions method, of class Tesseract.
+     * 
+     * @throws java.lang.Exception
      */
     @Test
     public void testGetSegmentedRegions() throws Exception {
