@@ -87,7 +87,7 @@ public class PdfUtilities {
         List<String> gsArgs = new ArrayList<String>();
         gsArgs.add("-gs");
         gsArgs.add("-dNOPAUSE");
-//        gsArgs.add("-dQUIET");
+        gsArgs.add("-dQUIET");
         gsArgs.add("-dBATCH");
         gsArgs.add("-dSAFER");
         gsArgs.add("-sDEVICE=pnggray");
@@ -144,12 +144,11 @@ public class PdfUtilities {
      * @param lastPage end page
      */
     public static void splitPdf(String inputPdfFile, String outputPdfFile, String firstPage, String lastPage) {
-        if (!firstPage.trim().isEmpty()) {
+        if (firstPage.trim().isEmpty()) {
             firstPage = "0";
         }
-
-        if (!lastPage.trim().isEmpty()) {
-            lastPage = "10000";
+        if (lastPage.trim().isEmpty()) {
+            lastPage = "0";
         }
 
         splitPdf(new File(inputPdfFile), new File(outputPdfFile), Integer.parseInt(firstPage), Integer.parseInt(lastPage));
@@ -176,8 +175,12 @@ public class PdfUtilities {
         gsArgs.add("-dQUIET");
         gsArgs.add("-dBATCH");
         gsArgs.add("-sDEVICE=pdfwrite");
-        gsArgs.add("-dFirstPage=" + firstPage);
-        gsArgs.add("-dLastPage=" + lastPage);
+        if (firstPage > 0) {
+            gsArgs.add("-dFirstPage=" + firstPage);
+        }
+        if (lastPage > 0) {
+            gsArgs.add("-dLastPage=" + lastPage);
+        }
         gsArgs.add("-sOutputFile=" + outputPdfFile.getPath());
         gsArgs.add(inputPdfFile.getPath());
 
@@ -274,7 +277,7 @@ public class PdfUtilities {
                 //nothing
             }
         }
-        
+
         return pageCount;
     }
 
