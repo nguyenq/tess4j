@@ -3,9 +3,14 @@
  */
 package com.recognition.software.jdeskew;
 
+import net.sourceforge.tess4j.util.LoggHelper;
+import org.slf4j.LoggerFactory;
+
 import java.awt.image.BufferedImage;
 
 public class ImageDeskew {
+
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(new LoggHelper().toString());
 
     /**
      * Representation of a line in the image.
@@ -136,7 +141,7 @@ public class ImageDeskew {
             try {
                 this.cHMatrix[index] += 1;
             } catch (Exception ex) {
-                System.out.println(ex.toString());
+                logger.error("", ex);
             }
         }
     }

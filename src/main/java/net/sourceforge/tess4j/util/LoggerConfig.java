@@ -40,7 +40,6 @@ public enum LoggerConfig {
                 SLF4JBridgeHandler.removeHandlersForRootLogger();
                 SLF4JBridgeHandler.install();
                 this.isLoaded = true;
-//                System.out.println("Logger configuration was loaded successfully.");
             }
         } catch (final Exception e) {
             System.err.println("Logger configuration could not be loaded.");
