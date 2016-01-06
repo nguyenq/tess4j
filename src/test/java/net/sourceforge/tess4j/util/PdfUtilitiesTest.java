@@ -32,23 +32,37 @@ public class PdfUtilitiesTest {
 
     /**
      * Test of convertPdf2Tiff method, of class PdfUtilities.
+     * @throws java.lang.Exception
      */
     @Test
     public void testConvertPdf2Tiff() throws Exception {
         logger.info("convertPdf2Tiff");
-        File inputPdfFile = new File(this.TEST_RESOURCES_DATA_PATH, "eurotext.pdf");
+        File inputPdfFile = new File(TEST_RESOURCES_DATA_PATH, "eurotext.pdf");
         File result = PdfUtilities.convertPdf2Tiff(inputPdfFile);
         result.deleteOnExit();
         assertTrue(result.exists());
     }
 
     /**
+     * Test of convertPdfToTiff method, of class PdfUtilities.
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testConvertPdfToTiff() throws Exception {
+        logger.info("convertPdfToTiff");
+        File inputPdfFile = new File(TEST_RESOURCES_DATA_PATH, "eurotext.pdf");
+        File result = PdfUtilities.convertPdfToTiff(inputPdfFile);
+        result.deleteOnExit();
+        assertTrue(result.exists());
+    }
+    
+    /**
      * Test of convertPdf2Png method, of class PdfUtilities.
      */
     @Test
     public void testConvertPdf2Png() {
         logger.info("convertPdf2Png");
-        File inputPdfFile = new File(this.TEST_RESOURCES_DATA_PATH, "eurotext.pdf");
+        File inputPdfFile = new File(TEST_RESOURCES_DATA_PATH, "eurotext.pdf");
         File[] results = PdfUtilities.convertPdf2Png(inputPdfFile);
         for (File result : results) {
             result.deleteOnExit();

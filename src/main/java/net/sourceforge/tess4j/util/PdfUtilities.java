@@ -134,6 +134,55 @@ public class PdfUtilities {
     }
 
     /**
+     * Converts PDF to TIFF format. 
+     * This method is more efficient than {@link #convertPdfToTiff} since it performs the conversion without creating the intermediate PNG files.
+     *
+     * @param inputPdfFile input file
+     * @return a multi-page TIFF image
+     * @throws IOException
+     */
+    public static File convertPdfToTiff(File inputPdfFile) throws IOException {
+        File tiffFile = File.createTempFile("multipage", ".tif");
+        
+        //get Ghostscript instance
+        Ghostscript gs = Ghostscript.getInstance();
+
+        //prepare Ghostscript interpreter parameters
+        //refer to Ghostscript documentation for parameter usage
+        List<String> gsArgs = new ArrayList<String>();
+        gsArgs.add("-gs");
+        gsArgs.add("-dNOPAUSE");
+        gsArgs.add("-dQUIET");
+        gsArgs.add("-dBATCH");
+        gsArgs.add("-dSAFER");
+        gsArgs.add("-sDEVICE=tiffgray");
+        gsArgs.add("-r300");
+        gsArgs.add("-dGraphicsAlphaBits=4");
+        gsArgs.add("-dTextAlphaBits=4");
+        gsArgs.add("-sOutputFile=" + tiffFile.getPath());
+        gsArgs.add(inputPdfFile.getPath());
+
+        //execute and exit interpreter
+        try {
+            synchronized (gs) {
+                gs.initialize(gsArgs.toArray(new String[0]));
+                gs.exit();
+            }
+        } catch (GhostscriptException e) {
+            logger.error(e.getCause().toString(), e);
+        } finally {
+            //delete interpreter instance (safer)
+            try {
+                Ghostscript.deleteInstance();
+            } catch (GhostscriptException e) {
+                //nothing
+            }
+        }
+
+        return tiffFile;
+    }
+
+    /**
      * Splits PDF.
      *
      * @deprecated As of Release 3.0.
