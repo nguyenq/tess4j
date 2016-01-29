@@ -15,6 +15,7 @@
  */
 package net.sourceforge.tess4j;
 
+import com.sun.jna.Pointer;
 import net.sourceforge.tess4j.util.LoggHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,7 @@ class ProgressMonitor extends Thread {
         this.monitor = monitor;
     }
 
-    String getMessage() {
+    public String getMessage() {
         return outputMessage.toString();
     }
 
@@ -51,5 +52,24 @@ class ProgressMonitor extends Thread {
         } catch (Exception ioe) {
             ioe.printStackTrace();
         }
+    }
+
+    /**
+     * Cancels OCR operation.
+     */
+    public void cancel() {
+        monitor.cancel = new ITessAPI.CANCEL_FUNC() {
+            @Override
+            public boolean invoke(Pointer cancel_this, int words) {
+                return true;
+            }
+        };
+    }
+    
+    /**
+     * Resets cancel flag.
+     */
+    public void reset() {
+        monitor.cancel = null;
     }
 }

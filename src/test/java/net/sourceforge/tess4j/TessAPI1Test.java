@@ -468,12 +468,6 @@ public class TessAPI1Test {
         TessAPI1.TessBaseAPISetPageSegMode(handle, TessPageSegMode.PSM_AUTO);
         TessAPI1.TessBaseAPISetImage(handle, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
         ETEXT_DESC monitor = new ETEXT_DESC();
-        monitor.cancel = new CANCEL_FUNC() {
-            @Override
-            public boolean invoke(Pointer cancel_this, int words) {
-                return false;   // return true to cancel
-            }
-        };
         ITessAPI.TimeVal timeout = new ITessAPI.TimeVal();
         timeout.tv_sec = new NativeLong(0L); // time > 0 causes blank ouput
         monitor.end_time = timeout;
