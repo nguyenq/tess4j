@@ -537,6 +537,7 @@ public class Tesseract implements ITesseract {
 
                     TessResultRenderer renderer = createRenderers(outputbases[i], formats);
                     createDocuments(filename, renderer);
+                    api.TessDeleteResultRenderer(renderer);                    
                 } catch (Exception e) {
                     // skip the problematic image file
                     logger.error(e.getMessage(), e);

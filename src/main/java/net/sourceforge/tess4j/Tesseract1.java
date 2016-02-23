@@ -503,6 +503,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
 
                     TessResultRenderer renderer = createRenderers(outputbases[i], formats);
                     createDocuments(filename, renderer);
+                    TessDeleteResultRenderer(renderer);                     
                 } catch (Exception e) {
                     // skip the problematic image file
                     logger.error(e.getMessage(), e);
