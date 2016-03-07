@@ -15,6 +15,13 @@
  */
 package net.sourceforge.tess4j.util;
 
+import com.sun.jna.Native;
+import com.sun.jna.Platform;
+import net.sourceforge.tess4j.TessAPI;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,15 +32,6 @@ import java.net.URLConnection;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-
-import com.sun.jna.Native;
-import com.sun.jna.Platform;
-
-import net.sourceforge.tess4j.TessAPI;
-import org.slf4j.LoggerFactory;
 
 /**
  * Loads native libraries from JAR or project folder.
@@ -93,7 +91,7 @@ public class LoadLibs {
      * @param resourceName name of file or directory
      * @return target path, which could be file or directory
      */
-    public static File extractTessResources(String resourceName) {
+    public static synchronized File extractTessResources(String resourceName) {
         File targetPath = null;
 
         try {
