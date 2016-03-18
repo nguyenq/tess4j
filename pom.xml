@@ -165,7 +165,7 @@
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna</artifactId>
-            <version>4.2.1</version>
+            <version>4.2.2</version>
         </dependency>
         <dependency>
             <groupId>com.github.jai-imageio</groupId>
@@ -185,7 +185,7 @@
         <dependency>
             <groupId>net.sourceforge.lept4j</groupId>
             <artifactId>lept4j</artifactId>
-            <version>1.1.1</version>
+            <version>1.1.2</version>
         </dependency>
         <!-- Logging Dependencies -->
         <dependency>
