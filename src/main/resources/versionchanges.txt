@@ -67,7 +67,7 @@ Version 3.0 (25 December 2015)
 - Incorporate slf4j and logback libraries for logging
 - Make GhostScript calls thread safe
 
-Version 3.1 (22 February 2016)
+Version 3.1 (21 March 2016)
 - Update Tesseract to 3.04.01 (4ef68a0)
-- Use Lept4J-1.1.1 (Leptonica 1.72)
+- Use Lept4J-1.1.2 (Leptonica 1.72)
 - Delete ResultRenderer after use to release PDF file handler
