@@ -76,6 +76,6 @@ Version 3.1 (21 March 2016)
 
 Version 3.2 (15 May 2016)
 - Revert JNA to 4.1.0 due to "Invalid calling convention 63" errors invoking GhostScript via Ghost4J on Linux
-- Update Lept4J to 1.2.1 (Leptonica 1.73)
+- Update Lept4J to 1.2.2 (Leptonica 1.73)
 - Recompile Tesseract 3.04.01 DLL against Leptonica 1.73
 - Update GhostScript Windows binary to 9.19
