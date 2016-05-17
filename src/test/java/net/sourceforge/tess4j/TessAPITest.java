@@ -92,7 +92,7 @@ public class TessAPITest {
     }
 
     /**
-     * Test of TessBaseAPIRect method, of class TessDllLibrary.
+     * Test of TessBaseAPIRect method, of class TessAPI.
      *
      * @throws Exception while processing the image
      */
@@ -116,7 +116,7 @@ public class TessAPITest {
     }
 
     /**
-     * Test of TessBaseAPIGetUTF8Text method, of class TessDllLibrary.
+     * Test of TessBaseAPIGetUTF8Text method, of class TessAPI.
      *
      * @throws Exception while processing the image
      */
@@ -277,46 +277,6 @@ public class TessAPITest {
     }
 
     /**
-     * Test of TessBaseAPIInit1 method, of class TessAPI.
-     */
-    @Test
-    public void testTessBaseAPIInit1() {
-        logger.info("TessBaseAPIInit1");
-        int oem = TessOcrEngineMode.OEM_DEFAULT;
-        String[] args = {"hocr"};
-        StringArray sarray = new StringArray(args);
-        PointerByReference configs = new PointerByReference();
-        configs.setPointer(sarray);
-        int configs_size = args.length;
-        int expResult = 0;
-        int result = api.TessBaseAPIInit1(handle, datapath, language, oem, configs, configs_size);
-        assertEquals(expResult, result);
-    }
-
-    /**
-     * Test of TessBaseAPIInit2 method, of class TessAPI.
-     */
-    @Test
-    public void testTessBaseAPIInit2() {
-        logger.info("TessBaseAPIInit2");
-        int oem = TessOcrEngineMode.OEM_DEFAULT;
-        int expResult = 0;
-        int result = api.TessBaseAPIInit2(handle, datapath, language, oem);
-        assertEquals(expResult, result);
-    }
-
-    /**
-     * Test of TessBaseAPIInit3 method, of class TessAPI.
-     */
-    @Test
-    public void testTessBaseAPIInit3() {
-        logger.info("TessBaseAPIInit3");
-        int expResult = 0;
-        int result = api.TessBaseAPIInit3(handle, datapath, language);
-        assertEquals(expResult, result);
-    }
-
-    /**
      * Test of TessBaseAPIInit4 method, of class TessAPI.
      */
     @Test
@@ -380,18 +340,6 @@ public class TessAPITest {
     }
 
     /**
-     * Test of TessBaseAPIGetPageSegMode method, of class TessAPI.
-     */
-    @Test
-    public void testTessBaseAPIGetPageSegMode() {
-        logger.info("TessBaseAPIGetPageSegMode");
-        api.TessBaseAPISetPageSegMode(handle, TessPageSegMode.PSM_SINGLE_CHAR);
-        int expResult = TessPageSegMode.PSM_SINGLE_CHAR;
-        int result = api.TessBaseAPIGetPageSegMode(handle);
-        assertEquals(expResult, result);
-    }
-
-    /**
      * Test of TessBaseAPIGetHOCRText method, of class TessAPI.
      *
      * @throws Exception while getting hocr text
@@ -414,6 +362,41 @@ public class TessAPITest {
         String result = utf8Text.getString(0);
         api.TessDeleteText(utf8Text);
         assertTrue(result.contains("<div class='ocr_page'"));
+    }
+
+    /**
+     * Test of TessBaseAPIAnalyseLayout method, of class TessAPI.
+     *
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testTessBaseAPIAnalyseLayout() throws Exception {
+        logger.info("TessBaseAPIAnalyseLayout");
+        File image = new File(testResourcesDataPath,"eurotext.png");
+        int expResult = 12; // number of lines in the test image
+        Leptonica leptInstance = Leptonica.INSTANCE;
+        Pix pix = leptInstance.pixRead(image.getPath());
+        api.TessBaseAPIInit3(handle, datapath, language);
+        api.TessBaseAPISetImage2(handle, pix);
+        int pageIteratorLevel = TessPageIteratorLevel.RIL_TEXTLINE;
+        logger.info("PageIteratorLevel: " + Utils.getConstantName(pageIteratorLevel, TessPageIteratorLevel.class));
+        int i = 0;
+        TessPageIterator pi = api.TessBaseAPIAnalyseLayout(handle);
+
+        do {
+            IntBuffer leftB = IntBuffer.allocate(1);
+            IntBuffer topB = IntBuffer.allocate(1);
+            IntBuffer rightB = IntBuffer.allocate(1);
+            IntBuffer bottomB = IntBuffer.allocate(1);
+            api.TessPageIteratorBoundingBox(pi, pageIteratorLevel, leftB, topB, rightB, bottomB);
+            int left = leftB.get();
+            int top = topB.get();
+            int right = rightB.get();
+            int bottom = bottomB.get();
+            logger.info(String.format("Box[%d]: x=%d, y=%d, w=%d, h=%d", i++, left, top, right - left, bottom - top));
+        } while (api.TessPageIteratorNext(pi, pageIteratorLevel) == TRUE);
+        api.TessPageIteratorDelete(pi);
+        assertEquals(expResult, i);
     }
 
     /**
@@ -573,12 +556,12 @@ public class TessAPITest {
                         String choice = api.TessChoiceIteratorGetUTF8Text(ci);
                         logger.info(String.format("%s conf: %f", choice, api.TessChoiceIteratorConfidence(ci)));
                         indent = true;
-                    } while (api.TessChoiceIteratorNext(ci) == TessAPI1.TRUE);
+                    } while (api.TessChoiceIteratorNext(ci) == ITessAPI.TRUE);
                     api.TessChoiceIteratorDelete(ci);
                 }
                 logger.info("---------------------------------------------");
                 api.TessDeleteText(symbol);
-            } while (api.TessResultIteratorNext(ri, level) == TessAPI1.TRUE);
+            } while (api.TessResultIteratorNext(ri, level) == ITessAPI.TRUE);
         }
 
         assertTrue(true);
@@ -646,7 +629,7 @@ public class TessAPITest {
     public class TessAPIImpl implements TessAPI {
 
         public TessAPI getInstance() {
-            return INSTANCE;
+            return TessAPI.INSTANCE;
         }
 
         public void TessAPIEndPage() {

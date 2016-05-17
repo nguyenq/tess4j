@@ -29,7 +29,7 @@ class ProgressMonitor extends Thread {
 
     private static final Logger logger = LoggerFactory.getLogger(new LoggHelper().toString());
 
-    ProgressMonitor(ITessAPI.ETEXT_DESC monitor) {
+    public ProgressMonitor(ITessAPI.ETEXT_DESC monitor) {
         this.monitor = monitor;
     }
 
