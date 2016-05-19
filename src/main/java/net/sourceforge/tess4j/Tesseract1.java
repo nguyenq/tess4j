@@ -503,7 +503,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
 
                     TessResultRenderer renderer = createRenderers(outputbases[i], formats);
                     createDocuments(filename, renderer);
-                    TessDeleteResultRenderer(renderer);                     
+                    TessDeleteResultRenderer(renderer);
                 } catch (Exception e) {
                     // skip the problematic image file
                     logger.error(e.getMessage(), e);
@@ -559,7 +559,14 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
                     continue;
                 }
                 list.add(new Rectangle(box.x, box.y, box.w, box.h));
+                PointerByReference pRef = new PointerByReference();
+                pRef.setValue(box.getPointer());
+                Leptonica1.boxDestroy(pRef);
             }
+
+            PointerByReference pRef = new PointerByReference();
+            pRef.setValue(boxes.getPointer());
+            Leptonica1.boxaDestroy(pRef);
 
             return list;
         } catch (IOException ioe) {
@@ -583,7 +590,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
         this.setTessVariables();
 
         List<Word> words = new ArrayList<Word>();
-        
+
         try {
             setImage(bi, null);
 

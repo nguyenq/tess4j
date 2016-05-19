@@ -29,6 +29,7 @@ import net.sourceforge.lept4j.Box;
 import net.sourceforge.lept4j.Boxa;
 import static net.sourceforge.lept4j.ILeptonica.L_CLONE;
 import net.sourceforge.lept4j.Leptonica;
+import net.sourceforge.lept4j.Leptonica1;
 import static net.sourceforge.tess4j.ITessAPI.TRUE;
 
 import net.sourceforge.tess4j.ITessAPI.TessBaseAPI;
@@ -537,7 +538,7 @@ public class Tesseract implements ITesseract {
 
                     TessResultRenderer renderer = createRenderers(outputbases[i], formats);
                     createDocuments(filename, renderer);
-                    api.TessDeleteResultRenderer(renderer);                    
+                    api.TessDeleteResultRenderer(renderer);
                 } catch (Exception e) {
                     // skip the problematic image file
                     logger.error(e.getMessage(), e);
@@ -594,7 +595,14 @@ public class Tesseract implements ITesseract {
                     continue;
                 }
                 list.add(new Rectangle(box.x, box.y, box.w, box.h));
+                PointerByReference pRef = new PointerByReference();
+                pRef.setValue(box.getPointer());
+                leptInstance.boxDestroy(pRef);
             }
+
+            PointerByReference pRef = new PointerByReference();
+            pRef.setValue(boxes.getPointer());
+            leptInstance.boxaDestroy(pRef);
 
             return list;
         } catch (IOException ioe) {
@@ -618,7 +626,7 @@ public class Tesseract implements ITesseract {
         this.setTessVariables();
 
         List<Word> words = new ArrayList<Word>();
-        
+
         try {
             setImage(bi, null);
 
