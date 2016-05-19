@@ -79,3 +79,6 @@ Version 3.2 (15 May 2016)
 - Update Lept4J to 1.2.2 (Leptonica 1.73)
 - Recompile Tesseract 3.04.01 DLL against Leptonica 1.73
 - Update GhostScript Windows binary to 9.19
+
+Version 3.2.1 (19 May 2016)
+- Properly release Box and Boxa resources
