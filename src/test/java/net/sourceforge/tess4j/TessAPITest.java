@@ -396,6 +396,9 @@ public class TessAPITest {
             logger.info(String.format("Box[%d]: x=%d, y=%d, w=%d, h=%d", i++, left, top, right - left, bottom - top));
         } while (api.TessPageIteratorNext(pi, pageIteratorLevel) == TRUE);
         api.TessPageIteratorDelete(pi);
+        PointerByReference pRef = new PointerByReference();
+        pRef.setValue(pix.getPointer());
+        leptInstance.pixDestroy(pRef);
         assertEquals(expResult, i);
     }
 
@@ -614,7 +617,7 @@ public class TessAPITest {
             return;
         }
 
-        for (; renderer != null; renderer = api.TessResultRendererNext(renderer)) {
+        while ((renderer = api.TessResultRendererNext(renderer)) != null) {
             String ext = api.TessResultRendererExtention(renderer).getString(0);
             logger.info(String.format("TessResultRendererExtention: %s\nTessResultRendererTitle: %s\nTessResultRendererImageNum: %d",
                     ext,

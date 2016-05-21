@@ -48,7 +48,6 @@ import com.sun.jna.ptr.PointerByReference;
 import net.sourceforge.lept4j.Box;
 import net.sourceforge.lept4j.Boxa;
 import static net.sourceforge.lept4j.ILeptonica.L_CLONE;
-import net.sourceforge.lept4j.Leptonica;
 import net.sourceforge.lept4j.Leptonica1;
 import net.sourceforge.lept4j.Pix;
 
@@ -149,8 +148,7 @@ public class TessAPI1Test {
         logger.info("TessBaseAPIGetUTF8Text_Pix");
         String expResult = expOCRResult;
         File tiff = new File(this.testResourcesDataPath, "eurotext.tif");
-        Leptonica leptInstance = Leptonica.INSTANCE;
-        Pix pix = leptInstance.pixRead(tiff.getPath());
+        Pix pix = Leptonica1.pixRead(tiff.getPath());
         TessAPI1.TessBaseAPIInit3(handle, datapath, language);
         TessAPI1.TessBaseAPISetImage2(handle, pix);
         Pointer utf8Text = TessAPI1.TessBaseAPIGetUTF8Text(handle);
@@ -161,7 +159,7 @@ public class TessAPI1Test {
         //release Pix resource
         PointerByReference pRef = new PointerByReference();
         pRef.setValue(pix.getPointer());
-        leptInstance.pixDestroy(pRef);
+        Leptonica1.pixDestroy(pRef);
 
         assertEquals(expResult, result.substring(0, expResult.length()));
     }
@@ -370,8 +368,7 @@ public class TessAPI1Test {
         logger.info("TessBaseAPIAnalyseLayout");
         File image = new File(testResourcesDataPath, "eurotext.png");
         int expResult = 12; // number of lines in the test image
-        Leptonica leptInstance = Leptonica.INSTANCE;
-        Pix pix = leptInstance.pixRead(image.getPath());
+        Pix pix = Leptonica1.pixRead(image.getPath());
         TessAPI1.TessBaseAPIInit3(handle, datapath, language);
         TessAPI1.TessBaseAPISetImage2(handle, pix);
         int pageIteratorLevel = TessPageIteratorLevel.RIL_TEXTLINE;
@@ -392,6 +389,9 @@ public class TessAPI1Test {
             logger.info(String.format("Box[%d]: x=%d, y=%d, w=%d, h=%d", i++, left, top, right - left, bottom - top));
         } while (TessAPI1.TessPageIteratorNext(pi, pageIteratorLevel) == TRUE);
         TessAPI1.TessPageIteratorDelete(pi);
+        PointerByReference pRef = new PointerByReference();
+        pRef.setValue(pix.getPointer());
+        Leptonica1.pixDestroy(pRef);
         assertEquals(expResult, i);
     }
 
@@ -609,7 +609,7 @@ public class TessAPI1Test {
 //            logger.error("Error during processing.");
 //            return;
 //        }
-        for (; renderer != null; renderer = TessAPI1.TessResultRendererNext(renderer)) {
+        while ((renderer = TessAPI1.TessResultRendererNext(renderer)) != null) {
             String ext = TessAPI1.TessResultRendererExtention(renderer).getString(0);
             logger.info(String.format("TessResultRendererExtention: %s\nTessResultRendererTitle: %s\nTessResultRendererImageNum: %d",
                     ext,
