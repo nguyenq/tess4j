@@ -621,6 +621,7 @@ public class Tesseract implements ITesseract {
      * @param pageIteratorLevel TessPageIteratorLevel enum
      * @return list of <code>Word</code>
      */
+    @Override
     public List<Word> getWords(BufferedImage bi, int pageIteratorLevel) {
         this.init();
         this.setTessVariables();
