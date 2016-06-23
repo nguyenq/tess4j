@@ -29,7 +29,6 @@ import net.sourceforge.lept4j.Box;
 import net.sourceforge.lept4j.Boxa;
 import static net.sourceforge.lept4j.ILeptonica.L_CLONE;
 import net.sourceforge.lept4j.Leptonica;
-import net.sourceforge.lept4j.Leptonica1;
 import static net.sourceforge.tess4j.ITessAPI.TRUE;
 
 import net.sourceforge.tess4j.ITessAPI.TessBaseAPI;
