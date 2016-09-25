@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 
 public class PdfUtilities {
 
-    public static final String GS_INSTALL = "\nPlease download, install GPL Ghostscript from http://sourceforge.net/projects/ghostscript/files\nand/or set the appropriate environment variable.";
+    public static final String GS_INSTALL = "\nPlease download, install GPL Ghostscript from http://www.ghostscript.com\nand/or set the appropriate environment variable.";
 
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(new LoggHelper().toString());
 
