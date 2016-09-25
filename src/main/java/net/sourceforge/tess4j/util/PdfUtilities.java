@@ -104,7 +104,7 @@ public class PdfUtilities {
                 gs.exit();
             }
         } catch (GhostscriptException e) {
-            logger.error(e.getCause().toString(), e);
+            logger.error(e.getCause() != null ? e.getCause().toString() : e.getMessage(), e);
         } finally {
             //delete interpreter instance (safer)
             try {
@@ -191,7 +191,7 @@ public class PdfUtilities {
                 gs.exit();
             }
         } catch (GhostscriptException e) {
-            logger.error(e.getCause().toString(), e);
+            logger.error(e.getCause() != null ? e.getCause().toString() : e.getMessage(), e);
             throw new RuntimeException(e.getMessage());
         } catch (UnsatisfiedLinkError ule) {
             throw new RuntimeException(getMessage(ule.getMessage()));
@@ -266,9 +266,9 @@ public class PdfUtilities {
                 os.close();
             }
         } catch (GhostscriptException e) {
-            logger.error(e.getCause().toString(), e);
+            logger.error(e.getCause() != null ? e.getCause().toString() : e.getMessage(), e);
         } catch (Exception e) {
-            logger.error(e.getCause().toString(), e);
+            logger.error(e.getCause() != null ? e.getCause().toString() : e.getMessage(), e);
         } finally {
             //delete interpreter instance (safer)
             try {
@@ -313,7 +313,7 @@ public class PdfUtilities {
                 gs.exit();
             }
         } catch (GhostscriptException e) {
-            logger.error(e.getCause().toString(), e);
+            logger.error(e.getCause() != null ? e.getCause().toString() : e.getMessage(), e);
             throw new RuntimeException(e.getMessage());
         } catch (UnsatisfiedLinkError ule) {
             throw new RuntimeException(getMessage(ule.getMessage()));
