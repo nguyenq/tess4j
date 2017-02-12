@@ -323,6 +323,55 @@ public class ImageIOHelper {
     }
 
     /**
+     * Gets a list of <code>BufferedImage</code> objects for an image file.
+     *
+     * @param imageFile input image file. It can be any of the supported
+     * formats, including TIFF, JPEG, GIF, PNG, BMP, JPEG
+     * @return a list of <code>BufferedImage</code> objects
+     * @throws IOException
+     */
+    public static List<BufferedImage> getImageList(File imageFile) throws IOException {
+        ImageReader reader = null;
+        ImageInputStream iis = null;
+
+        try {
+            List<BufferedImage> biList = new ArrayList<BufferedImage>();
+
+            String imageFileName = imageFile.getName();
+            String imageFormat = imageFileName.substring(imageFileName.lastIndexOf('.') + 1);
+            Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName(imageFormat);
+            if (!readers.hasNext()) {
+                throw new RuntimeException(JAI_IMAGE_READER_MESSAGE);
+            }
+
+            reader = readers.next();
+
+            iis = ImageIO.createImageInputStream(imageFile);
+            reader.setInput(iis);
+
+            int imageTotal = reader.getNumImages(true);
+
+            for (int i = 0; i < imageTotal; i++) {
+                BufferedImage bi = reader.read(i);
+                biList.add(bi);
+            }
+
+            return biList;
+        } finally {
+            try {
+                if (iis != null) {
+                    iis.close();
+                }
+                if (reader != null) {
+                    reader.dispose();
+                }
+            } catch (Exception e) {
+                // ignore
+            }
+        }
+    }
+
+    /**
      * Gets a list of <code>IIOImage</code> objects for an image file.
      *
      * @param imageFile input image file. It can be any of the supported
@@ -449,6 +498,104 @@ public class ImageIOHelper {
             }
         }
 
+        ios.close();
+
+        writer.dispose();
+    }
+
+    /**
+     * Merges multiple images into one multi-page TIFF image.
+     *
+     * @param inputImages an array of <code>BufferedImage</code>
+     * @param outputTiff the output TIFF file
+     * @throws IOException
+     */
+    public static void mergeTiff(BufferedImage[] inputImages, File outputTiff) throws IOException {
+        mergeTiff(inputImages, outputTiff, null);
+    }
+
+    /**
+     * Merges multiple images into one multi-page TIFF image.
+     *
+     * @param inputImages an array of <code>BufferedImage</code>
+     * @param outputTiff the output TIFF file
+     * @param compressionType valid values: LZW, CCITT T.6, PackBits
+     * @throws IOException
+     */
+    public static void mergeTiff(BufferedImage[] inputImages, File outputTiff, String compressionType) throws IOException {
+        List<IIOImage> imageList = new ArrayList<IIOImage>();
+
+        for (BufferedImage inputImage : inputImages) {
+            imageList.add(new IIOImage(inputImage, null, null));
+        }
+
+        mergeTiff(imageList, outputTiff, compressionType);
+    }
+
+    /**
+     * Merges multiple images into one multi-page TIFF image.
+     *
+     * @param imageList a list of <code>IIOImage</code> objects
+     * @param outputTiff the output TIFF file
+     * @throws IOException
+     */
+    public static void mergeTiff(List<IIOImage> imageList, File outputTiff) throws IOException {
+        mergeTiff(imageList, outputTiff, null);
+    }
+
+    /**
+     * Merges multiple images into one multi-page TIFF image.
+     *
+     * @param imageList a list of <code>IIOImage</code> objects
+     * @param outputTiff the output TIFF file
+     * @param compressionType valid values: LZW, CCITT T.6, PackBits
+     * @throws IOException
+     */
+    public static void mergeTiff(List<IIOImage> imageList, File outputTiff, String compressionType) throws IOException {
+        if (imageList == null || imageList.isEmpty()) {
+            // if no image
+            return;
+        }
+
+        Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName(TIFF_FORMAT);
+        if (!writers.hasNext()) {
+            throw new RuntimeException(JAI_IMAGE_WRITER_MESSAGE);
+        }
+
+        ImageWriter writer = writers.next();
+
+        //Set up the writeParam
+        TIFFImageWriteParam tiffWriteParam = new TIFFImageWriteParam(Locale.US);
+//        tiffWriteParam.setCompressionMode(ImageWriteParam.MODE_DISABLED); // comment out to preserve original sizes
+        if (compressionType != null) {
+            tiffWriteParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+            tiffWriteParam.setCompressionType(compressionType);
+        }
+
+        //Get the stream metadata
+        IIOMetadata streamMetadata = writer.getDefaultStreamMetadata(tiffWriteParam);
+
+        ImageOutputStream ios = ImageIO.createImageOutputStream(outputTiff);
+        writer.setOutput(ios);
+
+        int dpiX = 300;
+        int dpiY = 300;
+
+        for (IIOImage iioImage : imageList) {
+            // Get the default image metadata.
+            ImageTypeSpecifier imageType = ImageTypeSpecifier.createFromRenderedImage(iioImage.getRenderedImage());
+            IIOMetadata imageMetadata = writer.getDefaultImageMetadata(imageType, null);
+            imageMetadata = setDPIViaAPI(imageMetadata, dpiX, dpiY);
+            iioImage.setMetadata(imageMetadata);
+        }
+
+        IIOImage firstIioImage = imageList.remove(0);
+        writer.write(streamMetadata, firstIioImage, tiffWriteParam);
+
+        int i = 1;
+        for (IIOImage iioImage : imageList) {
+            writer.writeInsert(i++, iioImage, tiffWriteParam);
+        }
         ios.close();
 
         writer.dispose();

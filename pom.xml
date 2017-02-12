@@ -165,7 +165,7 @@
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna</artifactId>
-            <version>4.1.0</version>
+            <version>4.3.0</version>
         </dependency>
         <dependency>
             <groupId>com.github.jai-imageio</groupId>
@@ -191,23 +191,23 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.1.7</version>
+            <version>1.2.1</version>
         </dependency>
         <!-- Logging Bridges -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jul-to-slf4j</artifactId>
-            <version>1.7.21</version>
+            <version>1.7.22</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
-            <version>1.7.21</version>
+            <version>1.7.22</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>log4j-over-slf4j</artifactId>
-            <version>1.7.21</version>
+            <version>1.7.22</version>
         </dependency>
     </dependencies>
 

@@ -610,7 +610,7 @@ public interface ITessAPI {
         public NativeLong tv_usec;
 
         @Override
-        protected List<?> getFieldOrder() {
+        protected List<String> getFieldOrder() {
             return Arrays.asList("tv_sec", "tv_usec");
         }
     }

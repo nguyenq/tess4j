@@ -83,3 +83,6 @@ Version 3.2 (15 May 2016)
 Version 3.2.1 (29 May 2016)
 - Properly release Box and Boxa resources
 - Update Lept4J to 1.2.3
+
+Version 3.2.2 Beta (29 October 2016)
+- Update GhostScript to 9.20
