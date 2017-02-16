@@ -419,15 +419,14 @@ public class TessAPI1Test {
             int orient_deg = orient_degB.get();
             float orient_conf = orient_confB.get();
             String script_name = script_nameB.getValue().getString(0);
-            TessAPI1.TessDeleteText(script_nameB.getValue());
             float script_conf = script_confB.get();
             logger.info(String.format("OrientationScript: orient_deg=%d, orient_conf=%f, script_name=%s, script_conf=%f", orient_deg, orient_conf, script_name, script_conf));
-
-            PointerByReference pRef = new PointerByReference();
-            pRef.setValue(pix.getPointer());
-            Leptonica1.pixDestroy(pRef);
-            assertEquals(expResult, result);
         }
+
+        PointerByReference pRef = new PointerByReference();
+        pRef.setValue(pix.getPointer());
+        Leptonica1.pixDestroy(pRef);
+        assertEquals(expResult, result);
     }
 
     /**
