@@ -84,5 +84,8 @@ Version 3.2.1 (29 May 2016)
 - Properly release Box and Boxa resources
 - Update Lept4J to 1.2.3
 
-Version 3.2.2 Beta (29 October 2016)
+Version 3.2.2 (16 February 2017)
 - Update GhostScript to 9.20
+- Fix possible NPE with PDF-related codes
+- Update dependencies
+- Additional image utility methods
