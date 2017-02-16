@@ -890,6 +890,17 @@ public interface TessAPI extends Library, ITessAPI {
     void TessBaseAPIClearPersistentCache(TessBaseAPI handle);
 
     /**
+     * Detect the orientation of the input image and apparent script (alphabet).
+     * <code>orient_deg</code> is the detected clockwise rotation of the input image in
+     * degrees (0, 90, 180, 270); <code>orient_conf</code> is the confidence (15.0 is
+     * reasonably confident); <code>script_name</code> is an ASCII string, the name of the
+     * script, e.g. "Latin"; <code>script_conf</code> is confidence level in the script.
+     * 
+     * @return TRUE on success and writes values to each parameter as an output
+     */
+    int TessBaseAPIDetectOrientationScript(TessBaseAPI handle, IntBuffer orient_deg, FloatBuffer orient_conf, PointerByReference script_name, FloatBuffer script_conf);
+
+    /**
      * Gets the string of the specified unichar.
      *
      * @param handle the TesseractAPI instance

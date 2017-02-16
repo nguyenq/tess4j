@@ -209,7 +209,7 @@ public class TessAPI1Test {
     @Test
     public void testTessVersion() {
         logger.info("TessVersion");
-        String expResult = "3.04";
+        String expResult = "3.05";
         String result = TessAPI1.TessVersion();
         logger.info(result);
         assertTrue(result.startsWith(expResult));
@@ -359,7 +359,7 @@ public class TessAPI1Test {
     }
 
     /**
-     * Test of TessBaseAPIAnalyseLayout method, of class TessAPI.
+     * Test of TessBaseAPIAnalyseLayout method, of class TessAPI1.
      *
      * @throws java.lang.Exception
      */
@@ -393,6 +393,41 @@ public class TessAPI1Test {
         pRef.setValue(pix.getPointer());
         Leptonica1.pixDestroy(pRef);
         assertEquals(expResult, i);
+    }
+
+    /**
+     * Test of TessBaseAPIDetectOrientationScript method, of class TessAPI1.
+     *
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testTessBaseAPIDetectOrientationScript() throws Exception {
+        logger.info("TessBaseAPIDetectOrientationScript");
+        File image = new File(testResourcesDataPath, "eurotext.png");
+        int expResult = TRUE;
+        Pix pix = Leptonica1.pixRead(image.getPath());
+        TessAPI1.TessBaseAPIInit3(handle, datapath, language);
+        TessAPI1.TessBaseAPISetImage2(handle, pix);
+
+        IntBuffer orient_degB = IntBuffer.allocate(1);
+        FloatBuffer orient_confB = FloatBuffer.allocate(1);
+        PointerByReference script_nameB = new PointerByReference();
+        FloatBuffer script_confB = FloatBuffer.allocate(1);
+
+        int result = TessAPI1.TessBaseAPIDetectOrientationScript(handle, orient_degB, orient_confB, script_nameB, script_confB);
+        if (result == TRUE) {
+            int orient_deg = orient_degB.get();
+            float orient_conf = orient_confB.get();
+            String script_name = script_nameB.getValue().getString(0);
+            TessAPI1.TessDeleteText(script_nameB.getValue());
+            float script_conf = script_confB.get();
+            logger.info(String.format("OrientationScript: orient_deg=%d, orient_conf=%f, script_name=%s, script_conf=%f", orient_deg, orient_conf, script_name, script_conf));
+
+            PointerByReference pRef = new PointerByReference();
+            pRef.setValue(pix.getPointer());
+            Leptonica1.pixDestroy(pRef);
+            assertEquals(expResult, result);
+        }
     }
 
     /**
