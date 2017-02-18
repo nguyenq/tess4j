@@ -212,7 +212,7 @@ public class TessAPITest {
     @Test
     public void testTessVersion() {
         logger.info("TessVersion");
-        String expResult = "3.05";
+        String expResult = "4.00";
         String result = api.TessVersion();
         logger.info(result);
         assertTrue(result.startsWith(expResult));
@@ -642,7 +642,7 @@ public class TessAPITest {
         api.TessResultRendererInsert(renderer, api.TessBoxTextRendererCreate(outputbase));
         api.TessResultRendererInsert(renderer, api.TessTextRendererCreate(outputbase));
         String dataPath = api.TessBaseAPIGetDatapath(handle);
-        api.TessResultRendererInsert(renderer, api.TessPDFRendererCreate(outputbase, dataPath));
+        api.TessResultRendererInsert(renderer, api.TessPDFRendererCreate(outputbase, dataPath, TRUE));
         int result = api.TessBaseAPIProcessPages(handle, image, null, 0, renderer);
 
         if (result == FALSE) {

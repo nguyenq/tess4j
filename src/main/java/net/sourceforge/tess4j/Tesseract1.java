@@ -434,9 +434,9 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
                 case PDF:
                     String dataPath = TessBaseAPIGetDatapath(handle);
                     if (renderer == null) {
-                        renderer = TessPDFRendererCreate(outputbase, dataPath);
+                        renderer = TessPDFRendererCreate(outputbase, dataPath, TRUE);
                     } else {
-                        TessResultRendererInsert(renderer, TessPDFRendererCreate(outputbase, dataPath));
+                        TessResultRendererInsert(renderer, TessPDFRendererCreate(outputbase, dataPath, TRUE));
                     }
                     break;
                 case BOX:

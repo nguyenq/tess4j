@@ -69,7 +69,7 @@ public class TessAPIImpl implements TessAPI {
     }
 
     @Override
-    public ITessAPI.TessResultRenderer TessPDFRendererCreate(String outputbase, String datadir) {
+    public ITessAPI.TessResultRenderer TessPDFRendererCreate(String outputbase, String datadir, int textonly) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

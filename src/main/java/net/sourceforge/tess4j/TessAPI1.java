@@ -74,7 +74,7 @@ public class TessAPI1 implements Library, ITessAPI {
 
     public static native TessResultRenderer TessHOcrRendererCreate(String outputbase);
 
-    public static native TessResultRenderer TessPDFRendererCreate(String outputbase, String datadir);
+    public static native TessResultRenderer TessPDFRendererCreate(String outputbase, String datadir, int textonly);
 
     public static native TessResultRenderer TessUnlvRendererCreate(String outputbase);
 

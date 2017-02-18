@@ -46,13 +46,13 @@ public interface ITessAPI {
          */
         public static final int OEM_TESSERACT_ONLY = 0;
         /**
-         * Run Cube only - better accuracy, but slower
+         * Run just the LSTM line recognizer
          */
-        public static final int OEM_CUBE_ONLY = 1;
+        public static final int OEM_LSTM_ONLY = 1;
         /**
-         * Run both and combine results - best accuracy
+         * Run the LSTM recognizer, but allow fallback to Tesseract when things get difficult
          */
-        public static final int OEM_TESSERACT_CUBE_COMBINED = 2;
+        public static final int OEM_TESSERACT_LSTM_COMBINED = 2;
         /**
          * Specify this mode when calling <code>init_*()</code>, to indicate
          * that any of the above modes should be automatically inferred from the
@@ -61,6 +61,14 @@ public interface ITessAPI {
          * <code>OEM_TESSERACT_ONLY</code>.
          */
         public static final int OEM_DEFAULT = 3;
+//        /**
+//         * Run Cube only - better accuracy, but slower
+//         */
+//        public static final int OEM_CUBE_ONLY = 4;
+//        /**
+//         * Run both and combine results - best accuracy
+//         */
+//        public static final int OEM_TESSERACT_CUBE_COMBINED = 5;
     };
 
     /**

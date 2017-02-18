@@ -74,7 +74,7 @@ public interface TessAPI extends Library, ITessAPI {
 
     TessResultRenderer TessHOcrRendererCreate(String outputbase);
 
-    TessResultRenderer TessPDFRendererCreate(String outputbase, String datadir);
+    TessResultRenderer TessPDFRendererCreate(String outputbase, String datadir, int textonly);
 
     TessResultRenderer TessUnlvRendererCreate(String outputbase);
 
