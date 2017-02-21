@@ -29,7 +29,6 @@ import net.sourceforge.lept4j.Box;
 import net.sourceforge.lept4j.Boxa;
 import static net.sourceforge.lept4j.ILeptonica.L_CLONE;
 import net.sourceforge.lept4j.Leptonica1;
-import static net.sourceforge.tess4j.ITessAPI.TRUE;
 
 import net.sourceforge.tess4j.util.ImageIOHelper;
 import net.sourceforge.tess4j.util.LoggHelper;
@@ -433,10 +432,11 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
                     break;
                 case PDF:
                     String dataPath = TessBaseAPIGetDatapath(handle);
+                    boolean textonly = String.valueOf(TRUE).equals(prop.getProperty("textonly_pdf"));
                     if (renderer == null) {
-                        renderer = TessPDFRendererCreate(outputbase, dataPath, TRUE);
+                        renderer = TessPDFRendererCreate(outputbase, dataPath, textonly ? TRUE : FALSE);
                     } else {
-                        TessResultRendererInsert(renderer, TessPDFRendererCreate(outputbase, dataPath, TRUE));
+                        TessResultRendererInsert(renderer, TessPDFRendererCreate(outputbase, dataPath, textonly ? TRUE : FALSE));
                     }
                     break;
                 case BOX:
