@@ -106,7 +106,7 @@ public class TessAPITest {
         int bytespl = (int) Math.ceil(image.getWidth() * bpp / 8.0);
         api.TessBaseAPIInit3(handle, datapath, language);
         api.TessBaseAPISetPageSegMode(handle, TessPageSegMode.PSM_AUTO);
-        Pointer utf8Text = api.TessBaseAPIRect(handle, buf, bytespp, bytespl, 90, 50, 862, 614);
+        Pointer utf8Text = api.TessBaseAPIRect(handle, buf, bytespp, bytespl, 0, 0, 1024, 800);
         String result = utf8Text.getString(0);
         api.TessDeleteText(utf8Text);
         logger.info(result);
@@ -131,7 +131,7 @@ public class TessAPITest {
         api.TessBaseAPIInit3(handle, datapath, language);
         api.TessBaseAPISetPageSegMode(handle, TessPageSegMode.PSM_AUTO);
         api.TessBaseAPISetImage(handle, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
-        api.TessBaseAPISetRectangle(handle, 90, 50, 862, 614);
+        api.TessBaseAPISetRectangle(handle, 0, 0, 1024, 800);
         Pointer utf8Text = api.TessBaseAPIGetUTF8Text(handle);
         String result = utf8Text.getString(0);
         api.TessDeleteText(utf8Text);

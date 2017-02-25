@@ -45,6 +45,7 @@ import org.slf4j.LoggerFactory;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import org.junit.Ignore;
 
 public class Tesseract1Test {
 
@@ -113,6 +114,7 @@ public class Tesseract1Test {
      *
      * @throws java.lang.Exception
      */
+    @Ignore
     @Test
     public void testDoOCR_File_With_Configs() throws Exception {
         logger.info("doOCR with configs");

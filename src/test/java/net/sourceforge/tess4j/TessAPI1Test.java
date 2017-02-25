@@ -135,7 +135,7 @@ public class TessAPI1Test {
         String result = utf8Text.getString(0);
         TessAPI1.TessDeleteText(utf8Text);
         logger.info(result);
-        assertEquals(expResult, result.substring(0, expResult.length()));
+        assertTrue(result.startsWith(expResult));
     }
 
     /**
@@ -161,7 +161,7 @@ public class TessAPI1Test {
         pRef.setValue(pix.getPointer());
         Leptonica1.pixDestroy(pRef);
 
-        assertEquals(expResult, result.substring(0, expResult.length()));
+        assertTrue(result.startsWith(expResult));
     }
 
     /**
