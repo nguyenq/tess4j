@@ -49,6 +49,7 @@ import net.sourceforge.lept4j.Boxa;
 import static net.sourceforge.lept4j.ILeptonica.L_CLONE;
 import net.sourceforge.lept4j.Leptonica;
 import net.sourceforge.lept4j.Pix;
+import net.sourceforge.lept4j.util.LeptUtils;
 
 import net.sourceforge.tess4j.ITessAPI.*;
 import org.slf4j.Logger;
@@ -196,12 +197,12 @@ public class TessAPITest {
             api.TessDeleteText(utf8Text);
             int conf = api.TessBaseAPIMeanTextConf(handle);
             System.out.print(String.format("Box[%d]: x=%d, y=%d, w=%d, h=%d, confidence: %d, text: %s", i, box.x, box.y, box.w, box.h, conf, ocrResult));
+            LeptUtils.dispose(box);
         }
 
-        //release Pix resource
-        PointerByReference pRef = new PointerByReference();
-        pRef.setValue(pix.getPointer());
-        leptInstance.pixDestroy(pRef);
+        // release Pix and Boxa resources
+        LeptUtils.dispose(pix);
+        LeptUtils.dispose(boxes);
 
         assertEquals(expResult, boxCount);
     }
