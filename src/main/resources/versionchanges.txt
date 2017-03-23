@@ -93,3 +93,7 @@ Version 3.2.2 (16 February 2017)
 Version 3.3.0 (16 February 2017)
 - Upgrade to Tesseract 3.05 (2ca5d0a)
 - Update Lept4J to 1.3.0 (Leptonica 1.74.1)
+
+Version 3.3.1 (23 March 2017)
+- Update Lept4J to 1.3.1
+- Update other dependencies
