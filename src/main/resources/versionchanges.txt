@@ -94,5 +94,5 @@ Version 3.3.0 (16 February 2017)
 - Upgrade to Tesseract 3.05 (2ca5d0a)
 - Update Lept4J to 1.3.0 (Leptonica 1.74.1)
 
-Version 4.0.0 beta (18 February 2017)
-- Upgrade to Tesseract 4.0.0 alpha (a011b15)
+Version 4.0.0 beta (20 May 2017)
+- Upgrade to Tesseract 4.0.0 alpha (5a06417)
