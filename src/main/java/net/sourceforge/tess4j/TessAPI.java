@@ -73,8 +73,12 @@ public interface TessAPI extends Library, ITessAPI {
     TessResultRenderer TessTextRendererCreate(String outputbase);
 
     TessResultRenderer TessHOcrRendererCreate(String outputbase);
+    
+    TessResultRenderer TessHOcrRendererCreate2(String outputbase, int font_info);
 
     TessResultRenderer TessPDFRendererCreate(String outputbase, String datadir);
+    
+    TessResultRenderer TessPDFRendererCreateTextonly(String outputbase, String datadir, int textonly);
 
     TessResultRenderer TessUnlvRendererCreate(String outputbase);
 
