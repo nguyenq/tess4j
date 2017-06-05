@@ -74,6 +74,8 @@ public class TessAPI1 implements Library, ITessAPI {
 
     public static native TessResultRenderer TessHOcrRendererCreate(String outputbase);
 
+    public static native TessResultRenderer TessHOcrRendererCreate2(String outputbase, int font_info);
+
     public static native TessResultRenderer TessPDFRendererCreate(String outputbase, String datadir, int textonly);
 
     public static native TessResultRenderer TessUnlvRendererCreate(String outputbase);
@@ -454,11 +456,12 @@ public class TessAPI1 implements Library, ITessAPI {
     /**
      * Provide an image for Tesseract to recognize. Format is as
      * <code>TesseractRect</code> above. Does not copy the image buffer, or take
-     * ownership. The source image may be destroyed after <code>Recognize</code> is called,
-     * either explicitly or implicitly via one of the <code>Get*Text</code>
-     * functions. <code>SetImage</code> clears all recognition results, and sets
-     * the rectangle to the full image, so it may be followed immediately by a
-     * <code>GetUTF8Text</code>, and it will automatically perform recognition.
+     * ownership. The source image may be destroyed after <code>Recognize</code>
+     * is called, either explicitly or implicitly via one of the
+     * <code>Get*Text</code> functions. <code>SetImage</code> clears all
+     * recognition results, and sets the rectangle to the full image, so it may
+     * be followed immediately by a <code>GetUTF8Text</code>, and it will
+     * automatically perform recognition.
      *
      * @param handle the TesseractAPI instance
      * @param imagedata image byte buffer
@@ -534,11 +537,12 @@ public class TessAPI1 implements Library, ITessAPI {
     /**
      * Get the textlines as a Leptonica-style <code>Boxa</code>,
      * <code>Pixa</code> pair, in reading order. Can be called before or after
-     * <code>Recognize</code>. If <code>blockids</code> is not <code>NULL</code>, the
-     * block-id of each line is also returned as an array of one element per
-     * line. delete [] after use. If <code>paraids</code> is not
-     * <code>NULL</code>, the paragraph-id of each line within its block is also
-     * returned as an array of one element per line. delete [] after use.<br>
+     * <code>Recognize</code>. If <code>blockids</code> is not
+     * <code>NULL</code>, the block-id of each line is also returned as an array
+     * of one element per line. delete [] after use. If <code>paraids</code> is
+     * not <code>NULL</code>, the paragraph-id of each line within its block is
+     * also returned as an array of one element per line. delete [] after
+     * use.<br>
      * Helper method to extract from the thresholded image (most common usage).
      *
      * @param handle the TesseractAPI instance
@@ -551,11 +555,11 @@ public class TessAPI1 implements Library, ITessAPI {
     /**
      * Get the textlines as a Leptonica-style <code>Boxa</code>,
      * <code>Pixa</code> pair, in reading order. Can be called before or after
-     * <code>Recognize</code>. If <code>blockids</code> is not <code>NULL</code>, the
-     * block-id of each line is also returned as an array of one element per
-     * line. delete [] after use. If <code>paraids</code> is not
-     * <code>NULL</code>, the paragraph-id of each line within its block is also
-     * returned as an array of one element per line. delete [] after use.
+     * <code>Recognize</code>. If <code>blockids</code> is not
+     * <code>NULL</code>, the block-id of each line is also returned as an array
+     * of one element per line. delete [] after use. If <code>paraids</code> is
+     * not <code>NULL</code>, the paragraph-id of each line within its block is
+     * also returned as an array of one element per line. delete [] after use.
      *
      * @param handle the TesseractAPI instance
      * @param raw_image
@@ -571,9 +575,9 @@ public class TessAPI1 implements Library, ITessAPI {
      * Get textlines and strips of image regions as a Leptonica-style
      * <code>Boxa</code>, <code>Pixa</code> pair, in reading order. Enables
      * downstream handling of non-rectangular regions. Can be called before or
-     * after <code>Recognize</code>. If <code>blockids</code> is not NULL, the block-id of
-     * each line is also returned as an array of one element per line. delete []
-     * after use.
+     * after <code>Recognize</code>. If <code>blockids</code> is not NULL, the
+     * block-id of each line is also returned as an array of one element per
+     * line. delete [] after use.
      *
      * @param handle the TesseractAPI instance
      * @param pixa array of Pix
@@ -608,11 +612,12 @@ public class TessAPI1 implements Library, ITessAPI {
     /**
      * Get the given level kind of components (block, textline, word etc.) as a
      * Leptonica-style <code>Boxa</code>, <code>Pixa</code> pair, in reading
-     * order. Can be called before or after <code>Recognize</code>. If <code>blockids</code>
-     * is not <code>NULL</code>, the block-id of each component is also returned
-     * as an array of one element per component. delete [] after use. If
-     * <code>text_only</code> is true, then only text components are returned.
-     * Helper function to get binary images with no padding (most common usage).
+     * order. Can be called before or after <code>Recognize</code>. If
+     * <code>blockids</code> is not <code>NULL</code>, the block-id of each
+     * component is also returned as an array of one element per component.
+     * delete [] after use. If <code>text_only</code> is true, then only text
+     * components are returned. Helper function to get binary images with no
+     * padding (most common usage).
      *
      * @param handle the TesseractAPI instance
      * @param level PageIteratorLevel
@@ -626,15 +631,16 @@ public class TessAPI1 implements Library, ITessAPI {
     /**
      * Get the given level kind of components (block, textline, word etc.) as a
      * Leptonica-style <code>Boxa</code>, <code>Pixa</code> pair, in reading
-     * order. Can be called before or after <code>Recognize</code>. If <code>blockids</code>
-     * is not <code>NULL</code>, the block-id of each component is also returned
-     * as an array of one element per component. delete [] after use. If
-     * <code>paraids</code> is not <code>NULL</code>, the paragraph-id of each
-     * component with its block is also returned as an array of one element per
-     * component. delete [] after use. If <code>raw_image</code> is true, then
-     * portions of the original image are extracted instead of the thresholded
-     * image and padded with raw_padding. If <code>text_only</code> is true,
-     * then only text components are returned.
+     * order. Can be called before or after <code>Recognize</code>. If
+     * <code>blockids</code> is not <code>NULL</code>, the block-id of each
+     * component is also returned as an array of one element per component.
+     * delete [] after use. If <code>paraids</code> is not <code>NULL</code>,
+     * the paragraph-id of each component with its block is also returned as an
+     * array of one element per component. delete [] after use. If
+     * <code>raw_image</code> is true, then portions of the original image are
+     * extracted instead of the thresholded image and padded with raw_padding.
+     * If <code>text_only</code> is true, then only text components are
+     * returned.
      *
      * @param handle the TesseractAPI instance
      * @param level PageIteratorLevel
@@ -893,11 +899,12 @@ public class TessAPI1 implements Library, ITessAPI {
 
     /**
      * Detect the orientation of the input image and apparent script (alphabet).
-     * <code>orient_deg</code> is the detected clockwise rotation of the input image in
-     * degrees (0, 90, 180, 270); <code>orient_conf</code> is the confidence (15.0 is
-     * reasonably confident); <code>script_name</code> is an ASCII string, the name of the
-     * script, e.g. "Latin"; <code>script_conf</code> is confidence level in the script.
-     * 
+     * <code>orient_deg</code> is the detected clockwise rotation of the input
+     * image in degrees (0, 90, 180, 270); <code>orient_conf</code> is the
+     * confidence (15.0 is reasonably confident); <code>script_name</code> is an
+     * ASCII string, the name of the script, e.g. "Latin";
+     * <code>script_conf</code> is confidence level in the script.
+     *
      * @return TRUE on success and writes values to each parameter as an output
      */
     public static native int TessBaseAPIDetectOrientationScript(TessBaseAPI handle, IntBuffer orient_deg, FloatBuffer orient_conf, PointerByReference script_name, FloatBuffer script_conf);

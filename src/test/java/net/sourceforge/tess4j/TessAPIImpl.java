@@ -69,6 +69,11 @@ public class TessAPIImpl implements TessAPI {
     }
 
     @Override
+    public ITessAPI.TessResultRenderer TessHOcrRendererCreate2(String outputbase, int font_info) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
     public ITessAPI.TessResultRenderer TessPDFRendererCreate(String outputbase, String datadir, int textonly) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
