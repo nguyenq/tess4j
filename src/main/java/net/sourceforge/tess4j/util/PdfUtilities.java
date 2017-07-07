@@ -95,10 +95,11 @@ public class PdfUtilities {
                 String filename = String.format("workingimage%03d.png", page + 1);
                 ImageIO.write(bim, "png", new File(imageDir, filename));
             }
-            document.close();
         }
         catch (IOException ioe) {
             logger.error("Error extracting PDF Document => " + ioe);
+        }
+        finally {
             if (document != null) {
                 try {
                     document.close();
@@ -168,7 +169,9 @@ public class PdfUtilities {
             List<PDDocument> documents = splitter.split(document);
 
             if (documents.size() == 1) {
-                documents.get(0).save(outputPdfFile);
+                PDDocument outputPdf = documents.get(0);
+                outputPdf.save(outputPdfFile);
+                outputPdf.close();
             }
             else {
                 logger.error("Splitter returned " + documents.size() + " documents rather than expected of 1");
