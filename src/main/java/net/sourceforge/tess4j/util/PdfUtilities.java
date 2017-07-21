@@ -29,9 +29,8 @@ import org.apache.pdfbox.multipdf.Splitter;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
+import org.apache.pdfbox.tools.imageio.ImageIOUtil;
 import org.slf4j.LoggerFactory;
-
-import javax.imageio.ImageIO;
 
 public class PdfUtilities {
 
@@ -93,7 +92,7 @@ public class PdfUtilities {
 
                 // suffix in filename will be used as the file format
                 String filename = String.format("workingimage%03d.png", page + 1);
-                ImageIO.write(bim, "png", new File(imageDir, filename));
+                ImageIOUtil.writeImage(bim, new File(imageDir, filename).getAbsolutePath(), 300);
             }
         }
         catch (IOException ioe) {
