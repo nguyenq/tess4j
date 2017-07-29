@@ -107,7 +107,7 @@ public class TesseractTest {
                 + "Over the $43,456.78 <lazy> #90 dog";
         String result = instance.doOCR(imageFile);
         logger.info(result);
-        assertEquals(expResult, result.trim());
+        assertEquals(expResult, result.trim().replace('—', '-'));
     }
 
     /**
