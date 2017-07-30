@@ -84,6 +84,17 @@
         <manifest.implementation.vendor>Tess4J</manifest.implementation.vendor>
     </properties>
 
+    <distributionManagement>
+      <snapshotRepository>
+        <id>nexus-snapshots</id>
+        <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      </snapshotRepository>
+      <repository>
+        <id>ossrh</id>
+        <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+      </repository>
+    </distributionManagement>
+  
     <build>
         <plugins>
             <plugin>
@@ -134,6 +145,16 @@
                     </archive>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.8</version>
+                <extensions>true</extensions>
+                <configuration>
+                   <serverId>nexus</serverId>
+                   <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                </configuration>
+             </plugin>
         </plugins>
     </build>
 
