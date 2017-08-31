@@ -406,6 +406,7 @@ public class TessAPITest {
      *
      * @throws java.lang.Exception
      */
+    @org.junit.Ignore
     @Test
     public void testTessBaseAPIDetectOrientationScript() throws Exception {
         logger.info("TessBaseAPIDetectOrientationScript");
