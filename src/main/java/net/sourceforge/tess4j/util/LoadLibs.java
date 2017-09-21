@@ -175,10 +175,11 @@ public class LoadLibs {
                     if (jarEntry.isDirectory()) {
                         currentFile.mkdirs();
                     } else {
-                        currentFile.deleteOnExit();
-                        try (InputStream is = jarFile.getInputStream(jarEntry);
-                                OutputStream out = FileUtils.openOutputStream(currentFile)) {
-                            IOUtils.copy(is, out);
+                        if (!currentFile.exists() || currentFile.length() != jarEntry.getSize()) {
+                            try (InputStream is = jarFile.getInputStream(jarEntry);
+                                    OutputStream out = FileUtils.openOutputStream(currentFile)) {
+                                IOUtils.copy(is, out);
+                            }                            
                         }
                     }
                 }
@@ -209,8 +210,10 @@ public class LoadLibs {
                 }
             }
         } else {
-            FileUtils.copyURLToFile(virtualFileOrFolder.asFileURL(),
-                    new File(targetFolder, virtualFileOrFolder.getName()));
+            File targetFile = new File(targetFolder, virtualFileOrFolder.getName());
+            if (!targetFile.exists() || targetFile.length() != virtualFileOrFolder.getSize()) {
+                FileUtils.copyURLToFile(virtualFileOrFolder.asFileURL(), targetFile);
+            }
         }
     }
 }
