@@ -274,6 +274,7 @@ public class ImageIOHelper {
         File temp = File.createTempFile("tess4j", ".tiff");
         ImageIO.write(image, "tiff", temp);
         BufferedImage bi = ImageIO.read(temp);
+        temp.delete();
         return convertImageData(bi);
     }
 
