@@ -55,7 +55,7 @@ import org.slf4j.*;
 public class Tesseract1 extends TessAPI1 implements ITesseract {
 
     private String language = "eng";
-    private String datapath = "./";
+    private String datapath;
     private RenderedFormat renderedFormat = RenderedFormat.TEXT;
     private int psm = -1;
     private int ocrEngineMode = TessOcrEngineMode.OEM_DEFAULT;
@@ -65,6 +65,18 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     private TessBaseAPI handle;
 
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(new LoggHelper().toString());
+
+    public Tesseract1() {
+        try {
+            datapath = System.getenv("TESSDATA_PREFIX");
+        } catch (Exception e) {
+            // ignore
+        } finally {
+            if (datapath == null) {
+                datapath = "./";
+            }            
+        }
+    }
 
     /**
      * Returns API handle.
