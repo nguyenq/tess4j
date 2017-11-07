@@ -61,7 +61,6 @@ import org.slf4j.*;
  */
 public class Tesseract implements ITesseract {
 
-    private static Tesseract instance;
     private String language = "eng";
     private String datapath;
     private RenderedFormat renderedFormat = RenderedFormat.TEXT;
@@ -103,21 +102,6 @@ public class Tesseract implements ITesseract {
      */
     protected TessBaseAPI getHandle() {
         return handle;
-    }
-
-    /**
-     * Gets an instance of the class library.
-     *
-     * @deprecated As of Release 2.0, use default constructor instead.
-     * @return instance
-     */
-    @Deprecated
-    public static synchronized Tesseract getInstance() {
-        if (instance == null) {
-            instance = new Tesseract();
-        }
-
-        return instance;
     }
 
     /**
