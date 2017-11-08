@@ -56,10 +56,17 @@ public class PdfUtilities {
         } catch (NoClassDefFoundError ncdfe) {
             throw new RuntimeException(getMessage(ncdfe.getMessage()));
         } finally {
-            if (pngFiles != null) {
+            if (pngFiles != null && pngFiles.length>0) {
+	            //Get the working directory of the PNG files.
+                File pngDirectory = new File(pngFiles[0].getParent());
                 // delete temporary PNG images
                 for (File tempFile : pngFiles) {
                     tempFile.delete();
+                }
+                //Delete the working directory only if it was created with having same name as the pdf file.
+                if(pngDirectory.getAbsoluteFile().getName().equals(inputPdfFile.getName().replace(".pdf", "")))
+                {
+                    pngDirectory.delete();
                 }
             }
         }
@@ -71,8 +78,10 @@ public class PdfUtilities {
      * @param inputPdfFile input file
      * @return an array of PNG images
      */
-    public static File[] convertPdf2Png(File inputPdfFile) {
-        File imageDir = inputPdfFile.getParentFile();
+    @SuppressWarnings("unused")
+    public synchronized static File[] convertPdf2Png(File inputPdfFile) {
+        File imageDir = new File(inputPdfFile.getParentFile()+System.getProperty("file.separator")+inputPdfFile.getName().replace(".pdf", ""));
+        imageDir.mkdirs();
 
         if (imageDir == null) {
             String userDir = System.getProperty("user.dir");
