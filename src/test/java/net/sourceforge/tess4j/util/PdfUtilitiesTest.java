@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -32,6 +33,7 @@ public class PdfUtilitiesTest {
 
     /**
      * Test of convertPdf2Tiff method, of class PdfUtilities.
+     * @throws java.lang.Exception
      */
     @Test
     public void testConvertPdf2Tiff() throws Exception {
@@ -44,14 +46,18 @@ public class PdfUtilitiesTest {
 
     /**
      * Test of convertPdf2Png method, of class PdfUtilities.
+     * @throws java.io.IOException
      */
     @Test
-    public void testConvertPdf2Png() {
+    public void testConvertPdf2Png() throws IOException {
         logger.info("convertPdf2Png");
         File inputPdfFile = new File(this.TEST_RESOURCES_DATA_PATH, "eurotext.pdf");
         File[] results = PdfUtilities.convertPdf2Png(inputPdfFile);
         for (File result : results) {
             result.deleteOnExit();
+        }
+        if (results.length > 0) {
+            results[0].getParentFile().deleteOnExit();
         }
         assertTrue(results.length > 0);
     }
