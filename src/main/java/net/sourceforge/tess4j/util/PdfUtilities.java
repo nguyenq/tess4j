@@ -97,7 +97,7 @@ public class PdfUtilities {
         gsArgs.add("-r300");
         gsArgs.add("-dGraphicsAlphaBits=4");
         gsArgs.add("-dTextAlphaBits=4");
-        gsArgs.add("-sOutputFile=" + imageDir.getPath() + "/workingimage%03d.png");
+        gsArgs.add("-sOutputFile=" + imageDir.getPath() + "/workingimage%04d.png");
         gsArgs.add(inputPdfFile.getPath());
 
         //execute and exit interpreter
@@ -122,7 +122,7 @@ public class PdfUtilities {
 
             @Override
             public boolean accept(File dir, String name) {
-                return name.toLowerCase().matches("workingimage\\d{3}\\.png$");
+                return name.toLowerCase().matches("workingimage\\d{4}\\.png$");
             }
         });
 
