@@ -108,6 +108,8 @@ Version 3.4.1 (22 September 2017)
 - Update Tesseract 3.05.01 (e2e79c4); link against Leptonica 1.74.4
 - Update Lept4J to 1.6.1
 
-Version 3.4.2-Beta (31 October 2017)
+Version 3.4.2 (14 November 2017)
 - Update Lept4J to 1.6.2
 - Update GhostScript to 9.22
+- Improve handling of PDF files in multi-threaded environment
+- Lift limits on number of pages in PDF
