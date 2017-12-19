@@ -140,7 +140,12 @@ public class LoadLibs {
         } else {
             File file = new File(resourceUrl.getPath());
             if (file.isDirectory()) {
-                FileUtils.copyDirectory(file, targetPath);
+                for (File resourceFile : file.listFiles()) {
+                    File targetFile = new File(targetPath, resourceFile.getName());
+                    if (!targetFile.exists() || targetFile.length() != resourceFile.length()) {
+                        FileUtils.copyFile(resourceFile, targetFile);
+                    }
+                }
             } else {
                 FileUtils.copyFile(file, targetPath);
             }
