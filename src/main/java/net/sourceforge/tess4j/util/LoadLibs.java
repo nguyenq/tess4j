@@ -26,7 +26,6 @@ import java.net.URLConnection;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.Collection;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -142,7 +141,8 @@ public class LoadLibs {
             File file = new File(resourceUrl.getPath());
             if (file.isDirectory()) {
                 for (File resourceFile : FileUtils.listFiles(file, null, true)) {
-                    File targetFile = new File(targetPath, resourceFile.getName());
+                    int index = resourceFile.getPath().lastIndexOf(targetPath.getName()) + targetPath.getName().length();
+                    File targetFile = new File(targetPath, resourceFile.getPath().substring(index));
                     if (!targetFile.exists() || targetFile.length() != resourceFile.length()) {
                         if (resourceFile.isFile()) {
                             FileUtils.copyFile(resourceFile, targetFile);
