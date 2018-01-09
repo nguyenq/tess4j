@@ -61,7 +61,7 @@ public class TestFolderExtraction {
             
             if (tessDataFolder != null) {
                 logger.info(tessDataFolder.getAbsolutePath());
-                instance.setDatapath(tessDataFolder.getAbsolutePath());
+                instance.setDatapath(tessDataFolder.getParent());
             }
 
             /**
