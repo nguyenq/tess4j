@@ -140,14 +140,19 @@ public class LoadLibs {
         } else {
             File file = new File(resourceUrl.getPath());
             if (file.isDirectory()) {
-                for (File resourceFile : file.listFiles()) {
-                    File targetFile = new File(targetPath, resourceFile.getName());
+                for (File resourceFile : FileUtils.listFiles(file, null, true)) {
+                    int index = resourceFile.getPath().lastIndexOf(targetPath.getName()) + targetPath.getName().length();
+                    File targetFile = new File(targetPath, resourceFile.getPath().substring(index));
                     if (!targetFile.exists() || targetFile.length() != resourceFile.length()) {
-                        FileUtils.copyFile(resourceFile, targetFile);
+                        if (resourceFile.isFile()) {
+                            FileUtils.copyFile(resourceFile, targetFile);
+                        }
                     }
                 }
             } else {
-                FileUtils.copyFile(file, targetPath);
+                if (!targetPath.exists() || targetPath.length() != file.length()) {
+                    FileUtils.copyFile(file, targetPath);
+                }
             }
         }
     }
