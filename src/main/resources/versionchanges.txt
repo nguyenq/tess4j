@@ -98,8 +98,8 @@ Version 3.3.1 (23 March 2017)
 - Update Lept4J to 1.3.1
 - Update other dependencies
 
-Version 4.0.0 beta (8 November 2017)
-- Upgrade to Tesseract 4.0.0 alpha (ad5ee18)
+Version 4.0.0 beta (8 January 2018)
+- Upgrade to Tesseract 4.0.0 alpha (c4d8f27)
 - Update Lept4J to 1.6.2 (Leptonica 1.74.4)
 - Update GhostScript to 9.22
 - Improve handling of PDF files in multi-threaded environment
