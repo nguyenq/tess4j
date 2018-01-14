@@ -114,3 +114,6 @@ Version 3.4.2 (14 November 2017)
 - Improve handling of PDF files in multi-threaded environment
 - Lift limits on number of pages in PDF
 - Use TESSDATA_PREFIX environment variable by default, if defined
+
+Version 3.4.3 (14 January 2018)
+- Not extract/copy resource if it exists and has same file size
