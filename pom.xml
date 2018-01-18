@@ -120,6 +120,9 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.6</version>
                 <configuration>
+                    <excludes>
+                        <exclude>**/logback.xml</exclude>
+                    </excludes>
                     <archive>
                         <addMavenDescriptor>true</addMavenDescriptor>
                         <compress>true</compress>

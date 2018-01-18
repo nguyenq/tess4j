@@ -98,6 +98,29 @@ Version 3.3.1 (23 March 2017)
 - Update Lept4J to 1.3.1
 - Update other dependencies
 
+Version 3.4.0 (1 June 2017)
+- Upgrade to Tesseract 3.05.01 (2158661)
+- Update Lept4J to 1.4.0
+- Add support for jboss-vfs protocol
+
+Version 3.4.1 (22 September 2017)
+- Not extract/copy native resource if it exists and has same file size
+- Update Tesseract 3.05.01 (e2e79c4); link against Leptonica 1.74.4
+- Update Lept4J to 1.6.1
+
+Version 3.4.2 (14 November 2017)
+- Update Lept4J to 1.6.2
+- Update GhostScript to 9.22
+- Improve handling of PDF files in multi-threaded environment
+- Lift limits on number of pages in PDF
+- Use TESSDATA_PREFIX environment variable by default, if defined
+
+Version 3.4.3 (14 January 2018)
+- Not extract/copy resource if it exists and has same file size
+
+Version 3.4.4-SNAPSHOT (18 January 2018)
+- Exclude logback.xml from JAR
+
 Version 4.0.0 beta (8 January 2018)
 - Upgrade to Tesseract 4.0.0 alpha (c4d8f27)
 - Update Lept4J to 1.6.2 (Leptonica 1.74.4)
