@@ -61,14 +61,6 @@ public interface ITessAPI {
          * <code>OEM_TESSERACT_ONLY</code>.
          */
         public static final int OEM_DEFAULT = 3;
-//        /**
-//         * Run Cube only - better accuracy, but slower
-//         */
-//        public static final int OEM_CUBE_ONLY = 4;
-//        /**
-//         * Run both and combine results - best accuracy
-//         */
-//        public static final int OEM_TESSERACT_CUBE_COMBINED = 5;
     };
 
     /**
