@@ -53,6 +53,9 @@ import com.github.jaiimageio.plugins.tiff.TIFFDirectory;
 import com.github.jaiimageio.plugins.tiff.TIFFField;
 import com.github.jaiimageio.plugins.tiff.TIFFImageWriteParam;
 import com.github.jaiimageio.plugins.tiff.TIFFTag;
+import com.recognition.software.jdeskew.ImageDeskew;
+import com.recognition.software.jdeskew.ImageUtil;
+import org.apache.commons.io.FilenameUtils;
 
 public class ImageIOHelper {
 
@@ -599,6 +602,33 @@ public class ImageIOHelper {
         ios.close();
 
         writer.dispose();
+    }
+
+    /**
+     * Deskews image.
+     * 
+     * @param imageFile input image
+     * @param minimumDeskewThreshold minimum deskew threshold (typically, 0.05d)
+     * @return temporary multi-page TIFF image file
+     * @throws IOException 
+     */
+    public static File deskewImage(File imageFile, double minimumDeskewThreshold) throws IOException {
+        List<BufferedImage> imageList = getImageList(imageFile);
+        for (int i = 0; i < imageList.size(); i++) {
+            BufferedImage bi = imageList.get(i);
+            ImageDeskew deskew = new ImageDeskew(bi);
+            double imageSkewAngle = deskew.getSkewAngle();
+
+            if ((imageSkewAngle > minimumDeskewThreshold || imageSkewAngle < -(minimumDeskewThreshold))) {
+                bi = ImageUtil.rotate(bi, -imageSkewAngle, bi.getWidth() / 2, bi.getHeight() / 2);
+                imageList.set(i, bi); // replace original with deskewed image
+            }
+        }
+
+        File tempImageFile = File.createTempFile(FilenameUtils.getBaseName(imageFile.getName()), ".tif");
+        ImageIOHelper.mergeTiff(imageList.toArray(new BufferedImage[0]), tempImageFile);
+
+        return tempImageFile;
     }
 
     /**
