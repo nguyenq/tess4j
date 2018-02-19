@@ -121,8 +121,8 @@ Version 3.4.3 (14 January 2018)
 Version 3.4.4-SNAPSHOT (18 January 2018)
 - Exclude logback.xml from JAR
 
-Version 4.0.0 beta (17 February 2018)
-- Upgrade to Tesseract 4.0.0 alpha (c4d8f27)
+Version 4.0.0 beta (19 February 2018)
+- Upgrade to Tesseract 4.0.0 alpha (a50ff52)
 - Update Lept4J to 1.9.0 (Leptonica 1.75.3)
 - Update GhostScript to 9.22
 - Improve handling of PDF files in multi-threaded environment
