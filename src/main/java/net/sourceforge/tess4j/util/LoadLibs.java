@@ -178,7 +178,7 @@ public class LoadLibs {
                 /**
                  * Extract files only if they match the path.
                  */
-                if (jarEntryName.startsWith(jarConnectionEntryName + "/")) {
+                if (jarEntryName.startsWith(jarConnectionEntryName + "/") || jarEntryName.startsWith(jarConnectionEntryName)) {
                     String filename = jarEntryName.substring(jarConnectionEntryName.length());
                     File targetFile = new File(destPath, filename);
 
