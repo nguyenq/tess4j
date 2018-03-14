@@ -53,7 +53,7 @@ public class Tesseract1Test {
     static final double MINIMUM_DESKEW_THRESHOLD = 0.05d;
     ITesseract instance;
 
-    private final String datapath = "src/main/resources";
+    private final String datapath = "src/main/resources/tessdata";
     private final String testResourcesDataPath = "src/test/resources/test-data";
 
     @BeforeClass

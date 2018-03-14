@@ -63,7 +63,7 @@ import static org.junit.Assert.assertTrue;
 public class TessAPITest {
 
     private static final Logger logger = LoggerFactory.getLogger(new LoggHelper().toString());
-    private final String datapath = "src/main/resources";
+    private final String datapath = "src/main/resources/tessdata";
     private final String testResourcesDataPath = "src/test/resources/test-data";
     String language = "eng";
     String expOCRResult = "The (quick) [brown] {fox} jumps!\nOver the $43,456.78 <lazy> #90 dog";
@@ -213,7 +213,7 @@ public class TessAPITest {
     @Test
     public void testTessVersion() {
         logger.info("TessVersion");
-        String expResult = "4.00";
+        String expResult = "4.0.0-beta.1";
         String result = api.TessVersion();
         logger.info(result);
         assertTrue(result.startsWith(expResult));
