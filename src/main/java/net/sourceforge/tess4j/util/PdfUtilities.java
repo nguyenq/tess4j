@@ -210,18 +210,6 @@ public class PdfUtilities {
         }
     }
 
-    private static final String PS_FILE = "lib/pdfpagecount.ps";
-    private static final String pdfPageCountFilePath;
-
-    static {
-        File postscriptFile = LoadLibs.extractTessResources(PS_FILE);
-        if (postscriptFile != null && postscriptFile.exists()) {
-            pdfPageCountFilePath = postscriptFile.getPath();
-        } else {
-            pdfPageCountFilePath = PS_FILE;
-        }
-    }
-
     /**
      * Gets PDF Page Count.
      *
@@ -246,14 +234,16 @@ public class PdfUtilities {
 
         //prepare Ghostscript interpreter parameters
         //refer to Ghostscript documentation for parameter usage
-        //gs -q -sPDFname=test.pdf pdfpagecount.ps
+        //gs -q -dNODISPLAY -c "(input.pdf) (r) file runpdfbegin pdfpagecount = quit"
         List<String> gsArgs = new ArrayList<String>();
         gsArgs.add("-gs");
         gsArgs.add("-dNOPAUSE");
         gsArgs.add("-dQUIET");
+        gsArgs.add("-dNODISPLAY");
         gsArgs.add("-dBATCH");
-        gsArgs.add("-sPDFname=" + inputPdfFile.getPath());
-        gsArgs.add(pdfPageCountFilePath);
+        gsArgs.add("-c");
+        String cValue = String.format("(%s) (r) file runpdfbegin pdfpagecount = quit", inputPdfFile.getPath().replace('\\', '/'));
+        gsArgs.add(cValue);
 
         int pageCount = 0;
         ByteArrayOutputStream os;
@@ -265,7 +255,7 @@ public class PdfUtilities {
                 os = new ByteArrayOutputStream();
                 gs.setStdOut(os);
                 gs.initialize(gsArgs.toArray(new String[0]));
-                pageCount = Integer.parseInt(os.toString().replace("%%Pages: ", ""));
+                pageCount = Integer.parseInt(os.toString().trim());
                 os.close();
             }
         } catch (GhostscriptException e) {
