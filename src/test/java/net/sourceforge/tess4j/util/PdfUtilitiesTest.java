@@ -38,7 +38,7 @@ public class PdfUtilitiesTest {
     @Test
     public void testConvertPdf2Tiff() throws Exception {
         logger.info("convertPdf2Tiff");
-        File inputPdfFile = new File(this.TEST_RESOURCES_DATA_PATH, "eurotext.pdf");
+        File inputPdfFile = new File(TEST_RESOURCES_DATA_PATH, "eurotext.pdf");
         File result = PdfUtilities.convertPdf2Tiff(inputPdfFile);
         result.deleteOnExit();
         assertTrue(result.exists());
@@ -51,7 +51,7 @@ public class PdfUtilitiesTest {
     @Test
     public void testConvertPdf2Png() throws IOException {
         logger.info("convertPdf2Png");
-        File inputPdfFile = new File(this.TEST_RESOURCES_DATA_PATH, "eurotext.pdf");
+        File inputPdfFile = new File(TEST_RESOURCES_DATA_PATH, "eurotext.pdf");
         File[] results = PdfUtilities.convertPdf2Png(inputPdfFile);
         for (File result : results) {
             result.deleteOnExit();
@@ -84,7 +84,7 @@ public class PdfUtilitiesTest {
     @Test
     public void testGetPdfPageCount() {
         logger.info("getPdfPageCount");
-        File inputPdfFile = new File(this.TEST_RESOURCES_DATA_PATH, "multipage-pdf.pdf");
+        File inputPdfFile = new File(TEST_RESOURCES_DATA_PATH, "multipage-pdf.pdf");
         int expResult = 5;
         int result = PdfUtilities.getPdfPageCount(inputPdfFile);
         assertEquals(expResult, result);
