@@ -123,5 +123,6 @@ Version 3.4.4 (22 February 2018)
 - Add image rotate and deskew methods
 - Update Lept4J to 1.6.3
 
-Version 3.4.5 (19 March 2018)
+Version 3.4.5 (21 March 2018)
 - Remove GS DLL due to license incompatibility
+- Use PDFBox

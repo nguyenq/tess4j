@@ -37,7 +37,7 @@
             INSTRUCTIONS
         </h3>
         <p>
-            Tesseract 3.05.01, Leptonica 1.74.4 (via Lept4J), and Ghostscript 9.22 32- and 64-bit
+            Tesseract 3.05.01 and Leptonica 1.74.4 (via Lept4J) 32- and 64-bit
             DLLs, language data for English, and sample images are bundled with the library.
             <a href="https://github.com/tesseract-ocr/tessdata">Language data packs</a> for
             Tesseract should be decompressed and placed into the <code>tessdata</code> folder.
@@ -56,6 +56,11 @@
                 <code>mvn test</code>
             </p>
         </blockquote>
+        <p>
+            Support for PDF documents is available through either 
+			<a href="http://www.ghostscript.com/" target="_blank">GPL Ghostscript</a>, which should be installed and included
+            in system path, or PDFBox, if Ghostscript is not available.
+        </p>
         <p>
             Images to be OCRed should be scanned at resolution from at least 200 DPI (dot per
             inch) to 400 DPI in monochrome (black&amp;white) or grayscale. Scanning at higher
