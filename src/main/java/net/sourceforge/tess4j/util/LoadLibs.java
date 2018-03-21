@@ -140,9 +140,19 @@ public class LoadLibs {
         } else {
             File file = new File(resourceUrl.getPath());
             if (file.isDirectory()) {
-                FileUtils.copyDirectory(file, targetPath);
+                for (File resourceFile : FileUtils.listFiles(file, null, true)) {
+                    int index = resourceFile.getPath().lastIndexOf(targetPath.getName()) + targetPath.getName().length();
+                    File targetFile = new File(targetPath, resourceFile.getPath().substring(index));
+                    if (!targetFile.exists() || targetFile.length() != resourceFile.length()) {
+                        if (resourceFile.isFile()) {
+                            FileUtils.copyFile(resourceFile, targetFile);
+                        }
+                    }
+                }
             } else {
-                FileUtils.copyFile(file, targetPath);
+                if (!targetPath.exists() || targetPath.length() != file.length()) {
+                    FileUtils.copyFile(file, targetPath);
+                }
             }
         }
     }
@@ -170,15 +180,16 @@ public class LoadLibs {
                  */
                 if (jarEntryName.startsWith(jarConnectionEntryName + "/")) {
                     String filename = jarEntryName.substring(jarConnectionEntryName.length());
-                    File currentFile = new File(destPath, filename);
+                    File targetFile = new File(destPath, filename);
 
                     if (jarEntry.isDirectory()) {
-                        currentFile.mkdirs();
+                        targetFile.mkdirs();
                     } else {
-                        currentFile.deleteOnExit();
-                        try (InputStream is = jarFile.getInputStream(jarEntry);
-                                OutputStream out = FileUtils.openOutputStream(currentFile)) {
-                            IOUtils.copy(is, out);
+                        if (!targetFile.exists() || targetFile.length() != jarEntry.getSize()) {
+                            try (InputStream is = jarFile.getInputStream(jarEntry);
+                                    OutputStream out = FileUtils.openOutputStream(targetFile)) {
+                                IOUtils.copy(is, out);
+                            }                            
                         }
                     }
                 }
@@ -209,8 +220,10 @@ public class LoadLibs {
                 }
             }
         } else {
-            FileUtils.copyURLToFile(virtualFileOrFolder.asFileURL(),
-                    new File(targetFolder, virtualFileOrFolder.getName()));
+            File targetFile = new File(targetFolder, virtualFileOrFolder.getName());
+            if (!targetFile.exists() || targetFile.length() != virtualFileOrFolder.getSize()) {
+                FileUtils.copyURLToFile(virtualFileOrFolder.asFileURL(), targetFile);
+            }
         }
     }
 }
