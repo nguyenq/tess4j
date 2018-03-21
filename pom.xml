@@ -93,7 +93,7 @@
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
-                    <debug>true</debug>
+                    <debug>false</debug>
                 </configuration>
             </plugin>
             <plugin>
