@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * PDF utilities based on PDFBox.
- * 
+ *
  * @author Robert Drysdale
  * @author Quan Nguyen
  */
@@ -97,16 +97,18 @@ public class PdfBoxUtilities {
                 String filename = String.format("workingimage%04d.png", page + 1);
                 ImageIOUtil.writeImage(bim, new File(imageDir, filename).getAbsolutePath(), 300);
             }
-        }
-        catch (IOException ioe) {
+        } catch (IOException ioe) {
             logger.error("Error extracting PDF Document => " + ioe);
-        }
-        finally {
+        } finally {
+            if (imageDir.list().length == 0) {
+                imageDir.delete();
+            }
+
             if (document != null) {
                 try {
                     document.close();
+                } catch (Exception e) {
                 }
-                catch (Exception e) {}
             }
         }
 
@@ -145,7 +147,7 @@ public class PdfBoxUtilities {
 
             splitter.setStartPage(firstPage);
             splitter.setEndPage(lastPage);
-            splitter.setSplitAtPage(lastPage-firstPage);
+            splitter.setSplitAtPage(lastPage - firstPage);
 
             List<PDDocument> documents = splitter.split(document);
 
@@ -153,20 +155,17 @@ public class PdfBoxUtilities {
                 PDDocument outputPdf = documents.get(0);
                 outputPdf.save(outputPdfFile);
                 outputPdf.close();
-            }
-            else {
+            } else {
                 logger.error("Splitter returned " + documents.size() + " documents rather than expected of 1");
             }
-        }
-        catch (IOException ioe) {
+        } catch (IOException ioe) {
             logger.error("Exception splitting PDF => " + ioe);
-        }
-        finally {
+        } finally {
             if (document != null) {
                 try {
                     document.close();
+                } catch (Exception e) {
                 }
-                catch (Exception e) {}
             }
         }
     }
@@ -182,17 +181,15 @@ public class PdfBoxUtilities {
         try {
             document = PDDocument.load(inputPdfFile);
             return document.getNumberOfPages();
-        }
-        catch (IOException ioe) {
+        } catch (IOException ioe) {
             logger.error("Error counting PDF pages => " + ioe);
             return - 1;
-        }
-        finally {
+        } finally {
             if (document != null) {
                 try {
                     document.close();
+                } catch (Exception e) {
                 }
-                catch (Exception e) {}
             }
         }
     }
@@ -211,8 +208,7 @@ public class PdfBoxUtilities {
                 mergerUtility.addSource(inputPdfFile);
             }
             mergerUtility.mergeDocuments(MemoryUsageSetting.setupMainMemoryOnly());
-        }
-        catch (IOException ioe) {
+        } catch (IOException ioe) {
             logger.error("Error counting PDF pages => " + ioe);
         }
     }

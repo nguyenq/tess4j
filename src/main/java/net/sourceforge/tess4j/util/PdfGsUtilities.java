@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  */
 public class PdfGsUtilities {
 
-    public static final String GS_INSTALL = "\nPlease download, install GPL Ghostscript from http://www.ghostscript.com\nand/or set the appropriate environment variable.";
+    public static final String GS_INSTALL = "\nPlease download, install GPL Ghostscript from http://www.ghostscript.com\nand/or set the appropriate path variable.";
 
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(new LoggHelper().toString());
 
@@ -56,12 +56,6 @@ public class PdfGsUtilities {
             // put PNG images into a single multi-page TIFF image for return
             ImageIOHelper.mergeTiff(pngFiles, tiffFile);
             return tiffFile;
-        } catch (UnsatisfiedLinkError ule) {
-            logger.error(ule.getCause() != null ? ule.getCause().toString() : ule.getMessage(), ule);
-            throw new RuntimeException(getMessage(ule.getMessage()));
-        } catch (NoClassDefFoundError ncdfe) {
-            logger.error(ncdfe.getCause() != null ? ncdfe.getCause().toString() : ncdfe.getMessage(), ncdfe);
-            throw new RuntimeException(getMessage(ncdfe.getMessage()));
         } finally {
             if (pngFiles != null && pngFiles.length > 0) {
                 // get the working directory of the PNG files
@@ -111,9 +105,20 @@ public class PdfGsUtilities {
                 gs.initialize(gsArgs.toArray(new String[0]));
                 gs.exit();
             }
+        } catch (UnsatisfiedLinkError e) {
+            logger.error(e.getMessage());
+            throw new RuntimeException(getMessage(e.getMessage()));
+        } catch (NoClassDefFoundError e) {
+            logger.error(e.getMessage());
+            throw new RuntimeException(getMessage(e.getMessage()));
         } catch (GhostscriptException e) {
-            logger.error(e.getCause() != null ? e.getCause().toString() : e.getMessage(), e);
+            logger.error(e.getMessage());
+            throw new RuntimeException(e.getMessage());
         } finally {
+            if (imageDir.list().length == 0) {
+                imageDir.delete();
+            }
+
             //delete interpreter instance (safer)
             try {
                 Ghostscript.deleteInstance();
@@ -177,15 +182,15 @@ public class PdfGsUtilities {
                 gs.initialize(gsArgs.toArray(new String[0]));
                 gs.exit();
             }
+        } catch (UnsatisfiedLinkError e) {
+            logger.error(e.getMessage());
+            throw new RuntimeException(getMessage(e.getMessage()));
+        } catch (NoClassDefFoundError e) {
+            logger.error(e.getMessage());
+            throw new RuntimeException(getMessage(e.getMessage()));
         } catch (GhostscriptException e) {
-            logger.error(e.getCause() != null ? e.getCause().toString() : e.getMessage(), e);
+            logger.error(e.getMessage());
             throw new RuntimeException(e.getMessage());
-        } catch (UnsatisfiedLinkError ule) {
-            logger.error(ule.getCause() != null ? ule.getCause().toString() : ule.getMessage(), ule);
-            throw new RuntimeException(getMessage(ule.getMessage()));
-        } catch (NoClassDefFoundError ncdfe) {
-            logger.error(ncdfe.getCause() != null ? ncdfe.getCause().toString() : ncdfe.getMessage(), ncdfe);
-            throw new RuntimeException(getMessage(ncdfe.getMessage()));
         } finally {
             //delete interpreter instance (safer)
             try {
@@ -232,10 +237,17 @@ public class PdfGsUtilities {
                 pageCount = Integer.parseInt(os.toString().trim());
                 os.close();
             }
+        } catch (UnsatisfiedLinkError e) {
+            logger.error(e.getMessage());
+            throw new RuntimeException(getMessage(e.getMessage()));
+        } catch (NoClassDefFoundError e) {
+            logger.error(e.getMessage());
+            throw new RuntimeException(getMessage(e.getMessage()));
         } catch (GhostscriptException e) {
-            logger.error(e.getCause() != null ? e.getCause().toString() : e.getMessage(), e);
+            logger.error(e.getMessage());
+            throw new RuntimeException(e.getMessage());
         } catch (Exception e) {
-            logger.error(e.getCause() != null ? e.getCause().toString() : e.getMessage(), e);
+            logger.error(e.getMessage());
         } finally {
             //delete interpreter instance (safer)
             try {
@@ -279,15 +291,15 @@ public class PdfGsUtilities {
                 gs.initialize(gsArgs.toArray(new String[0]));
                 gs.exit();
             }
+        } catch (UnsatisfiedLinkError e) {
+            logger.error(e.getMessage());
+            throw new RuntimeException(getMessage(e.getMessage()));
+        } catch (NoClassDefFoundError e) {
+            logger.error(e.getMessage());
+            throw new RuntimeException(getMessage(e.getMessage()));
         } catch (GhostscriptException e) {
-            logger.error(e.getCause() != null ? e.getCause().toString() : e.getMessage(), e);
+            logger.error(e.getMessage());
             throw new RuntimeException(e.getMessage());
-        } catch (UnsatisfiedLinkError ule) {
-            logger.error(ule.getCause() != null ? ule.getCause().toString() : ule.getMessage(), ule);
-            throw new RuntimeException(getMessage(ule.getMessage()));
-        } catch (NoClassDefFoundError ncdfe) {
-            logger.error(ncdfe.getCause() != null ? ncdfe.getCause().toString() : ncdfe.getMessage(), ncdfe);
-            throw new RuntimeException(getMessage(ncdfe.getMessage()));
         } finally {
             //delete interpreter instance (safer)
             try {
