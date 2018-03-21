@@ -53,13 +53,14 @@ public class PdfUtilitiesTest {
         logger.info("convertPdf2Png");
         File inputPdfFile = new File(TEST_RESOURCES_DATA_PATH, "eurotext.pdf");
         File[] results = PdfUtilities.convertPdf2Png(inputPdfFile);
-        for (File result : results) {
-            result.deleteOnExit();
-        }
-        if (results.length > 0) {
-            results[0].getParentFile().deleteOnExit();
-        }
         assertTrue(results.length > 0);
+        
+        //clean up
+        File parentDir = results[0].getParentFile();
+        for (File result : results) {
+            result.delete();
+        }
+        parentDir.delete();
     }
 
     /**
@@ -89,7 +90,7 @@ public class PdfUtilitiesTest {
         int result = PdfUtilities.getPdfPageCount(inputPdfFile);
         assertEquals(expResult, result);
     }
-    
+
     /**
      * Test of mergePdf method, of class PdfUtilities.
      */
