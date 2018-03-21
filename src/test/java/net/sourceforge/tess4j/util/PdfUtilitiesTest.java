@@ -24,6 +24,7 @@ import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import org.junit.Before;
 
 public class PdfUtilitiesTest {
 
@@ -31,8 +32,14 @@ public class PdfUtilitiesTest {
     private static final String TEST_RESOURCES_DATA_PATH = "src/test/resources/test-data/";
     private final String TEST_RESOURCES_RESULTS_PATH = "src/test/resources/test-results/";
 
+    @Before
+    public void setUp() {
+        System.setProperty(PdfUtilities.PDF_LIBRARY, PdfUtilities.PDFBOX);    // Note: comment out to test Ghostscript
+    }
+
     /**
      * Test of convertPdf2Tiff method, of class PdfUtilities.
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -46,6 +53,7 @@ public class PdfUtilitiesTest {
 
     /**
      * Test of convertPdf2Png method, of class PdfUtilities.
+     *
      * @throws java.io.IOException
      */
     @Test
@@ -54,7 +62,7 @@ public class PdfUtilitiesTest {
         File inputPdfFile = new File(TEST_RESOURCES_DATA_PATH, "eurotext.pdf");
         File[] results = PdfUtilities.convertPdf2Png(inputPdfFile);
         assertTrue(results.length > 0);
-        
+
         //clean up
         File parentDir = results[0].getParentFile();
         for (File result : results) {

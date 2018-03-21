@@ -147,7 +147,7 @@ public class PdfBoxUtilities {
 
             splitter.setStartPage(firstPage);
             splitter.setEndPage(lastPage);
-            splitter.setSplitAtPage(lastPage - firstPage);
+            splitter.setSplitAtPage(lastPage - firstPage + 1);
 
             List<PDDocument> documents = splitter.split(document);
 
