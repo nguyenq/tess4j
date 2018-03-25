@@ -204,20 +204,17 @@
         <dependency>
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>pdfbox</artifactId>
-            <version>2.0.8</version>
+            <version>2.0.9</version>
         </dependency>
         <dependency>
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>pdfbox-tools</artifactId>
-            <version>2.0.8</version>
+            <version>2.0.9</version>
         </dependency>
         <dependency>
-            <groupId>com.levigo.jbig2</groupId>
-            <artifactId>levigo-jbig2-imageio</artifactId>
-            <version>2.0</version>
-            <!-- Incompatible License GPL3 rather than Apache or BSD
-                 Should be expressly declared by user if required -->
-            <scope>test</scope>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>jbig2-imageio</artifactId>
+            <version>3.0.0</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
