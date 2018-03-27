@@ -14,6 +14,11 @@ The library provides optical character recognition (OCR) support for:
 * Multi-page TIFF images
 * PDF document format
 
+## Dependencies
+
+Microsoft Visual C++ 2017 x86 and x64 Runtimes
+
+Since Tesseract and Leptonica Windows binaries are compiled with Visual Studio 2017, please ensure you have [Microsoft Visual C++ Redistributable for Visual Studio 2017](https://www.visualstudio.com/downloads/) installed.
 
 ## Tutorial
 

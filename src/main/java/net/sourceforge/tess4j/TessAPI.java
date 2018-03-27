@@ -660,14 +660,6 @@ public interface TessAPI extends Library, ITessAPI {
     int TessBaseAPIGetThresholdedImageScaleFactor(TessBaseAPI handle);
 
     /**
-     * Dump the internal binary image to a PGM file.
-     *
-     * @param handle the TesseractAPI instance
-     * @param filename pgm file name
-     */
-    void TessBaseAPIDumpPGM(TessBaseAPI handle, String filename);
-
-    /**
      * Runs page layout analysis in the mode set by <code>SetPageSegMode</code>.
      * May optionally be called prior to <code>Recognize</code> to get access to
      * just the page layout results. Returns an iterator to the results. Returns

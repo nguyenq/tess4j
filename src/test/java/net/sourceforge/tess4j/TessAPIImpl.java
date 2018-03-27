@@ -349,11 +349,6 @@ public class TessAPIImpl implements TessAPI {
     }
 
     @Override
-    public void TessBaseAPIDumpPGM(ITessAPI.TessBaseAPI handle, String filename) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public ITessAPI.TessPageIterator TessBaseAPIAnalyseLayout(ITessAPI.TessBaseAPI handle) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
