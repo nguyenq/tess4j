@@ -118,11 +118,18 @@ Version 3.4.2 (14 November 2017)
 Version 3.4.3 (14 January 2018)
 - Not extract/copy resource if it exists and has same file size
 
-Version 3.4.4-SNAPSHOT (18 January 2018)
+Version 3.4.4 (22 February 2018)
 - Exclude logback.xml from JAR
+- Add image rotate and deskew methods
+- Update Lept4J to 1.6.3
 
-Version 4.0.0 beta (14 March 2018)
-- Upgrade to Tesseract 4.0.0-beta.1 (023e1b3)
+Version 3.4.5 (21 March 2018)
+- Remove GS DLL due to license incompatibility
+- Use PDFBox
+
+Version 3.4.6 (25 March 2018)
+- Update PDFBox dependencies
+
+Version 4.0.0 beta (5 April 2018)
+- Upgrade to Tesseract 4.0.0-beta.1 (10f4998)
 - Update Lept4J to 1.9.2 (Leptonica 1.75.3)
-- Update GhostScript to 9.22
-- Improve handling of PDF files in multi-threaded environment
