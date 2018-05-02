@@ -167,6 +167,9 @@ public class LoadLibs {
     static void copyJarResourceToPath(JarURLConnection jarConnection, File destPath) {
         try (JarFile jarFile = jarConnection.getJarFile()) {
             String jarConnectionEntryName = jarConnection.getEntryName();
+            if (!jarConnectionEntryName.endsWith("/")) {
+                jarConnectionEntryName += "/";
+            }
 
             /**
              * Iterate all entries in the jar file.
@@ -178,7 +181,7 @@ public class LoadLibs {
                 /**
                  * Extract files only if they match the path.
                  */
-                if (jarEntryName.startsWith(jarConnectionEntryName + "/") || jarEntryName.startsWith(jarConnectionEntryName)) {
+                if (jarEntryName.startsWith(jarConnectionEntryName)) {
                     String filename = jarEntryName.substring(jarConnectionEntryName.length());
                     File targetFile = new File(destPath, filename);
 
@@ -189,7 +192,7 @@ public class LoadLibs {
                             try (InputStream is = jarFile.getInputStream(jarEntry);
                                     OutputStream out = FileUtils.openOutputStream(targetFile)) {
                                 IOUtils.copy(is, out);
-                            }                            
+                            }
                         }
                     }
                 }

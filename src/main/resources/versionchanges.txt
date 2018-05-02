@@ -133,6 +133,12 @@ Version 3.4.6 (25 March 2018)
 Version 3.4.7 (16 April 2018)
 - Update dependencies for Java 9 fixes
 
+Version 3.4.8 (2 May 2018)
+- Fix a path issue when extracting resources from JAR to temp directory on Windows server
+
 Version 4.0.0 (28 April 2018)
 - Upgrade to Tesseract 4.0.0-beta.1 (45bb942)
 - Update Lept4J to 1.9.3 (Leptonica 1.75.3)
+
+Version 4.0.1 (2 May 2018)
+- Fix a path issue when extracting resources from JAR to temp directory on Windows server
