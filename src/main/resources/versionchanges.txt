@@ -142,3 +142,6 @@ Version 4.0.0 (28 April 2018)
 
 Version 4.0.1 (2 May 2018)
 - Fix a path issue when extracting resources from JAR to temp directory on Windows server
+
+Version 4.0.2 (3 May 2018)
+- Replace JNA string constant Platform.RESOURCE_PREFIX
