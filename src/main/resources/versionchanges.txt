@@ -138,3 +138,5 @@ Version 3.4.8 (2 May 2018)
 
 Version 3.4.9 (3 May 2018)
 - Replace JNA string constant Platform.RESOURCE_PREFIX
+- Update jai-imageio url
+- Update Lept4J to 1.6.5
