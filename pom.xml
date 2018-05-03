@@ -224,7 +224,7 @@
         <dependency>
             <groupId>net.sourceforge.lept4j</groupId>
             <artifactId>lept4j</artifactId>
-            <version>1.9.3</version>
+            <version>1.9.4</version>
         </dependency>
         <dependency>
             <groupId>org.jboss</groupId>
