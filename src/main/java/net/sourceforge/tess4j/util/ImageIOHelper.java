@@ -274,31 +274,10 @@ public class ImageIOHelper {
      * @throws IOException
      */
     public static ByteBuffer getImageByteBuffer(RenderedImage image) throws IOException {
-        //Set up the writeParam
-        TIFFImageWriteParam tiffWriteParam = new TIFFImageWriteParam(Locale.US);
-        tiffWriteParam.setCompressionMode(ImageWriteParam.MODE_DISABLED);
-
-        //Get tif writer and set output to file
-        Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName(TIFF_FORMAT);
-
-        if (!writers.hasNext()) {
-            throw new RuntimeException(JAI_IMAGE_WRITER_MESSAGE);
-        }
-
-        ImageWriter writer = writers.next();
-
-        //Get the stream metadata
-        IIOMetadata streamMetadata = writer.getDefaultStreamMetadata(tiffWriteParam);
-
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ImageOutputStream ios = ImageIO.createImageOutputStream(outputStream);
-        writer.setOutput(ios);
-        writer.write(streamMetadata, new IIOImage(image, null, null), tiffWriteParam);
-//        writer.write(image);
-        writer.dispose();
-//        ImageIO.write(image, "tiff", ios); // this can be used in lieu of writer
-        ios.seek(0);
-        BufferedImage bi = ImageIO.read(ios);
+        File temp = File.createTempFile("tess4j", ".tiff");
+        ImageIO.write(image, "tiff", temp);
+        BufferedImage bi = ImageIO.read(temp);
+        temp.delete();
         return convertImageData(bi);
     }
 
