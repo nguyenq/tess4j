@@ -147,3 +147,7 @@ Version 4.0.2 (3 May 2018)
 - Replace JNA string constant Platform.RESOURCE_PREFIX
 - Update jai-imageio url
 - Update Lept4J to 1.9.4
+
+Version 4.0.3-SNAPSHOT (7 June 2018)
+- Update Tesseract Windows binary (51ebf8a)
+- Update Lept4J to 1.10.0
