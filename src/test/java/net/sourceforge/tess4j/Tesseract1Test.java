@@ -265,4 +265,25 @@ public class Tesseract1Test {
 
         assertTrue(result.size() > 0);
     }
+    
+        /**
+     * Test of createDocuments method with results, of class Tesseract1.
+     *
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testCreateDocumentsWithResults() throws Exception {
+        logger.info("createDocuments for an image with results");
+        File imageFile1 = new File(this.testResourcesDataPath, "eurotext.pdf");
+        File imageFile2 = new File(this.testResourcesDataPath, "eurotext.png");
+        String outputbase1 = "target/test-classes/test-results/docrenderer1-1";
+        String outputbase2 = "target/test-classes/test-results/docrenderer1-2";
+        List<RenderedFormat> formats = new ArrayList<RenderedFormat>(Arrays.asList(RenderedFormat.HOCR, RenderedFormat.PDF, RenderedFormat.TEXT));
+        Result result = instance.createDocumentsWithResult(new String[]{imageFile1.getPath(), imageFile2.getPath()}, new String[]{outputbase1, outputbase2}, formats);
+        assertTrue(new File(outputbase1 + ".pdf").exists());
+        assertNotNull(result);
+        assertTrue(result.getConfidence()!=-1);
+        assertNotNull(result.getWords());
+        assertEquals(66, result.getWords().size());
+    }
 }
