@@ -233,4 +233,16 @@ public interface ITesseract {
      * @return list of <code>Word</code>
      */
     List<Word> getWords(BufferedImage bi, int pageIteratorLevel);
+    
+        /**
+     * Creates documents and gives a result.
+     *
+     * @param filenames array of input files
+     * @param outputbases array of output filenames without extension
+     * @param formats types of renderer
+     * @return Result with mean confidence and list of words with confidence for each word.
+     * @throws TesseractException
+     */
+     Result createDocumentsWithResult(String[] filenames, String[] outputbases, List<ITesseract.RenderedFormat> formats) throws TesseractException;
+
 }
