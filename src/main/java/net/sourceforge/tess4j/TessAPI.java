@@ -1217,4 +1217,21 @@ public interface TessAPI extends Library, ITessAPI {
     String TessChoiceIteratorGetUTF8Text(TessChoiceIterator handle);
 
     float TessChoiceIteratorConfidence(TessChoiceIterator handle);
+
+    /* Progress monitor */
+    ETEXT_DESC TessMonitorCreate();
+
+    void TessMonitorDelete(ETEXT_DESC monitor);
+
+    void TessMonitorSetCancelFunc(ETEXT_DESC monitor, TessCancelFunc cancelFunc);
+
+    void TessMonitorSetCancelThis(ETEXT_DESC monitor, Pointer cancelThis);
+
+    Pointer TessMonitorGetCancelThis(ETEXT_DESC monitor);
+
+    void TessMonitorSetProgressFunc(ETEXT_DESC monitor, TessProgressFunc progressFunc);
+
+    int TessMonitorGetProgress(ETEXT_DESC monitor);
+
+    void TessMonitorSetDeadlineMSecs(ETEXT_DESC monitor, int deadline);
 }

@@ -1220,4 +1220,21 @@ public class TessAPI1 implements Library, ITessAPI {
     public static native String TessChoiceIteratorGetUTF8Text(TessChoiceIterator handle);
 
     public static native float TessChoiceIteratorConfidence(TessChoiceIterator handle);
+    
+    /* Progress monitor */
+    public static native ETEXT_DESC TessMonitorCreate();
+
+    public static native void TessMonitorDelete(ETEXT_DESC monitor);
+
+    public static native void TessMonitorSetCancelFunc(ETEXT_DESC monitor, TessCancelFunc cancelFunc);
+
+    public static native void TessMonitorSetCancelThis(ETEXT_DESC monitor, Pointer cancelThis);
+
+    public static native Pointer TessMonitorGetCancelThis(ETEXT_DESC monitor);
+
+    public static native void TessMonitorSetProgressFunc(ETEXT_DESC monitor, TessProgressFunc progressFunc);
+
+    public static native int TessMonitorGetProgress(ETEXT_DESC monitor);
+
+    public static native void TessMonitorSetDeadlineMSecs(ETEXT_DESC monitor, int deadline);
 }

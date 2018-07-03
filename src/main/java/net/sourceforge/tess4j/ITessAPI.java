@@ -50,7 +50,8 @@ public interface ITessAPI {
          */
         public static final int OEM_LSTM_ONLY = 1;
         /**
-         * Run the LSTM recognizer, but allow fallback to Tesseract when things get difficult
+         * Run the LSTM recognizer, but allow fallback to Tesseract when things
+         * get difficult
          */
         public static final int OEM_TESSERACT_LSTM_COMBINED = 2;
         /**
@@ -596,6 +597,16 @@ public interface ITessAPI {
          * @return
          */
         boolean invoke(Pointer cancel_this, int words);
+    };
+
+    public interface TessCancelFunc extends Callback {
+
+        boolean apply(Pointer cancel_this, int words);
+    };
+
+    public interface TessProgressFunc extends Callback {
+
+        boolean apply(ETEXT_DESC ths, int left, int right, int top, int bottom);
     };
 
     public static class TimeVal extends Structure {
