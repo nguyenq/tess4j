@@ -34,18 +34,16 @@ import net.sourceforge.tess4j.ITessAPI.TessPageIteratorLevel;
 
 import com.recognition.software.jdeskew.ImageDeskew;
 
+import static org.junit.Assert.*;
+import org.junit.Ignore;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Ignore;
 
 public class Tesseract1Test {
 
@@ -232,7 +230,7 @@ public class Tesseract1Test {
         BufferedImage bi = ImageIO.read(imageFile);
         List<Word> result = instance.getWords(bi, pageIteratorLevel);
 
-        // print the complete result
+        // print the complete results
         for (Word word : result) {
             logger.info(word.toString());
         }
@@ -247,7 +245,7 @@ public class Tesseract1Test {
 
     /**
      * Test of getSegmentedRegions method, of class Tesseract1.
-     * 
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -265,25 +263,24 @@ public class Tesseract1Test {
 
         assertTrue(result.size() > 0);
     }
-    
-        /**
-     * Test of createDocuments method with results, of class Tesseract1.
+
+    /**
+     * Test of createDocumentsWithResults method, of class Tesseract1.
      *
      * @throws java.lang.Exception
      */
     @Test
     public void testCreateDocumentsWithResults() throws Exception {
-        logger.info("createDocuments for an image with results");
+        logger.info("createDocumentsWithResults for multiple images at given TessPageIteratorLevel");
         File imageFile1 = new File(this.testResourcesDataPath, "eurotext.pdf");
         File imageFile2 = new File(this.testResourcesDataPath, "eurotext.png");
         String outputbase1 = "target/test-classes/test-results/docrenderer1-1";
         String outputbase2 = "target/test-classes/test-results/docrenderer1-2";
         List<RenderedFormat> formats = new ArrayList<RenderedFormat>(Arrays.asList(RenderedFormat.HOCR, RenderedFormat.PDF, RenderedFormat.TEXT));
-        Result result = instance.createDocumentsWithResult(new String[]{imageFile1.getPath(), imageFile2.getPath()}, new String[]{outputbase1, outputbase2}, formats);
+        List<OCRResult> results = instance.createDocumentsWithResults(new String[]{imageFile1.getPath(), imageFile2.getPath()}, new String[]{outputbase1, outputbase2}, formats, TessPageIteratorLevel.RIL_WORD);
         assertTrue(new File(outputbase1 + ".pdf").exists());
-        assertNotNull(result);
-        assertTrue(result.getConfidence()!=-1);
-        assertNotNull(result.getWords());
-        assertEquals(66, result.getWords().size());
+        assertEquals(2, results.size());
+        assertTrue(results.get(0).getConfidence() > 0);
+        assertEquals(66, results.get(0).getWords().size());
     }
 }

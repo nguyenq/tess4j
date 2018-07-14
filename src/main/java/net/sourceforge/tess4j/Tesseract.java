@@ -73,7 +73,7 @@ public class Tesseract implements ITesseract {
     private TessBaseAPI handle;
 
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(new LoggHelper().toString());
-    
+
     public Tesseract() {
         try {
             datapath = System.getenv("TESSDATA_PREFIX");
@@ -82,7 +82,7 @@ public class Tesseract implements ITesseract {
         } finally {
             if (datapath == null) {
                 datapath = "./";
-            }            
+            }
         }
     }
 
@@ -538,7 +538,7 @@ public class Tesseract implements ITesseract {
                     api.TessDeleteResultRenderer(renderer);
                 } catch (Exception e) {
                     // skip the problematic image file
-                    logger.error(e.getMessage(), e);
+                    logger.warn(e.getMessage(), e);
                 } finally {
                     if (workingTiffFile != null && workingTiffFile.exists()) {
                         workingTiffFile.delete();
@@ -555,6 +555,7 @@ public class Tesseract implements ITesseract {
      *
      * @param filename input file
      * @param renderer renderer
+     * @return the average text confidence for Tesseract page result
      * @throws TesseractException
      */
     private int createDocuments(String filename, TessResultRenderer renderer) throws TesseractException {
@@ -564,6 +565,7 @@ public class Tesseract implements ITesseract {
         if (result == ITessAPI.FALSE) {
             throw new TesseractException("Error during processing page.");
         }
+
         return api.TessBaseAPIMeanTextConf(handle);
     }
 
@@ -605,7 +607,7 @@ public class Tesseract implements ITesseract {
             return list;
         } catch (IOException ioe) {
             // skip the problematic image
-            logger.error(ioe.getMessage(), ioe);
+            logger.warn(ioe.getMessage(), ioe);
             throw new TesseractException(ioe);
         } finally {
             dispose();
@@ -651,32 +653,34 @@ public class Tesseract implements ITesseract {
                 Word word = new Word(text, confidence, new Rectangle(left, top, right - left, bottom - top));
                 words.add(word);
             } while (api.TessPageIteratorNext(pi, pageIteratorLevel) == TRUE);
-
-            return words;
         } catch (Exception e) {
-            return words;
+            logger.warn(e.getMessage(), e);
         } finally {
             dispose();
         }
+
+        return words;
     }
 
     /**
-     * Creates documents and gives a result.
+     * Creates documents with OCR results.
      *
      * @param filenames array of input files
      * @param outputbases array of output filenames without extension
      * @param formats types of renderer
-     * @return Result with mean confidence and list of words with confidence for each word.
+     * @return OCR results
      * @throws TesseractException
      */
-    public Result createDocumentsWithResult(String[] filenames, String[] outputbases, List<ITesseract.RenderedFormat> formats) throws TesseractException {
+    @Override
+    public List<OCRResult> createDocumentsWithResults(String[] filenames, String[] outputbases, List<ITesseract.RenderedFormat> formats, int pageIteratorLevel) throws TesseractException {
         if (filenames.length != outputbases.length) {
             throw new RuntimeException("The two arrays must match in length.");
         }
 
         init();
         setTessVariables();
-        Result returnInfo = new Result(-1, null);
+
+        List<OCRResult> results = new ArrayList<OCRResult>();
 
         try {
             for (int i = 0; i < filenames.length; i++) {
@@ -691,14 +695,11 @@ public class Tesseract implements ITesseract {
                     }
 
                     TessResultRenderer renderer = createRenderers(outputbases[i], formats);
-                    int conf =  createDocuments(filename, renderer);
-                    int pageIteratorLevel = ITessAPI.TessPageIteratorLevel.RIL_WORD;
-                    returnInfo = new Result(conf, getCurrentWords(pageIteratorLevel));
-
+                    results.add(new OCRResult(createDocuments(filename, renderer), getRecognizedWords(pageIteratorLevel)));
                     api.TessDeleteResultRenderer(renderer);
                 } catch (Exception e) {
                     // skip the problematic image file
-                    logger.error(e.getMessage(), e);
+                    logger.warn(e.getMessage(), e);
                 } finally {
                     if (workingTiffFile != null && workingTiffFile.exists()) {
                         workingTiffFile.delete();
@@ -708,16 +709,17 @@ public class Tesseract implements ITesseract {
         } finally {
             dispose();
         }
-        return returnInfo;
+
+        return results;
     }
 
     /**
-     * Gets recognized words at specified page iterator level for a page already loaded.
+     * Gets result words at specified page iterator level from recognized pages.
      *
      * @param pageIteratorLevel TessPageIteratorLevel enum
      * @return list of <code>Word</code>
      */
-    private List<Word> getCurrentWords(int pageIteratorLevel) {
+    private List<Word> getRecognizedWords(int pageIteratorLevel) {
         List<Word> words = new ArrayList<Word>();
 
         try {
@@ -742,11 +744,11 @@ public class Tesseract implements ITesseract {
                 Word word = new Word(text, confidence, new Rectangle(left, top, right - left, bottom - top));
                 words.add(word);
             } while (api.TessPageIteratorNext(pi, pageIteratorLevel) == TRUE);
-
-            return words;
         } catch (Exception e) {
-            return words;
+            logger.warn(e.getMessage(), e);
         }
+
+        return words;
     }
 
     /**
