@@ -671,7 +671,9 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
                     }
 
                     TessResultRenderer renderer = createRenderers(outputbases[i], formats);
-                    results.add(new OCRResult(createDocuments(filename, renderer), getRecognizedWords(pageIteratorLevel)));
+                    int meanTextConfidence = createDocuments(filename, renderer);
+                    List<Word> words = meanTextConfidence > 0 ? getRecognizedWords(pageIteratorLevel) : new ArrayList<Word>();
+                    results.add(new OCRResult(meanTextConfidence, words));
                     TessDeleteResultRenderer(renderer);
                 } catch (Exception e) {
                     // skip the problematic image file
