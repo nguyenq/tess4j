@@ -557,13 +557,14 @@ public class Tesseract implements ITesseract {
      * @param renderer renderer
      * @throws TesseractException
      */
-    private void createDocuments(String filename, TessResultRenderer renderer) throws TesseractException {
+    private int createDocuments(String filename, TessResultRenderer renderer) throws TesseractException {
         api.TessBaseAPISetInputName(handle, filename); //for reading a UNLV zone file
         int result = api.TessBaseAPIProcessPages(handle, filename, null, 0, renderer);
 
         if (result == ITessAPI.FALSE) {
             throw new TesseractException("Error during processing page.");
         }
+        return api.TessBaseAPIMeanTextConf(handle);
     }
 
     /**
@@ -656,6 +657,95 @@ public class Tesseract implements ITesseract {
             return words;
         } finally {
             dispose();
+        }
+    }
+
+    /**
+     * Creates documents and gives a result.
+     *
+     * @param filenames array of input files
+     * @param outputbases array of output filenames without extension
+     * @param formats types of renderer
+     * @return Result with mean confidence and list of words with confidence for each word.
+     * @throws TesseractException
+     */
+    public Result createDocumentsWithResult(String[] filenames, String[] outputbases, List<ITesseract.RenderedFormat> formats) throws TesseractException {
+        if (filenames.length != outputbases.length) {
+            throw new RuntimeException("The two arrays must match in length.");
+        }
+
+        init();
+        setTessVariables();
+        Result returnInfo = new Result(-1, null);
+
+        try {
+            for (int i = 0; i < filenames.length; i++) {
+                File workingTiffFile = null;
+                try {
+                    String filename = filenames[i];
+
+                    // if PDF, convert to multi-page TIFF
+                    if (filename.toLowerCase().endsWith(".pdf")) {
+                        workingTiffFile = PdfUtilities.convertPdf2Tiff(new File(filename));
+                        filename = workingTiffFile.getPath();
+                    }
+
+                    TessResultRenderer renderer = createRenderers(outputbases[i], formats);
+                    int conf =  createDocuments(filename, renderer);
+                    int pageIteratorLevel = ITessAPI.TessPageIteratorLevel.RIL_WORD;
+                    returnInfo = new Result(conf, getCurrentWords(pageIteratorLevel));
+
+                    api.TessDeleteResultRenderer(renderer);
+                } catch (Exception e) {
+                    // skip the problematic image file
+                    logger.error(e.getMessage(), e);
+                } finally {
+                    if (workingTiffFile != null && workingTiffFile.exists()) {
+                        workingTiffFile.delete();
+                    }
+                }
+            }
+        } finally {
+            dispose();
+        }
+        return returnInfo;
+    }
+
+    /**
+     * Gets recognized words at specified page iterator level for a page already loaded.
+     *
+     * @param pageIteratorLevel TessPageIteratorLevel enum
+     * @return list of <code>Word</code>
+     */
+    private List<Word> getCurrentWords(int pageIteratorLevel) {
+        List<Word> words = new ArrayList<Word>();
+
+        try {
+            TessResultIterator ri = api.TessBaseAPIGetIterator(handle);
+            TessPageIterator pi = api.TessResultIteratorGetPageIterator(ri);
+            api.TessPageIteratorBegin(pi);
+
+            do {
+                Pointer ptr = api.TessResultIteratorGetUTF8Text(ri, pageIteratorLevel);
+                String text = ptr.getString(0);
+                api.TessDeleteText(ptr);
+                float confidence = api.TessResultIteratorConfidence(ri, pageIteratorLevel);
+                IntBuffer leftB = IntBuffer.allocate(1);
+                IntBuffer topB = IntBuffer.allocate(1);
+                IntBuffer rightB = IntBuffer.allocate(1);
+                IntBuffer bottomB = IntBuffer.allocate(1);
+                api.TessPageIteratorBoundingBox(pi, pageIteratorLevel, leftB, topB, rightB, bottomB);
+                int left = leftB.get();
+                int top = topB.get();
+                int right = rightB.get();
+                int bottom = bottomB.get();
+                Word word = new Word(text, confidence, new Rectangle(left, top, right - left, bottom - top));
+                words.add(word);
+            } while (api.TessPageIteratorNext(pi, pageIteratorLevel) == TRUE);
+
+            return words;
+        } catch (Exception e) {
+            return words;
         }
     }
 
