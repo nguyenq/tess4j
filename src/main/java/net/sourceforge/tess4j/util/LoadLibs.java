@@ -53,14 +53,17 @@ public class LoadLibs {
     /**
      * Native library name.
      */
-    public static final String LIB_NAME = "libtesseract304";
+    public static final String LIB_NAME = "libtesseract400";
     public static final String LIB_NAME_NON_WIN = "tesseract";
 
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(new LoggHelper().toString());
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(new LoggHelper().toString());
 
     static {
         System.setProperty("jna.encoding", "UTF8");
-        File targetTempFolder = extractTessResources(Platform.RESOURCE_PREFIX);
+        String model = System.getProperty("sun.arch.data.model",
+                                          System.getProperty("com.ibm.vm.bitmode"));
+        String resourcePrefix = "32".equals(model) ? "win32-x86" : "win32-x86-64";
+        File targetTempFolder = extractTessResources(resourcePrefix);
         if (targetTempFolder != null && targetTempFolder.exists()) {
             String userCustomizedPath = System.getProperty(JNA_LIBRARY_PATH);
             if (null == userCustomizedPath || userCustomizedPath.isEmpty()) {
@@ -109,7 +112,7 @@ public class LoadLibs {
                 copyResources(resourceUrl, targetPath);
             }
         } catch (IOException | URISyntaxException e) {
-            LOGGER.warn(e.getMessage(), e);
+            logger.warn(e.getMessage(), e);
         }
 
         return targetPath;
@@ -121,7 +124,6 @@ public class LoadLibs {
      * @param resourceUrl
      * @param targetPath
      * @return
-     * @throws URISyntaxException
      */
     static void copyResources(URL resourceUrl, File targetPath) throws IOException, URISyntaxException {
         if (resourceUrl == null) {
@@ -141,13 +143,75 @@ public class LoadLibs {
         } else {
             File file = new File(resourceUrl.getPath());
             if (file.isDirectory()) {
-                FileUtils.copyDirectory(file, targetPath);
+                for (File resourceFile : FileUtils.listFiles(file, null, true)) {
+                    int index = resourceFile.getPath().lastIndexOf(targetPath.getName()) + targetPath.getName().length();
+                    File targetFile = new File(targetPath, resourceFile.getPath().substring(index));
+                    if (!targetFile.exists() || targetFile.length() != resourceFile.length()) {
+                        if (resourceFile.isFile()) {
+                            FileUtils.copyFile(resourceFile, targetFile);
+                        }
+                    }
+                }
             } else {
-                FileUtils.copyFile(file, targetPath);
+                if (!targetPath.exists() || targetPath.length() != file.length()) {
+                    FileUtils.copyFile(file, targetPath);
+                }
             }
         }
     }
 
+    /**
+     * Copies resources from the jar file of the current thread and extract it
+     * to the destination path.
+     *
+     * @param jarConnection
+     * @param destPath destination file or directory
+     */
+    static void copyJarResourceToPath(JarURLConnection jarConnection, File destPath) {
+        try (JarFile jarFile = jarConnection.getJarFile()) {
+            String jarConnectionEntryName = jarConnection.getEntryName();
+            if (!jarConnectionEntryName.endsWith("/")) {
+                jarConnectionEntryName += "/";
+            }
+
+            /**
+             * Iterate all entries in the jar file.
+             */
+            for (Enumeration<JarEntry> e = jarFile.entries(); e.hasMoreElements();) {
+                JarEntry jarEntry = e.nextElement();
+                String jarEntryName = jarEntry.getName();
+
+                /**
+                 * Extract files only if they match the path.
+                 */
+                if (jarEntryName.startsWith(jarConnectionEntryName)) {
+                    String filename = jarEntryName.substring(jarConnectionEntryName.length());
+                    File targetFile = new File(destPath, filename);
+
+                    if (jarEntry.isDirectory()) {
+                        targetFile.mkdirs();
+                    } else {
+                        if (!targetFile.exists() || targetFile.length() != jarEntry.getSize()) {
+                            try (InputStream is = jarFile.getInputStream(jarEntry);
+                                    OutputStream out = FileUtils.openOutputStream(targetFile)) {
+                                IOUtils.copy(is, out);
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            logger.warn(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Copies resources from WAR to target folder.
+     *
+     * @param virtualFileOrFolder
+     * @param targetFolder
+     * @throws IOException
+     */
     static void copyFromWarToFolder(VirtualFile virtualFileOrFolder, File targetFolder) throws IOException {
         if (virtualFileOrFolder.isDirectory() && !virtualFileOrFolder.getName().contains(".")) {
             if (targetFolder.getName().equalsIgnoreCase(virtualFileOrFolder.getName())) {
@@ -162,49 +226,10 @@ public class LoadLibs {
                 }
             }
         } else {
-            FileUtils.copyURLToFile(virtualFileOrFolder.asFileURL(),
-                    new File(targetFolder, virtualFileOrFolder.getName()));
-        }
-    }
-
-    /**
-     * Copies resources from the jar file of the current thread and extract it
-     * to the destination path.
-     *
-     * @param jarConnection
-     * @param destPath destination file or directory
-     */
-    static void copyJarResourceToPath(JarURLConnection jarConnection, File destPath) {
-        try (JarFile jarFile = jarConnection.getJarFile();) {
-            String jarConnectionEntryName = jarConnection.getEntryName();
-
-            /**
-             * Iterate all entries in the jar file.
-             */
-            for (Enumeration<JarEntry> e = jarFile.entries(); e.hasMoreElements();) {
-                JarEntry jarEntry = e.nextElement();
-                String jarEntryName = jarEntry.getName();
-
-                /**
-                 * Extract files only if they match the path.
-                 */
-                if (jarEntryName.startsWith(jarConnectionEntryName + "/")) {
-                    String filename = jarEntryName.substring(jarConnectionEntryName.length());
-                    File currentFile = new File(destPath, filename);
-
-                    if (jarEntry.isDirectory()) {
-                        currentFile.mkdirs();
-                    } else {
-                        currentFile.deleteOnExit();
-                        try (InputStream is = jarFile.getInputStream(jarEntry);
-                                OutputStream out = FileUtils.openOutputStream(currentFile)) {
-                            IOUtils.copy(is, out);
-                        }
-                    }
-                }
+            File targetFile = new File(targetFolder, virtualFileOrFolder.getName());
+            if (!targetFile.exists() || targetFile.length() != virtualFileOrFolder.getSize()) {
+                FileUtils.copyURLToFile(virtualFileOrFolder.asFileURL(), targetFile);
             }
-        } catch (IOException e) {
-            LOGGER.warn(e.getMessage(), e);
         }
     }
 }

@@ -22,10 +22,9 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-
 import net.sourceforge.tess4j.util.LoadLibs;
-
 import net.sourceforge.tess4j.util.LoggHelper;
+
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,11 +35,9 @@ public class TestFolderExtraction {
 
     @Test
     public void testFolderExtraction() {
-
         File tessDataFolder = null;
         
         try {
-
             /**
              * Loads the image from resources.
              */
@@ -61,7 +58,7 @@ public class TestFolderExtraction {
             
             if (tessDataFolder != null) {
                 logger.info(tessDataFolder.getAbsolutePath());
-                instance.setDatapath(tessDataFolder.getAbsolutePath());
+                instance.setDatapath(tessDataFolder.getPath());
             }
 
             /**
@@ -69,7 +66,6 @@ public class TestFolderExtraction {
              */
             String result = instance.doOCR(imageFile);
             logger.info(result);
-
         } catch (TesseractException e) {
             logger.error(e.getMessage());
             logger.error(e.getMessage(), e);
@@ -80,5 +76,4 @@ public class TestFolderExtraction {
         // checks if tessdata folder exists
         assertTrue(tessDataFolder != null && tessDataFolder.exists());
     }
-
 }

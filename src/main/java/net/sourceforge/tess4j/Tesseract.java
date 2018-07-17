@@ -46,6 +46,9 @@ import com.sun.jna.ptr.PointerByReference;
 import net.sourceforge.lept4j.Box;
 import net.sourceforge.lept4j.Boxa;
 import net.sourceforge.lept4j.Leptonica;
+import static net.sourceforge.tess4j.ITessAPI.FALSE;
+import static net.sourceforge.tess4j.ITessAPI.TRUE;
+
 import net.sourceforge.tess4j.ITessAPI.TessBaseAPI;
 import net.sourceforge.tess4j.ITessAPI.TessOcrEngineMode;
 import net.sourceforge.tess4j.ITessAPI.TessPageIterator;
@@ -73,9 +76,8 @@ import net.sourceforge.tess4j.util.PdfUtilities;
  */
 public class Tesseract implements ITesseract {
 
-    private static Tesseract instance;
     private String language = "eng";
-    private String datapath = "./";
+    private String datapath;
     private RenderedFormat renderedFormat = RenderedFormat.TEXT;
     private int psm = -1;
     private int ocrEngineMode = TessOcrEngineMode.OEM_DEFAULT;
@@ -86,6 +88,18 @@ public class Tesseract implements ITesseract {
     private TessBaseAPI handle;
 
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(new LoggHelper().toString());
+
+    public Tesseract() {
+        try {
+            datapath = System.getenv("TESSDATA_PREFIX");
+        } catch (Exception e) {
+            // ignore
+        } finally {
+            if (datapath == null) {
+                datapath = "./";
+            }
+        }
+    }
 
     /**
      * Returns TessAPI object.
@@ -103,21 +117,6 @@ public class Tesseract implements ITesseract {
      */
     protected TessBaseAPI getHandle() {
         return handle;
-    }
-
-    /**
-     * Gets an instance of the class library.
-     *
-     * @deprecated As of Release 2.0, use default constructor instead.
-     * @return instance
-     */
-    @Deprecated
-    public static synchronized Tesseract getInstance() {
-        if (instance == null) {
-            instance = new Tesseract();
-        }
-
-        return instance;
     }
 
     /**
@@ -496,10 +495,11 @@ public class Tesseract implements ITesseract {
                     break;
                 case PDF:
                     String dataPath = api.TessBaseAPIGetDatapath(handle);
+                    boolean textonly = String.valueOf(TRUE).equals(prop.getProperty("textonly_pdf"));
                     if (renderer == null) {
-                        renderer = api.TessPDFRendererCreate(outputbase, dataPath);
+                        renderer = api.TessPDFRendererCreate(outputbase, dataPath, textonly ? TRUE : FALSE);
                     } else {
-                        api.TessResultRendererInsert(renderer, api.TessPDFRendererCreate(outputbase, dataPath));
+                        api.TessResultRendererInsert(renderer, api.TessPDFRendererCreate(outputbase, dataPath, textonly ? TRUE : FALSE));
                     }
                     break;
                 case BOX:
@@ -569,7 +569,7 @@ public class Tesseract implements ITesseract {
                     api.TessDeleteResultRenderer(renderer);
                 } catch (Exception e) {
                     // skip the problematic image file
-                    logger.error(e.getMessage(), e);
+                    logger.warn(e.getMessage(), e);
                 } finally {
                     if (workingTiffFile != null && workingTiffFile.exists()) {
                         workingTiffFile.delete();
@@ -586,15 +586,18 @@ public class Tesseract implements ITesseract {
      *
      * @param filename input file
      * @param renderer renderer
+     * @return the average text confidence for Tesseract page result
      * @throws TesseractException
      */
-    private void createDocuments(String filename, TessResultRenderer renderer) throws TesseractException {
+    private int createDocuments(String filename, TessResultRenderer renderer) throws TesseractException {
         api.TessBaseAPISetInputName(handle, filename); //for reading a UNLV zone file
         int result = api.TessBaseAPIProcessPages(handle, filename, null, 0, renderer);
 
         if (result == ITessAPI.FALSE) {
             throw new TesseractException("Error during processing page.");
         }
+
+        return api.TessBaseAPIMeanTextConf(handle);
     }
 
     /**
@@ -635,7 +638,7 @@ public class Tesseract implements ITesseract {
             return list;
         } catch (IOException ioe) {
             // skip the problematic image
-            logger.error(ioe.getMessage(), ioe);
+            logger.warn(ioe.getMessage(), ioe);
             throw new TesseractException(ioe);
         } finally {
             dispose();
@@ -681,13 +684,104 @@ public class Tesseract implements ITesseract {
                 Word word = new Word(text, confidence, new Rectangle(left, top, right - left, bottom - top));
                 words.add(word);
             } while (api.TessPageIteratorNext(pi, pageIteratorLevel) == TRUE);
-
-            return words;
         } catch (Exception e) {
-            return words;
+            logger.warn(e.getMessage(), e);
         } finally {
             dispose();
         }
+
+        return words;
+    }
+
+    /**
+     * Creates documents with OCR results.
+     *
+     * @param filenames array of input files
+     * @param outputbases array of output filenames without extension
+     * @param formats types of renderer
+     * @return OCR results
+     * @throws TesseractException
+     */
+    @Override
+    public List<OCRResult> createDocumentsWithResults(String[] filenames, String[] outputbases, List<ITesseract.RenderedFormat> formats, int pageIteratorLevel) throws TesseractException {
+        if (filenames.length != outputbases.length) {
+            throw new RuntimeException("The two arrays must match in length.");
+        }
+
+        init();
+        setTessVariables();
+
+        List<OCRResult> results = new ArrayList<OCRResult>();
+
+        try {
+            for (int i = 0; i < filenames.length; i++) {
+                File workingTiffFile = null;
+                try {
+                    String filename = filenames[i];
+
+                    // if PDF, convert to multi-page TIFF
+                    if (filename.toLowerCase().endsWith(".pdf")) {
+                        workingTiffFile = PdfUtilities.convertPdf2Tiff(new File(filename));
+                        filename = workingTiffFile.getPath();
+                    }
+
+                    TessResultRenderer renderer = createRenderers(outputbases[i], formats);
+                    int meanTextConfidence = createDocuments(filename, renderer);
+                    List<Word> words = meanTextConfidence > 0 ? getRecognizedWords(pageIteratorLevel) : new ArrayList<Word>();
+                    results.add(new OCRResult(meanTextConfidence, words));
+                    api.TessDeleteResultRenderer(renderer);
+                } catch (Exception e) {
+                    // skip the problematic image file
+                    logger.warn(e.getMessage(), e);
+                } finally {
+                    if (workingTiffFile != null && workingTiffFile.exists()) {
+                        workingTiffFile.delete();
+                    }
+                }
+            }
+        } finally {
+            dispose();
+        }
+
+        return results;
+    }
+
+    /**
+     * Gets result words at specified page iterator level from recognized pages.
+     *
+     * @param pageIteratorLevel TessPageIteratorLevel enum
+     * @return list of <code>Word</code>
+     */
+    private List<Word> getRecognizedWords(int pageIteratorLevel) {
+        List<Word> words = new ArrayList<Word>();
+
+        try {
+            TessResultIterator ri = api.TessBaseAPIGetIterator(handle);
+            TessPageIterator pi = api.TessResultIteratorGetPageIterator(ri);
+            api.TessPageIteratorBegin(pi);
+
+            do {
+                Pointer ptr = api.TessResultIteratorGetUTF8Text(ri, pageIteratorLevel);
+                String text = ptr.getString(0);
+                api.TessDeleteText(ptr);
+                float confidence = api.TessResultIteratorConfidence(ri, pageIteratorLevel);
+                IntBuffer leftB = IntBuffer.allocate(1);
+                IntBuffer topB = IntBuffer.allocate(1);
+                IntBuffer rightB = IntBuffer.allocate(1);
+                IntBuffer bottomB = IntBuffer.allocate(1);
+                api.TessPageIteratorBoundingBox(pi, pageIteratorLevel, leftB, topB, rightB, bottomB);
+                int left = leftB.get();
+                int top = topB.get();
+                int right = rightB.get();
+                int bottom = bottomB.get();
+                Word word = new Word(text, confidence, new Rectangle(left, top, right - left, bottom - top));
+                words.add(word);
+            } while (api.TessPageIteratorNext(pi, pageIteratorLevel) == TRUE);
+        } catch (Exception e) {
+            logger.warn(e.getMessage(), e);
+        }
+
+        return words;
     }
 
     /**

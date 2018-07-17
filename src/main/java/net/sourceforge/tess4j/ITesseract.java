@@ -216,6 +216,18 @@ public interface ITesseract {
     void createDocuments(String[] filenames, String[] outputbases, List<RenderedFormat> formats) throws TesseractException;
 
     /**
+     * Creates documents with OCR results.
+     *
+     * @param filenames array of input files
+     * @param outputbases array of output filenames without extension
+     * @param formats types of renderer
+     * @param pageIteratorLevel TessPageIteratorLevel enum
+     * @return OCR results
+     * @throws TesseractException
+     */
+    List<OCRResult> createDocumentsWithResults(String[] filenames, String[] outputbases, List<ITesseract.RenderedFormat> formats, int pageIteratorLevel) throws TesseractException;
+
+    /**
      * Gets segmented regions at specified page iterator level.
      *
      * @param bi input image
@@ -224,10 +236,10 @@ public interface ITesseract {
      * @throws TesseractException
      */
     List<Rectangle> getSegmentedRegions(BufferedImage bi, int pageIteratorLevel) throws TesseractException;
-    
+
     /**
      * Gets recognized words at specified page iterator level.
-     * 
+     *
      * @param bi input image
      * @param pageIteratorLevel TessPageIteratorLevel enum
      * @return list of <code>Word</code>

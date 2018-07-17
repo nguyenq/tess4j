@@ -83,3 +83,71 @@ Version 3.2 (15 May 2016)
 Version 3.2.1 (29 May 2016)
 - Properly release Box and Boxa resources
 - Update Lept4J to 1.2.3
+
+Version 3.2.2 (16 February 2017)
+- Update GhostScript to 9.20
+- Fix possible NPE with PDF-related codes
+- Update dependencies
+- Additional image utility methods
+
+Version 3.3.0 (16 February 2017)
+- Upgrade to Tesseract 3.05 (2ca5d0a)
+- Update Lept4J to 1.3.0 (Leptonica 1.74.1)
+
+Version 3.3.1 (23 March 2017)
+- Update Lept4J to 1.3.1
+- Update other dependencies
+
+Version 3.4.0 (1 June 2017)
+- Upgrade to Tesseract 3.05.01 (2158661)
+- Update Lept4J to 1.4.0
+- Add support for jboss-vfs protocol
+
+Version 3.4.1 (22 September 2017)
+- Not extract/copy native resource if it exists and has same file size
+- Update Tesseract 3.05.01 (e2e79c4); link against Leptonica 1.74.4
+- Update Lept4J to 1.6.1
+
+Version 3.4.2 (14 November 2017)
+- Update Lept4J to 1.6.2
+- Update GhostScript to 9.22
+- Improve handling of PDF files in multi-threaded environment
+- Lift limits on number of pages in PDF
+- Use TESSDATA_PREFIX environment variable by default, if defined
+
+Version 3.4.3 (14 January 2018)
+- Not extract/copy resource if it exists and has same file size
+
+Version 3.4.4 (22 February 2018)
+- Exclude logback.xml from JAR
+- Add image rotate and deskew methods
+- Update Lept4J to 1.6.3
+
+Version 3.4.5 (21 March 2018)
+- Remove GS DLL due to license incompatibility
+- Use PDFBox
+
+Version 3.4.6 (25 March 2018)
+- Update PDFBox dependencies
+
+Version 3.4.7 (16 April 2018)
+- Update dependencies for Java 9 fixes
+
+Version 3.4.8 (2 May 2018)
+- Fix a path issue when extracting resources from JAR to temp directory on Windows server
+
+Version 4.0.0 (28 April 2018)
+- Upgrade to Tesseract 4.0.0-beta.1 (45bb942)
+- Update Lept4J to 1.9.3 (Leptonica 1.75.3)
+
+Version 4.0.1 (2 May 2018)
+- Fix a path issue when extracting resources from JAR to temp directory on Windows server
+
+Version 4.0.2 (3 May 2018)
+- Replace JNA string constant Platform.RESOURCE_PREFIX
+- Update jai-imageio url
+- Update Lept4J to 1.9.4
+
+Version 4.1.0 (14 July 2018)
+- Upgrade to Tesseract 4.0.0-beta.3 (b502bbf)
+- Update Lept4J to 1.10.0

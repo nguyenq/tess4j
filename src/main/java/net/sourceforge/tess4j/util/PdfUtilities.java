@@ -15,24 +15,19 @@
  */
 package net.sourceforge.tess4j.util;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
 
-import org.ghost4j.Ghostscript;
-import org.ghost4j.GhostscriptException;
-import org.slf4j.LoggerFactory;
-
+/**
+ * PDF utilities based on Ghostscript or PDFBox with Ghostscript as default. If
+ * Ghostscript is not available on the system, then PDFBox is used. Call
+ * <code>System.setProperty(PDF_LIBRARY, PDFBOX);</code> to set PDFBox as
+ * default.
+ */
 public class PdfUtilities {
 
-    public static final String GS_INSTALL = "\nPlease download, install GPL Ghostscript from http://www.ghostscript.com\nand/or set the appropriate environment variable.";
-
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(new LoggHelper().toString());
+    public static final String PDF_LIBRARY = "pdf.library";
+    public static final String PDFBOX = "pdfbox";
 
     /**
      * Converts PDF to TIFF format.
@@ -42,25 +37,14 @@ public class PdfUtilities {
      * @throws IOException
      */
     public static File convertPdf2Tiff(File inputPdfFile) throws IOException {
-        File[] pngFiles = null;
-
-        try {
-            pngFiles = convertPdf2Png(inputPdfFile);
-            File tiffFile = File.createTempFile("multipage", ".tif");
-
-            // put PNG images into a single multi-page TIFF image for return
-            ImageIOHelper.mergeTiff(pngFiles, tiffFile);
-            return tiffFile;
-        } catch (UnsatisfiedLinkError ule) {
-            throw new RuntimeException(getMessage(ule.getMessage()));
-        } catch (NoClassDefFoundError ncdfe) {
-            throw new RuntimeException(getMessage(ncdfe.getMessage()));
-        } finally {
-            if (pngFiles != null) {
-                // delete temporary PNG images
-                for (File tempFile : pngFiles) {
-                    tempFile.delete();
-                }
+        if (PDFBOX.equals(System.getProperty(PDF_LIBRARY))) {
+            return PdfBoxUtilities.convertPdf2Tiff(inputPdfFile);
+        } else {
+            try {
+                return PdfGsUtilities.convertPdf2Tiff(inputPdfFile);
+            } catch (Exception e) {
+                System.setProperty(PDF_LIBRARY, PDFBOX);
+                return convertPdf2Tiff(inputPdfFile);
             }
         }
     }
@@ -70,67 +54,19 @@ public class PdfUtilities {
      *
      * @param inputPdfFile input file
      * @return an array of PNG images
+     * @throws java.io.IOException
      */
-    public static File[] convertPdf2Png(File inputPdfFile) {
-        File imageDir = inputPdfFile.getParentFile();
-
-        if (imageDir == null) {
-            String userDir = System.getProperty("user.dir");
-            imageDir = new File(userDir);
-        }
-
-        //get Ghostscript instance
-        Ghostscript gs = Ghostscript.getInstance();
-
-        //prepare Ghostscript interpreter parameters
-        //refer to Ghostscript documentation for parameter usage
-        List<String> gsArgs = new ArrayList<String>();
-        gsArgs.add("-gs");
-        gsArgs.add("-dNOPAUSE");
-        gsArgs.add("-dQUIET");
-        gsArgs.add("-dBATCH");
-        gsArgs.add("-dSAFER");
-        gsArgs.add("-sDEVICE=pnggray");
-        gsArgs.add("-r300");
-        gsArgs.add("-dGraphicsAlphaBits=4");
-        gsArgs.add("-dTextAlphaBits=4");
-        gsArgs.add("-sOutputFile=" + imageDir.getPath() + "/workingimage%03d.png");
-        gsArgs.add(inputPdfFile.getPath());
-
-        //execute and exit interpreter
-        try {
-            synchronized (gs) {
-                gs.initialize(gsArgs.toArray(new String[0]));
-                gs.exit();
-            }
-        } catch (GhostscriptException e) {
-            logger.error(e.getCause() != null ? e.getCause().toString() : e.getMessage(), e);
-        } finally {
-            //delete interpreter instance (safer)
+    public static File[] convertPdf2Png(File inputPdfFile) throws IOException {
+        if (PDFBOX.equals(System.getProperty(PDF_LIBRARY))) {
+            return PdfBoxUtilities.convertPdf2Png(inputPdfFile);
+        } else {
             try {
-                Ghostscript.deleteInstance();
-            } catch (GhostscriptException e) {
-                //nothing
+                return PdfGsUtilities.convertPdf2Png(inputPdfFile);
+            } catch (Exception e) {
+                System.setProperty(PDF_LIBRARY, PDFBOX);
+                return convertPdf2Png(inputPdfFile);
             }
         }
-
-        // find working files
-        File[] workingFiles = imageDir.listFiles(new FilenameFilter() {
-
-            @Override
-            public boolean accept(File dir, String name) {
-                return name.toLowerCase().matches("workingimage\\d{3}\\.png$");
-            }
-        });
-
-        Arrays.sort(workingFiles, new Comparator<File>() {
-            @Override
-            public int compare(File f1, File f2) {
-                return f1.getName().compareTo(f2.getName());
-            }
-        });
-
-        return workingFiles;
     }
 
     /**
@@ -163,59 +99,15 @@ public class PdfUtilities {
      * @param lastPage end page
      */
     public static void splitPdf(File inputPdfFile, File outputPdfFile, int firstPage, int lastPage) {
-        //get Ghostscript instance
-        Ghostscript gs = Ghostscript.getInstance();
-
-        //prepare Ghostscript interpreter parameters
-        //refer to Ghostscript documentation for parameter usage
-        //gs -sDEVICE=pdfwrite -dNOPAUSE -dQUIET -dBATCH -dFirstPage=m -dLastPage=n -sOutputFile=out.pdf in.pdf
-        List<String> gsArgs = new ArrayList<String>();
-        gsArgs.add("-gs");
-        gsArgs.add("-dNOPAUSE");
-        gsArgs.add("-dQUIET");
-        gsArgs.add("-dBATCH");
-        gsArgs.add("-sDEVICE=pdfwrite");
-        if (firstPage > 0) {
-            gsArgs.add("-dFirstPage=" + firstPage);
-        }
-        if (lastPage > 0) {
-            gsArgs.add("-dLastPage=" + lastPage);
-        }
-        gsArgs.add("-sOutputFile=" + outputPdfFile.getPath());
-        gsArgs.add(inputPdfFile.getPath());
-
-        //execute and exit interpreter
-        try {
-            synchronized (gs) {
-                gs.initialize(gsArgs.toArray(new String[0]));
-                gs.exit();
-            }
-        } catch (GhostscriptException e) {
-            logger.error(e.getCause() != null ? e.getCause().toString() : e.getMessage(), e);
-            throw new RuntimeException(e.getMessage());
-        } catch (UnsatisfiedLinkError ule) {
-            throw new RuntimeException(getMessage(ule.getMessage()));
-        } catch (NoClassDefFoundError ncdfe) {
-            throw new RuntimeException(getMessage(ncdfe.getMessage()));
-        } finally {
-            //delete interpreter instance (safer)
-            try {
-                Ghostscript.deleteInstance();
-            } catch (GhostscriptException e) {
-                //nothing
-            }
-        }
-    }
-
-    private static final String PS_FILE = "lib/pdfpagecount.ps";
-    private static final String pdfPageCountFilePath;
-
-    static {
-        File postscriptFile = LoadLibs.extractTessResources(PS_FILE);
-        if (postscriptFile != null && postscriptFile.exists()) {
-            pdfPageCountFilePath = postscriptFile.getPath();
+        if (PDFBOX.equals(System.getProperty(PDF_LIBRARY))) {
+            PdfBoxUtilities.splitPdf(inputPdfFile, outputPdfFile, firstPage, lastPage);
         } else {
-            pdfPageCountFilePath = PS_FILE;
+            try {
+                PdfGsUtilities.splitPdf(inputPdfFile, outputPdfFile, firstPage, lastPage);
+            } catch (Exception e) {
+                System.setProperty(PDF_LIBRARY, PDFBOX);
+                splitPdf(inputPdfFile, outputPdfFile, firstPage, lastPage);
+            }
         }
     }
 
@@ -238,47 +130,16 @@ public class PdfUtilities {
      * @return number of pages
      */
     public static int getPdfPageCount(File inputPdfFile) {
-        //get Ghostscript instance
-        Ghostscript gs = Ghostscript.getInstance();
-
-        //prepare Ghostscript interpreter parameters
-        //refer to Ghostscript documentation for parameter usage
-        //gs -q -sPDFname=test.pdf pdfpagecount.ps
-        List<String> gsArgs = new ArrayList<String>();
-        gsArgs.add("-gs");
-        gsArgs.add("-dNOPAUSE");
-        gsArgs.add("-dQUIET");
-        gsArgs.add("-dBATCH");
-        gsArgs.add("-sPDFname=" + inputPdfFile.getPath());
-        gsArgs.add(pdfPageCountFilePath);
-
-        int pageCount = 0;
-        ByteArrayOutputStream os;
-
-        //execute and exit interpreter
-        try {
-            synchronized (gs) {
-                //output
-                os = new ByteArrayOutputStream();
-                gs.setStdOut(os);
-                gs.initialize(gsArgs.toArray(new String[0]));
-                pageCount = Integer.parseInt(os.toString().replace("%%Pages: ", ""));
-                os.close();
-            }
-        } catch (GhostscriptException e) {
-            logger.error(e.getCause() != null ? e.getCause().toString() : e.getMessage(), e);
-        } catch (Exception e) {
-            logger.error(e.getCause() != null ? e.getCause().toString() : e.getMessage(), e);
-        } finally {
-            //delete interpreter instance (safer)
+        if (PDFBOX.equals(System.getProperty(PDF_LIBRARY))) {
+            return PdfBoxUtilities.getPdfPageCount(inputPdfFile);
+        } else {
             try {
-                Ghostscript.deleteInstance();
-            } catch (GhostscriptException e) {
-                //nothing
+                return PdfGsUtilities.getPdfPageCount(inputPdfFile);
+            } catch (Exception e) {
+                System.setProperty(PDF_LIBRARY, PDFBOX);
+                return getPdfPageCount(inputPdfFile);
             }
         }
-
-        return pageCount;
     }
 
     /**
@@ -288,51 +149,15 @@ public class PdfUtilities {
      * @param outputPdfFile output file
      */
     public static void mergePdf(File[] inputPdfFiles, File outputPdfFile) {
-        //get Ghostscript instance
-        Ghostscript gs = Ghostscript.getInstance();
-
-        //prepare Ghostscript interpreter parameters
-        //refer to Ghostscript documentation for parameter usage
-        //gs -sDEVICE=pdfwrite -dNOPAUSE -dQUIET -dBATCH -sOutputFile=out.pdf in1.pdf in2.pdf in3.pdf
-        List<String> gsArgs = new ArrayList<String>();
-        gsArgs.add("-gs");
-        gsArgs.add("-dNOPAUSE");
-        gsArgs.add("-dQUIET");
-        gsArgs.add("-dBATCH");
-        gsArgs.add("-sDEVICE=pdfwrite");
-        gsArgs.add("-sOutputFile=" + outputPdfFile.getPath());
-
-        for (File inputPdfFile : inputPdfFiles) {
-            gsArgs.add(inputPdfFile.getPath());
-        }
-
-        //execute and exit interpreter
-        try {
-            synchronized (gs) {
-                gs.initialize(gsArgs.toArray(new String[0]));
-                gs.exit();
-            }
-        } catch (GhostscriptException e) {
-            logger.error(e.getCause() != null ? e.getCause().toString() : e.getMessage(), e);
-            throw new RuntimeException(e.getMessage());
-        } catch (UnsatisfiedLinkError ule) {
-            throw new RuntimeException(getMessage(ule.getMessage()));
-        } catch (NoClassDefFoundError ncdfe) {
-            throw new RuntimeException(getMessage(ncdfe.getMessage()));
-        } finally {
-            //delete interpreter instance (safer)
+        if (PDFBOX.equals(System.getProperty(PDF_LIBRARY))) {
+            PdfBoxUtilities.mergePdf(inputPdfFiles, outputPdfFile);
+        } else {
             try {
-                Ghostscript.deleteInstance();
-            } catch (GhostscriptException e) {
-                //nothing
+                PdfGsUtilities.mergePdf(inputPdfFiles, outputPdfFile);
+            } catch (Exception e) {
+                System.setProperty(PDF_LIBRARY, PDFBOX);
+                mergePdf(inputPdfFiles, outputPdfFile);
             }
         }
-    }
-
-    static String getMessage(String message) {
-        if (message.contains("library 'gs") || message.contains("ghost4j")) {
-            return message + GS_INSTALL;
-        }
-        return message;
     }
 }

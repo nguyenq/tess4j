@@ -43,12 +43,20 @@ public class ImageDeskew {
     // count of points that fit in a line
     private int[] cHMatrix;
 
-    // constructor
+    /**
+     * Constructor.
+     * 
+     * @param image 
+     */
     public ImageDeskew(BufferedImage image) {
         this.cImage = image;
     }
 
-    // calculate the skew angle of the image cImage
+    /**
+     * Calculates the skew angle of the image cImage.
+     * 
+     * @return 
+     */
     public double getSkewAngle() {
         ImageDeskew.HoughLine[] hl;
         double sum = 0.0;
@@ -140,8 +148,8 @@ public class ImageDeskew {
             index = dIndex * this.cSteps + alpha;
             try {
                 this.cHMatrix[index] += 1;
-            } catch (Exception ex) {
-                logger.error("", ex);
+            } catch (Exception e) {
+                logger.warn("", e);
             }
         }
     }
@@ -164,7 +172,6 @@ public class ImageDeskew {
         this.cDMin = -this.cImage.getWidth();
         this.cDCount = (int) (2.0 * ((this.cImage.getWidth() + this.cImage.getHeight())) / this.cDStep);
         this.cHMatrix = new int[this.cDCount * this.cSteps];
-
     }
 
     public double getAlpha(int index) {

@@ -46,13 +46,14 @@ public interface ITessAPI {
          */
         public static final int OEM_TESSERACT_ONLY = 0;
         /**
-         * Run Cube only - better accuracy, but slower
+         * Run just the LSTM line recognizer
          */
-        public static final int OEM_CUBE_ONLY = 1;
+        public static final int OEM_LSTM_ONLY = 1;
         /**
-         * Run both and combine results - best accuracy
+         * Run the LSTM recognizer, but allow fallback to Tesseract when things
+         * get difficult
          */
-        public static final int OEM_TESSERACT_CUBE_COMBINED = 2;
+        public static final int OEM_TESSERACT_LSTM_COMBINED = 2;
         /**
          * Specify this mode when calling <code>init_*()</code>, to indicate
          * that any of the above modes should be automatically inferred from the
@@ -598,6 +599,16 @@ public interface ITessAPI {
         boolean invoke(Pointer cancel_this, int words);
     };
 
+    public interface TessCancelFunc extends Callback {
+
+        boolean apply(Pointer cancel_this, int words);
+    };
+
+    public interface TessProgressFunc extends Callback {
+
+        boolean apply(ETEXT_DESC ths, int left, int right, int top, int bottom);
+    };
+
     public static class TimeVal extends Structure {
 
         /**
@@ -610,7 +621,7 @@ public interface ITessAPI {
         public NativeLong tv_usec;
 
         @Override
-        protected List<?> getFieldOrder() {
+        protected List<String> getFieldOrder() {
             return Arrays.asList("tv_sec", "tv_usec");
         }
     }

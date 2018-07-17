@@ -30,21 +30,21 @@
                 JNA</a>, and <a href="https://java.net/projects/jai-imageio">JAI-ImageIO</a>
             are required. <a href="http://maven.apache.org/">Apache Maven</a> and <a href="http://www.junit.org/">
                 JUnit</a> are used for program building and unit testing. The Tesseract DLLs
-            were built with VS2013 and therefore depend on the <a href="http://www.microsoft.com/en-au/download/details.aspx?id=40784">
-                Visual C++ Redistributable Packages for VS2013</a>.
+            were built with VS2015 and therefore depend on the <a href="https://www.microsoft.com/en-us/download/details.aspx?id=53587">
+                Visual C++ 2015 Redistributable Packages</a>.
         </p>
         <h3>
             INSTRUCTIONS
         </h3>
         <p>
-            Tesseract 3.04, Leptonica 1.71 (via Lept4J), and Ghostscript 9.16 32- and 64-bit
+            Tesseract 4.0.beta-1 and Leptonica 1.75.3 (via Lept4J) 32- and 64-bit
             DLLs, language data for English, and sample images are bundled with the library.
             <a href="https://github.com/tesseract-ocr/tessdata">Language data packs</a> for
             Tesseract should be decompressed and placed into the <code>tessdata</code> folder.
         </p>
         <p>
             The Linux shared object library (<code>libtesseract.so</code>) equivalent to the
-            DLL is available in Tesseract 3.04, which can be built from the <a href="https://github.com/tesseract-ocr/tesseract"
+            DLL is available in Tesseract 4.0.beta-1, which can be built from the <a href="https://github.com/tesseract-ocr/tesseract"
                 target="_blank">source</a> with the instructions given in <a href="https://github.com/tesseract-ocr/tesseract/wiki/Compiling"
                     target="_blank">Tesseract Wiki</a>.
         </p>
@@ -56,6 +56,11 @@
                 <code>mvn test</code>
             </p>
         </blockquote>
+        <p>
+            Support for PDF documents is available through either 
+			<a href="http://www.ghostscript.com/" target="_blank">GPL Ghostscript</a>, which should be installed and included
+            in system path, or PDFBox, if Ghostscript is not available.
+        </p>
         <p>
             Images to be OCRed should be scanned at resolution from at least 200 DPI (dot per
             inch) to 400 DPI in monochrome (black&amp;white) or grayscale. Scanning at higher
@@ -95,7 +100,7 @@ public class TesseractExample {
         ITesseract instance = new Tesseract(); // JNA Interface Mapping
         // ITesseract instance = new Tesseract1(); // JNA Direct Mapping
         // File tessDataFolder = LoadLibs.extractTessResources("tessdata"); // Maven build only; only English data bundled
-        // instance.setDatapath(tessDataFolder.getAbsolutePath());
+        // instance.setDatapath(tessDataFolder.getParent());
 
         try {
             String result = instance.doOCR(imageFile);

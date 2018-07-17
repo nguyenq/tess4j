@@ -50,6 +50,7 @@ import net.sourceforge.lept4j.Boxa;
 import static net.sourceforge.lept4j.ILeptonica.L_CLONE;
 import net.sourceforge.lept4j.Leptonica1;
 import net.sourceforge.lept4j.Pix;
+import net.sourceforge.lept4j.util.LeptUtils;
 
 import net.sourceforge.tess4j.ITessAPI.*;
 import org.slf4j.Logger;
@@ -63,7 +64,7 @@ import static org.junit.Assert.assertTrue;
 public class TessAPI1Test {
 
     private static final Logger logger = LoggerFactory.getLogger(new LoggHelper().toString());
-    private final String datapath = "src/main/resources";
+    private final String datapath = "src/main/resources/tessdata";
     private final String testResourcesDataPath = "src/test/resources/test-data";
     String language = "eng";
     String expOCRResult = "The (quick) [brown] {fox} jumps!\nOver the $43,456.78 <lazy> #90 dog";
@@ -135,7 +136,7 @@ public class TessAPI1Test {
         String result = utf8Text.getString(0);
         TessAPI1.TessDeleteText(utf8Text);
         logger.info(result);
-        assertEquals(expResult, result.substring(0, expResult.length()));
+        assertTrue(result.startsWith(expResult));
     }
 
     /**
@@ -161,7 +162,7 @@ public class TessAPI1Test {
         pRef.setValue(pix.getPointer());
         Leptonica1.pixDestroy(pRef);
 
-        assertEquals(expResult, result.substring(0, expResult.length()));
+        assertTrue(result.startsWith(expResult));
     }
 
     /**
@@ -193,12 +194,12 @@ public class TessAPI1Test {
             TessAPI1.TessDeleteText(utf8Text);
             int conf = TessAPI1.TessBaseAPIMeanTextConf(handle);
             System.out.print(String.format("Box[%d]: x=%d, y=%d, w=%d, h=%d, confidence: %d, text: %s", i, box.x, box.y, box.w, box.h, conf, ocrResult));
+            LeptUtils.dispose(box);
         }
 
-        //release Pix resource
-        PointerByReference pRef = new PointerByReference();
-        pRef.setValue(pix.getPointer());
-        Leptonica1.pixDestroy(pRef);
+        // release Pix and Boxa resources
+        LeptUtils.dispose(pix);
+        LeptUtils.dispose(boxes);
 
         assertEquals(expResult, boxCount);
     }
@@ -209,7 +210,7 @@ public class TessAPI1Test {
     @Test
     public void testTessVersion() {
         logger.info("TessVersion");
-        String expResult = "3.04";
+        String expResult = "4.0.0-beta.3";
         String result = TessAPI1.TessVersion();
         logger.info(result);
         assertTrue(result.startsWith(expResult));
@@ -359,7 +360,7 @@ public class TessAPI1Test {
     }
 
     /**
-     * Test of TessBaseAPIAnalyseLayout method, of class TessAPI.
+     * Test of TessBaseAPIAnalyseLayout method, of class TessAPI1.
      *
      * @throws java.lang.Exception
      */
@@ -393,6 +394,41 @@ public class TessAPI1Test {
         pRef.setValue(pix.getPointer());
         Leptonica1.pixDestroy(pRef);
         assertEquals(expResult, i);
+    }
+
+    /**
+     * Test of TessBaseAPIDetectOrientationScript method, of class TessAPI1.
+     *
+     * @throws java.lang.Exception
+     */
+    @org.junit.Ignore
+    @Test
+    public void testTessBaseAPIDetectOrientationScript() throws Exception {
+        logger.info("TessBaseAPIDetectOrientationScript");
+        File image = new File(testResourcesDataPath, "eurotext.png");
+        int expResult = TRUE;
+        Pix pix = Leptonica1.pixRead(image.getPath());
+        TessAPI1.TessBaseAPIInit3(handle, datapath, language);
+        TessAPI1.TessBaseAPISetImage2(handle, pix);
+
+        IntBuffer orient_degB = IntBuffer.allocate(1);
+        FloatBuffer orient_confB = FloatBuffer.allocate(1);
+        PointerByReference script_nameB = new PointerByReference();
+        FloatBuffer script_confB = FloatBuffer.allocate(1);
+
+        int result = TessAPI1.TessBaseAPIDetectOrientationScript(handle, orient_degB, orient_confB, script_nameB, script_confB);
+        if (result == TRUE) {
+            int orient_deg = orient_degB.get();
+            float orient_conf = orient_confB.get();
+            String script_name = script_nameB.getValue().getString(0);
+            float script_conf = script_confB.get();
+            logger.info(String.format("OrientationScript: orient_deg=%d, orient_conf=%f, script_name=%s, script_conf=%f", orient_deg, orient_conf, script_name, script_conf));
+        }
+
+        PointerByReference pRef = new PointerByReference();
+        pRef.setValue(pix.getPointer());
+        Leptonica1.pixDestroy(pRef);
+        assertEquals(expResult, result);
     }
 
     /**
@@ -602,7 +638,7 @@ public class TessAPI1Test {
         TessAPI1.TessResultRendererInsert(renderer, TessAPI1.TessBoxTextRendererCreate(outputbase));
         TessAPI1.TessResultRendererInsert(renderer, TessAPI1.TessTextRendererCreate(outputbase));
         String dataPath = TessAPI1.TessBaseAPIGetDatapath(handle);
-        TessAPI1.TessResultRendererInsert(renderer, TessAPI1.TessPDFRendererCreate(outputbase, dataPath));
+        TessAPI1.TessResultRendererInsert(renderer, TessAPI1.TessPDFRendererCreate(outputbase, dataPath, TRUE));
         int result = TessAPI1.TessBaseAPIProcessPages(handle, image, null, 0, renderer);
 
 //        if (result == FALSE) {
