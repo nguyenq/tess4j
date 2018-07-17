@@ -15,22 +15,18 @@
  */
 package net.sourceforge.tess4j;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
-
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 
 import net.sourceforge.tess4j.util.ImageHelper;
 import net.sourceforge.tess4j.util.ImageIOHelper;
@@ -52,15 +48,6 @@ import org.junit.Test;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.recognition.software.jdeskew.ImageDeskew;
-
-import net.sourceforge.tess4j.ITessAPI.TessPageIteratorLevel;
-import net.sourceforge.tess4j.ITesseract.RenderedFormat;
-import net.sourceforge.tess4j.util.ImageHelper;
-import net.sourceforge.tess4j.util.ImageIOHelper;
-import net.sourceforge.tess4j.util.LoggHelper;
-import net.sourceforge.tess4j.util.Utils;
 
 public class TesseractTest {
 
