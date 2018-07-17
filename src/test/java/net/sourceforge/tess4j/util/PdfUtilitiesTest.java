@@ -30,7 +30,7 @@ public class PdfUtilitiesTest {
 
     private static final Logger logger = LoggerFactory.getLogger(new LoggHelper().toString());
     private static final String TEST_RESOURCES_DATA_PATH = "src/test/resources/test-data/";
-    private final String TEST_RESOURCES_RESULTS_PATH = "src/test/resources/test-results/";
+    private static final String TEST_RESOURCES_RESULTS_PATH = "src/test/resources/test-results/";
 
     @Before
     public void setUp() {

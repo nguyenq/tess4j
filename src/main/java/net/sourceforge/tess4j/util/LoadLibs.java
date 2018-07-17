@@ -43,6 +43,7 @@ import net.sourceforge.tess4j.TessAPI;
  *
  * @author O.J. Sousa Rodrigues
  * @author Quan Nguyen
+ * @author itsura
  */
 public class LoadLibs {
 
