@@ -15,25 +15,40 @@
  */
 package net.sourceforge.tess4j;
 
+import static net.sourceforge.lept4j.ILeptonica.L_CLONE;
+
+import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
+import java.io.File;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
+
+import org.slf4j.LoggerFactory;
+
 import com.sun.jna.Pointer;
 import com.sun.jna.StringArray;
 import com.sun.jna.ptr.PointerByReference;
-import java.awt.Rectangle;
-import java.awt.image.*;
-import java.io.*;
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
-import java.util.*;
-import javax.imageio.IIOImage;
+
 import net.sourceforge.lept4j.Box;
 import net.sourceforge.lept4j.Boxa;
-import static net.sourceforge.lept4j.ILeptonica.L_CLONE;
 import net.sourceforge.lept4j.Leptonica1;
 
 import net.sourceforge.tess4j.util.ImageIOHelper;
 import net.sourceforge.tess4j.util.LoggHelper;
 import net.sourceforge.tess4j.util.PdfUtilities;
-import org.slf4j.*;
 
 /**
  * An object layer on top of <code>TessAPI1</code>, provides character
@@ -177,22 +192,38 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     /**
      * Performs OCR operation.
      *
-     * @param imageFile an image file
+     * @param inputFile an image file
      * @param rect the bounding rectangle defines the region of the image to be
      * recognized. A rectangle of zero dimension or <code>null</code> indicates
      * the whole image.
      * @return the recognized text
      * @throws TesseractException
      */
-    @Override
-    public String doOCR(File imageFile, Rectangle rect) throws TesseractException {
-        try {
-            return doOCR(ImageIOHelper.getIIOImageList(imageFile), imageFile.getPath(), rect);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new TesseractException(e);
-        }
-    }
+	@Override
+	public String doOCR(File inputFile, Rectangle rect) throws TesseractException {
+		try {
+			File imageFile = ImageIOHelper.getImageFile(inputFile);
+			String imageFileFormat = ImageIOHelper.getImageFileFormat(imageFile);
+			Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName(imageFileFormat);
+			if (!readers.hasNext()) {
+				throw new RuntimeException(ImageIOHelper.JAI_IMAGE_READER_MESSAGE);
+			}
+			ImageReader reader = readers.next();
+			StringBuilder result = new StringBuilder();
+			try (ImageInputStream iis = ImageIO.createImageInputStream(imageFile);) {
+				reader.setInput(iis);
+				int imageTotal = reader.getNumImages(true);
+				for (int i = 0; i < imageTotal; i++) {
+					IIOImage oimage = reader.readAll(i, reader.getDefaultReadParam());
+					result.append(doOCR(Arrays.asList(oimage), inputFile.getPath(), rect));
+				}
+			}
+			return result.toString();
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new TesseractException(e);
+		}
+	}
 
     /**
      * Performs OCR operation.

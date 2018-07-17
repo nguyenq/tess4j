@@ -15,13 +15,19 @@
  */
 package net.sourceforge.tess4j;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -46,6 +52,15 @@ import org.junit.Test;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.recognition.software.jdeskew.ImageDeskew;
+
+import net.sourceforge.tess4j.ITessAPI.TessPageIteratorLevel;
+import net.sourceforge.tess4j.ITesseract.RenderedFormat;
+import net.sourceforge.tess4j.util.ImageHelper;
+import net.sourceforge.tess4j.util.ImageIOHelper;
+import net.sourceforge.tess4j.util.LoggHelper;
+import net.sourceforge.tess4j.util.Utils;
 
 public class TesseractTest {
 
@@ -151,24 +166,37 @@ public class TesseractTest {
      */
     @Test
     public void testDoOCR_List_Rectangle() throws Exception {
-        File imageFile = null;
+        File inputFile = null;
         String expResult = "The (quick) [brown] {fox} jumps!\nOver the $43,456.78 <lazy> #90 dog";
-        String result = "<empty>";
         try {
             logger.info("doOCR on a PDF document");
-            imageFile = new File(this.testResourcesDataPath, "eurotext.pdf");
-            List<IIOImage> imageList = ImageIOHelper.getIIOImageList(imageFile);
-            result = instance.doOCR(imageList, null);
-            logger.info(result);
-            assertEquals(expResult, result.substring(0, expResult.length()));
+            inputFile = new File(this.testResourcesDataPath, "eurotext.pdf");
+            File imageFile = ImageIOHelper.getImageFile(inputFile);
+            String imageFileFormat = ImageIOHelper.getImageFileFormat(imageFile);
+            Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName(imageFileFormat);
+            if (!readers.hasNext()) {
+                throw new RuntimeException(ImageIOHelper.JAI_IMAGE_READER_MESSAGE);
+            }
+            ImageReader reader = readers.next();
+            StringBuilder result = new StringBuilder();
+            try (ImageInputStream iis = ImageIO.createImageInputStream(imageFile);) {
+                reader.setInput(iis);
+                int imageTotal = reader.getNumImages(true);
+                for (int i = 0; i < imageTotal; i++) {
+                    IIOImage oimage = reader.readAll(i, reader.getDefaultReadParam());
+                    result.append(instance.doOCR(Arrays.asList(oimage), inputFile.getPath(), null));
+                }
+            }
+            logger.info(result.toString());
+            assertEquals(expResult, result.toString().substring(0, expResult.length()));
         } catch (IOException e) {
-            logger.error("Exception-Message: '{}'. Imagefile: '{}'", e.getMessage(), imageFile.getAbsoluteFile(), e);
+            logger.error("Exception-Message: '{}'. Imagefile: '{}'", e.getMessage(), inputFile.getAbsoluteFile(), e);
             fail();
         } catch (TesseractException e) {
-            logger.error("Exception-Message: '{}'. Imagefile: '{}'", e.getMessage(), imageFile.getAbsoluteFile(), e);
+            logger.error("Exception-Message: '{}'. Imagefile: '{}'", e.getMessage(), inputFile.getAbsoluteFile(), e);
             fail();
         } catch (StringIndexOutOfBoundsException e) {
-            logger.error("Exception-Message: '{}'. Imagefile: '{}'", e.getMessage(), imageFile.getAbsoluteFile(), e);
+            logger.error("Exception-Message: '{}'. Imagefile: '{}'", e.getMessage(), inputFile.getAbsoluteFile(), e);
             fail();
         }
 

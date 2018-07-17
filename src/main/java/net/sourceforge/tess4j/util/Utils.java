@@ -26,7 +26,7 @@ import java.lang.reflect.Modifier;
 
 public class Utils {
 
-    private static final Logger logger = LoggerFactory.getLogger(new LoggHelper().toString());
+    private static final Logger LOGGER = LoggerFactory.getLogger(new LoggHelper().toString());
 
     /**
      * Writes byte array to file.
@@ -36,20 +36,12 @@ public class Utils {
      * @throws IOException
      */
     public static void writeFile(byte[] data, File outFile) throws IOException {
-        FileOutputStream fos = null;
-
-        try {
-            // create parent dirs when necessary
-            if (outFile.getParentFile() != null) {
-                outFile.getParentFile().mkdirs();
-            }
-
-            fos = new FileOutputStream(outFile);
+        // create parent dirs when necessary
+        if (outFile.getParentFile() != null) {
+            outFile.getParentFile().mkdirs();
+        }
+        try (FileOutputStream fos = new FileOutputStream(outFile)) {
             fos.write(data);
-        } finally {
-            if (fos != null) {
-                fos.close();
-            }
         }
     }
 
