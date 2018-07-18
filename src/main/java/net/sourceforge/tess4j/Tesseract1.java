@@ -216,7 +216,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
             } finally {
                 dispose();
             }
-            
+
             return result.toString();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -317,7 +317,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
      * <br>
      * Note: <code>init()</code> and <code>setTessVariables()</code> must be
      * called before use; <code>dispose()</code> should be called afterwards.
-     * 
+     *
      * @param oimage an <code>IIOImage</code> object
      * @param filename input file name
      * @param rect the bounding rectangle defines the region of the image to be
@@ -561,25 +561,23 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
 
         try {
             for (int i = 0; i < filenames.length; i++) {
-                File workingTiffFile = null;
-                try {
-                    String filename = filenames[i];
+                File inputFile = new File(filenames[i]);
+                File imageFile = null;
 
+                try {
                     // if PDF, convert to multi-page TIFF
-                    if (filename.toLowerCase().endsWith(".pdf")) {
-                        workingTiffFile = PdfUtilities.convertPdf2Tiff(new File(filename));
-                        filename = workingTiffFile.getPath();
-                    }
+                    imageFile = ImageIOHelper.getImageFile(inputFile);
 
                     TessResultRenderer renderer = createRenderers(outputbases[i], formats);
-                    createDocuments(filename, renderer);
+                    createDocuments(imageFile.getPath(), renderer);
                     TessDeleteResultRenderer(renderer);
                 } catch (Exception e) {
                     // skip the problematic image file
                     logger.warn(e.getMessage(), e);
                 } finally {
-                    if (workingTiffFile != null && workingTiffFile.exists()) {
-                        workingTiffFile.delete();
+                    // delete temporary TIFF image for PDF
+                    if (imageFile != null && imageFile.exists() && imageFile != inputFile && imageFile.getName().startsWith("multipage") && imageFile.getName().endsWith(ImageIOHelper.TIFF_EXT)) {
+                        imageFile.delete();
                     }
                 }
             }
@@ -719,18 +717,15 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
 
         try {
             for (int i = 0; i < filenames.length; i++) {
-                File workingTiffFile = null;
-                try {
-                    String filename = filenames[i];
+                File inputFile = new File(filenames[i]);
+                File imageFile = null;
 
+                try {
                     // if PDF, convert to multi-page TIFF
-                    if (filename.toLowerCase().endsWith(".pdf")) {
-                        workingTiffFile = PdfUtilities.convertPdf2Tiff(new File(filename));
-                        filename = workingTiffFile.getPath();
-                    }
+                    imageFile = ImageIOHelper.getImageFile(inputFile);
 
                     TessResultRenderer renderer = createRenderers(outputbases[i], formats);
-                    int meanTextConfidence = createDocuments(filename, renderer);
+                    int meanTextConfidence = createDocuments(imageFile.getPath(), renderer);
                     List<Word> words = meanTextConfidence > 0 ? getRecognizedWords(pageIteratorLevel) : new ArrayList<Word>();
                     results.add(new OCRResult(meanTextConfidence, words));
                     TessDeleteResultRenderer(renderer);
@@ -738,8 +733,9 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
                     // skip the problematic image file
                     logger.warn(e.getMessage(), e);
                 } finally {
-                    if (workingTiffFile != null && workingTiffFile.exists()) {
-                        workingTiffFile.delete();
+                    // delete temporary TIFF image for PDF
+                    if (imageFile != null && imageFile.exists() && imageFile != inputFile && imageFile.getName().startsWith("multipage") && imageFile.getName().endsWith(ImageIOHelper.TIFF_EXT)) {
+                        imageFile.delete();
                     }
                 }
             }

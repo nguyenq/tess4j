@@ -58,7 +58,7 @@ import org.apache.commons.io.FilenameUtils;
 public class ImageIOHelper {
 
     static final String OUTPUT_FILE_NAME = "Tesstmp";
-    static final String TIFF_EXT = ".tif";
+    public static final String TIFF_EXT = ".tif";
     static final String TIFF_FORMAT = "tiff";
     public static final String JAI_IMAGE_WRITER_MESSAGE = "Need to install JAI Image I/O package.\nhttps://github.com/jai-imageio/jai-imageio-core";
     public static final String JAI_IMAGE_READER_MESSAGE = "Unsupported image format. May need to install JAI Image I/O package.\nhttps://github.com/jai-imageio/jai-imageio-core";
@@ -386,7 +386,7 @@ public class ImageIOHelper {
             }
 
             // delete temporary TIFF image for PDF
-            if (imageFile != inputFile && imageFile.getName().startsWith("multipage") && imageFile.getName().endsWith(TIFF_EXT)) {
+            if (imageFile != null && imageFile.exists() && imageFile != inputFile && imageFile.getName().startsWith("multipage") && imageFile.getName().endsWith(TIFF_EXT)) {
                 imageFile.delete();
             }
         }
@@ -432,7 +432,7 @@ public class ImageIOHelper {
             }
 
             // delete temporary TIFF image for PDF
-            if (imageFile != inputFile && imageFile.getName().startsWith("multipage") && imageFile.getName().endsWith(TIFF_EXT)) {
+            if (imageFile != null && imageFile.exists() && imageFile != inputFile && imageFile.getName().startsWith("multipage") && imageFile.getName().endsWith(TIFF_EXT)) {
                 imageFile.delete();
             }
         }
