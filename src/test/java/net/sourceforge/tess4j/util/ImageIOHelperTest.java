@@ -104,7 +104,7 @@ public class ImageIOHelperTest {
     @Test
     public void testGetImageList() throws Exception {
         logger.info("getImageList");
-        File imageFile = new File(TEST_RESOURCES_DATA_PATH, "eurotext.png");
+        File imageFile = new File(TEST_RESOURCES_DATA_PATH, "eurotext.pdf");
         int expResult = 1;
         List<BufferedImage> result = ImageIOHelper.getImageList(imageFile);
         assertEquals(expResult, result.size());

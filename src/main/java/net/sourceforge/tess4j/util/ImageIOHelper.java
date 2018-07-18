@@ -93,8 +93,7 @@ public class ImageIOHelper {
     public static List<File> createTiffFiles(File imageFile, int index, boolean preserve) throws IOException {
         List<File> tiffFiles = new ArrayList<File>();
 
-        String imageFileName = imageFile.getName();
-        String imageFormat = imageFileName.substring(imageFileName.lastIndexOf('.') + 1);
+        String imageFormat = getImageFileFormat(imageFile);
 
         Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName(imageFormat);
         if (!readers.hasNext()) {
@@ -137,6 +136,8 @@ public class ImageIOHelper {
                     }
                 }
             }
+
+            return tiffFiles;
         } finally {
             if (reader != null) {
                 reader.dispose();
@@ -145,7 +146,6 @@ public class ImageIOHelper {
                 writer.dispose();
             }
         }
-        return tiffFiles;
     }
 
     /**
@@ -350,14 +350,17 @@ public class ImageIOHelper {
     /**
      * Gets a list of <code>BufferedImage</code> objects for an image file.
      *
-     * @param imageFile input image file. It can be any of the supported
-     * formats, including TIFF, JPEG, GIF, PNG, BMP, JPEG
+     * @param inputFile input image file. It can be any of the supported
+     * formats, including TIFF, JPEG, GIF, PNG, BMP, JPEG, and PDF if GPL
+     * Ghostscript or PDFBox is installed
      * @return a list of <code>BufferedImage</code> objects
      * @throws IOException
      */
-    public static List<BufferedImage> getImageList(File imageFile) throws IOException {
-        List<BufferedImage> biList = new ArrayList<BufferedImage>();
+    public static List<BufferedImage> getImageList(File inputFile) throws IOException {
+        // convert to TIFF if PDF
+        File imageFile = getImageFile(inputFile);
 
+        List<BufferedImage> biList = new ArrayList<BufferedImage>();
         String imageFormat = getImageFileFormat(imageFile);
 
         Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName(imageFormat);
@@ -381,13 +384,18 @@ public class ImageIOHelper {
             if (reader != null) {
                 reader.dispose();
             }
+
+            // delete temporary TIFF image for PDF
+            if (imageFile != inputFile && imageFile.getName().startsWith("multipage") && imageFile.getName().endsWith(TIFF_EXT)) {
+                imageFile.delete();
+            }
         }
     }
 
     /**
      * Gets a list of <code>IIOImage</code> objects for an image file.
      *
-     * @param imageFile input image file. It can be any of the supported
+     * @param inputFile input image file. It can be any of the supported
      * formats, including TIFF, JPEG, GIF, PNG, BMP, JPEG, and PDF if GPL
      * Ghostscript or PDFBox is installed
      * @return a list of <code>IIOImage</code> objects
