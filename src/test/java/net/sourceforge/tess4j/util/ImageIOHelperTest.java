@@ -144,11 +144,11 @@ public class ImageIOHelperTest {
     @Test
     public void testMergeTiff_FileArr_File() throws Exception {
         logger.info("mergeTiff");
-        File imageFile1 = new File(TEST_RESOURCES_DATA_PATH, "eurotext.png");
-        File imageFile2 = new File(TEST_RESOURCES_DATA_PATH, "eurotext_unlv.png");
+        File imageFile1 = new File(TEST_RESOURCES_DATA_PATH, "eurotext.png"); // filesize: 14,854 bytes
+        File imageFile2 = new File(TEST_RESOURCES_DATA_PATH, "eurotext_deskew.png"); // filesize: 204,383 bytes
         File[] inputImages = {imageFile1, imageFile2};
-        File outputTiff = new File(TEST_RESOURCES_RESULTS_PATH, "merged.tif");
-        long expResult = 30887L;
+        File outputTiff = new File(TEST_RESOURCES_RESULTS_PATH, "mergedTiff.tif");
+        long expResult = 224337L; // filesize: 224,337 bytes
         ImageIOHelper.mergeTiff(inputImages, outputTiff);
         assertEquals(expResult, outputTiff.length());
     }

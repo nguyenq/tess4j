@@ -292,12 +292,13 @@ public class Tesseract1Test {
         logger.info("createDocumentsWithResults for multiple images at given TessPageIteratorLevel");
         File imageFile1 = new File(this.testResourcesDataPath, "eurotext.pdf");
         File imageFile2 = new File(this.testResourcesDataPath, "eurotext.png");
-        String outputbase1 = "target/test-classes/test-results/docrenderer1-1";
-        String outputbase2 = "target/test-classes/test-results/docrenderer1-2";
+        String outputbase1 = "target/test-classes/test-results/docrenderer1-3";
+        String outputbase2 = "target/test-classes/test-results/docrenderer1-4";
         List<RenderedFormat> formats = new ArrayList<RenderedFormat>(Arrays.asList(RenderedFormat.HOCR, RenderedFormat.PDF, RenderedFormat.TEXT));
         List<OCRResult> results = instance.createDocumentsWithResults(new String[]{imageFile1.getPath(), imageFile2.getPath()}, new String[]{outputbase1, outputbase2}, formats, TessPageIteratorLevel.RIL_WORD);
         assertTrue(new File(outputbase1 + ".pdf").exists());
         assertEquals(2, results.size());
+        // Not work on Linux because unable to load pdf.ttf
 //        assertTrue(results.get(0).getConfidence() > 0);
 //        assertEquals(66, results.get(0).getWords().size());
     }

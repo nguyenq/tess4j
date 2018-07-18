@@ -252,11 +252,6 @@
             <artifactId>log4j-over-slf4j</artifactId>
             <version>1.7.25</version>
         </dependency>
-         <dependency>
-			<groupId>org.jboss</groupId>
-			<artifactId>jboss-vfs</artifactId>
-			<version>3.2.9.Final</version>
-		</dependency>
     </dependencies>
 
 </project>

@@ -639,12 +639,12 @@ public class TessAPITest {
             return;
         }
 
-        String outputbase = "target/test-classes/test-results/outputbase";
+        String outputbase = "target/test-classes/test-results/ResultRenderer";
         TessResultRenderer renderer = api.TessHOcrRendererCreate(outputbase);
         api.TessResultRendererInsert(renderer, api.TessBoxTextRendererCreate(outputbase));
         api.TessResultRendererInsert(renderer, api.TessTextRendererCreate(outputbase));
         String dataPath = api.TessBaseAPIGetDatapath(handle);
-        api.TessResultRendererInsert(renderer, api.TessPDFRendererCreate(outputbase, dataPath, TRUE));
+        api.TessResultRendererInsert(renderer, api.TessPDFRendererCreate(outputbase, dataPath, FALSE));
         int result = api.TessBaseAPIProcessPages(handle, image, null, 0, renderer);
 
         if (result == FALSE) {

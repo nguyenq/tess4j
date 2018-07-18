@@ -502,6 +502,10 @@ public class ImageIOHelper {
                             writer.writeInsert(index++, oimage, tiffWriteParam);
                         }
                     }
+                } finally {
+                    if (reader != null) {
+                        reader.dispose();
+                    }
                 }
             }
         } finally {

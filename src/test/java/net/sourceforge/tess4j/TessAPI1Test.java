@@ -633,12 +633,12 @@ public class TessAPI1Test {
             return;
         }
 
-        String outputbase = "target/test-classes/test-results/outputbase1";
+        String outputbase = "target/test-classes/test-results/ResultRenderer1";
         TessResultRenderer renderer = TessAPI1.TessHOcrRendererCreate(outputbase);
         TessAPI1.TessResultRendererInsert(renderer, TessAPI1.TessBoxTextRendererCreate(outputbase));
         TessAPI1.TessResultRendererInsert(renderer, TessAPI1.TessTextRendererCreate(outputbase));
         String dataPath = TessAPI1.TessBaseAPIGetDatapath(handle);
-        TessAPI1.TessResultRendererInsert(renderer, TessAPI1.TessPDFRendererCreate(outputbase, dataPath, TRUE));
+        TessAPI1.TessResultRendererInsert(renderer, TessAPI1.TessPDFRendererCreate(outputbase, dataPath, FALSE));
         int result = TessAPI1.TessBaseAPIProcessPages(handle, image, null, 0, renderer);
 
 //        if (result == FALSE) {
