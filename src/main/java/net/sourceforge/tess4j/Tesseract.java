@@ -599,7 +599,7 @@ public class Tesseract implements ITesseract {
                     if (imageFile != null && imageFile.exists() && imageFile != inputFile && imageFile.getName().startsWith("multipage") && imageFile.getName().endsWith(ImageIOHelper.TIFF_EXT)) {
                         imageFile.delete();
                     }
-                 }
+                }
             }
         } finally {
             dispose();
@@ -719,7 +719,8 @@ public class Tesseract implements ITesseract {
     }
 
     /**
-     * Creates documents with OCR results.
+     * Creates documents with OCR results for given renderers at specified page
+     * iterator level.
      *
      * @param filenames array of input files
      * @param outputbases array of output filenames without extension

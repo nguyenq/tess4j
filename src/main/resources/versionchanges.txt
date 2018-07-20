@@ -148,7 +148,7 @@ Version 4.0.2 (3 May 2018)
 - Update jai-imageio url
 - Update Lept4J to 1.9.4
 
-Version 4.1.0 (17 July 2018)
+Version 4.1.0 (20 July 2018)
 - Upgrade to Tesseract 4.0.0-beta.3 (b502bbf)
 - Update Lept4J to 1.10.0
 - Improve handling of PDF
