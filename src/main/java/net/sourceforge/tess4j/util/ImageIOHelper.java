@@ -592,8 +592,8 @@ public class ImageIOHelper {
         try (ImageOutputStream ios = ImageIO.createImageOutputStream(outputTiff)) {
             writer.setOutput(ios);
 
-        int dpiX = ImageIOHelper.IMG_DPI_X;
-        int dpiY = ImageIOHelper.IMG_DPI_Y;
+            int dpiX = ImageIOHelper.IMG_DPI_X;
+            int dpiY = ImageIOHelper.IMG_DPI_Y;
 
             for (IIOImage iioImage : imageList) {
                 // Get the default image metadata.
