@@ -21,15 +21,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
-import java.util.Iterator;
-
-import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.ImageInputStream;
 
 import net.sourceforge.tess4j.util.ImageHelper;
-import net.sourceforge.tess4j.util.ImageIOHelper;
 import net.sourceforge.tess4j.util.LoggHelper;
 import net.sourceforge.tess4j.util.Utils;
 
@@ -151,28 +145,13 @@ public class Tesseract1Test {
      * @throws Exception while processing image.
      */
     @Test
-    public void testDoOCR_List_Rectangle() throws Exception {
+    public void testDoOCR_PDF() throws Exception {
         logger.info("doOCR on a PDF document");
         File inputFile = new File(this.testResourcesDataPath, "eurotext.pdf");
-        File imageFile = ImageIOHelper.getImageFile(inputFile);
-        String imageFileFormat = ImageIOHelper.getImageFileFormat(imageFile);
-        Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName(imageFileFormat);
-        if (!readers.hasNext()) {
-            throw new RuntimeException(ImageIOHelper.JAI_IMAGE_READER_MESSAGE);
-        }
-        ImageReader reader = readers.next();
-        StringBuilder result = new StringBuilder();
-        try (ImageInputStream iis = ImageIO.createImageInputStream(imageFile);) {
-            reader.setInput(iis);
-            int imageTotal = reader.getNumImages(true);
-            for (int i = 0; i < imageTotal; i++) {
-                IIOImage oimage = reader.readAll(i, reader.getDefaultReadParam());
-                result.append(instance.doOCR(Arrays.asList(oimage), inputFile.getPath(), null));
-            }
-        }
         String expResult = "The (quick) [brown] {fox} jumps!\nOver the $43,456.78 <lazy> #90 dog";
-        logger.info(result.toString());
-        assertEquals(expResult, result.toString().substring(0, expResult.length()));
+        String result = instance.doOCR(inputFile, null);
+        logger.info(result);
+        assertEquals(expResult, result.substring(0, expResult.length()));
     }
 
     /**

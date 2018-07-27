@@ -152,41 +152,18 @@ public class TesseractTest {
      * @throws Exception while processing image.
      */
     @Test
-    public void testDoOCR_List_Rectangle() throws Exception {
-        File inputFile = null;
+    public void testDoOCR_PDF() throws Exception {
+        logger.info("doOCR on a PDF document");       
+        File inputFile = new File(this.testResourcesDataPath, "eurotext.pdf");
         String expResult = "The (quick) [brown] {fox} jumps!\nOver the $43,456.78 <lazy> #90 dog";
         try {
-            logger.info("doOCR on a PDF document");
-            inputFile = new File(this.testResourcesDataPath, "eurotext.pdf");
-            File imageFile = ImageIOHelper.getImageFile(inputFile);
-            String imageFileFormat = ImageIOHelper.getImageFileFormat(imageFile);
-            Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName(imageFileFormat);
-            if (!readers.hasNext()) {
-                throw new RuntimeException(ImageIOHelper.JAI_IMAGE_READER_MESSAGE);
-            }
-            ImageReader reader = readers.next();
-            StringBuilder result = new StringBuilder();
-            try (ImageInputStream iis = ImageIO.createImageInputStream(imageFile);) {
-                reader.setInput(iis);
-                int imageTotal = reader.getNumImages(true);
-                for (int i = 0; i < imageTotal; i++) {
-                    IIOImage oimage = reader.readAll(i, reader.getDefaultReadParam());
-                    result.append(instance.doOCR(Arrays.asList(oimage), inputFile.getPath(), null));
-                }
-            }
-            logger.info(result.toString());
-            assertEquals(expResult, result.toString().substring(0, expResult.length()));
-        } catch (IOException e) {
-            logger.error("Exception-Message: '{}'. Imagefile: '{}'", e.getMessage(), inputFile.getAbsoluteFile(), e);
-            fail();
+            String result = instance.doOCR(inputFile, null);
+            logger.info(result);
+            assertEquals(expResult, result.substring(0, expResult.length()));
         } catch (TesseractException e) {
             logger.error("Exception-Message: '{}'. Imagefile: '{}'", e.getMessage(), inputFile.getAbsoluteFile(), e);
             fail();
-        } catch (StringIndexOutOfBoundsException e) {
-            logger.error("Exception-Message: '{}'. Imagefile: '{}'", e.getMessage(), inputFile.getAbsoluteFile(), e);
-            fail();
         }
-
     }
 
     /**

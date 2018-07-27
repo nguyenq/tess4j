@@ -42,7 +42,6 @@ import net.sourceforge.tess4j.ITessAPI.TessResultIterator;
 import net.sourceforge.tess4j.ITessAPI.TessResultRenderer;
 import net.sourceforge.tess4j.util.ImageIOHelper;
 import net.sourceforge.tess4j.util.LoggHelper;
-import net.sourceforge.tess4j.util.PdfUtilities;
 import org.slf4j.*;
 
 /**

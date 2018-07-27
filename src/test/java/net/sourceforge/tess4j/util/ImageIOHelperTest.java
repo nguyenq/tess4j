@@ -70,6 +70,11 @@ public class ImageIOHelperTest {
         int expResult = 1;
         List<File> result = ImageIOHelper.createTiffFiles(imageFile, index);
         assertEquals(expResult, result.size());
+        
+        // cleanup
+        for (File f : result) {
+            f.delete();
+        }
     }
 
     /**
@@ -166,6 +171,8 @@ public class ImageIOHelperTest {
         File result = ImageIOHelper.deskewImage(imageFile, minimumDeskewThreshold);
         double resultAngle = new ImageDeskew(ImageIO.read(result)).getSkewAngle();
         assertTrue(Math.abs(resultAngle) < Math.abs(initAngle));
+        // cleanup
+        result.delete();
     }
 
     /**

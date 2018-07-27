@@ -35,7 +35,6 @@ import net.sourceforge.lept4j.Leptonica1;
 
 import net.sourceforge.tess4j.util.ImageIOHelper;
 import net.sourceforge.tess4j.util.LoggHelper;
-import net.sourceforge.tess4j.util.PdfUtilities;
 import org.slf4j.*;
 
 /**
