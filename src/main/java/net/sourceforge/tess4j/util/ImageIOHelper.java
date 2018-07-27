@@ -183,7 +183,8 @@ public class ImageIOHelper {
             if (dpiX != 0 && dpiY != 0) {
                 // Get the default image metadata.
                 ImageTypeSpecifier imageType = ImageTypeSpecifier.createFromRenderedImage(oimage.getRenderedImage());
-                IIOMetadata imageMetadata = writer.getDefaultImageMetadata(imageType, null);
+                ImageWriteParam param = writer.getDefaultWriteParam();
+                IIOMetadata imageMetadata = writer.getDefaultImageMetadata(imageType, param);
                 imageMetadata = setDPIViaAPI(imageMetadata, dpiX, dpiY);
                 oimage.setMetadata(imageMetadata);
             }
@@ -509,9 +510,7 @@ public class ImageIOHelper {
                 }
             }
         } finally {
-            if (writer != null) {
-                writer.dispose();
-            }
+            writer.dispose();
         }
     }
 
@@ -595,7 +594,8 @@ public class ImageIOHelper {
             for (IIOImage iioImage : imageList) {
                 // Get the default image metadata.
                 ImageTypeSpecifier imageType = ImageTypeSpecifier.createFromRenderedImage(iioImage.getRenderedImage());
-                IIOMetadata imageMetadata = writer.getDefaultImageMetadata(imageType, null);
+                ImageWriteParam param = writer.getDefaultWriteParam();
+                IIOMetadata imageMetadata = writer.getDefaultImageMetadata(imageType, param);
                 imageMetadata = setDPIViaAPI(imageMetadata, dpiX, dpiY);
                 iioImage.setMetadata(imageMetadata);
             }
@@ -608,9 +608,7 @@ public class ImageIOHelper {
                 writer.writeInsert(i++, iioImage, tiffWriteParam);
             }
         } finally {
-            if (writer != null) {
-                writer.dispose();
-            }
+            writer.dispose();
         }
     }
 
