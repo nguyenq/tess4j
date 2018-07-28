@@ -213,6 +213,11 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
                     result.insert(0, htmlBeginTag).append(htmlEndTag);
                 }
             } finally {
+                // delete temporary TIFF image for PDF
+                if (imageFile != null && imageFile.exists() && imageFile != inputFile && imageFile.getName().startsWith("multipage") && imageFile.getName().endsWith(ImageIOHelper.TIFF_EXT)) {
+                    imageFile.delete();
+                }
+                reader.dispose();
                 dispose();
             }
 
