@@ -153,3 +153,8 @@ Version 4.1.0 (20 July 2018)
 - Update Lept4J to 1.10.0
 - Improve handling of PDF
 - Refactor
+
+Version 4.1.1 (28 July 2018)
+- Properly dispose of resources and temporary image files
+- Clean up code and test output resources
+- Fix NPE in Java 10
