@@ -638,7 +638,7 @@ public class TessAPITest {
             return;
         }
 
-        String outputbase = "target/test-classes/test-results/outputbase";
+        String outputbase = "target/test-classes/test-results/ResultRenderer";
         TessResultRenderer renderer = api.TessHOcrRendererCreate(outputbase);
         api.TessResultRendererInsert(renderer, api.TessBoxTextRendererCreate(outputbase));
         api.TessResultRendererInsert(renderer, api.TessTextRendererCreate(outputbase));

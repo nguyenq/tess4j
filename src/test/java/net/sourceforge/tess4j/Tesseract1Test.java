@@ -147,12 +147,11 @@ public class Tesseract1Test {
      * @throws Exception while processing image.
      */
     @Test
-    public void testDoOCR_List_Rectangle() throws Exception {
+    public void testDoOCR_PDF() throws Exception {
         logger.info("doOCR on a PDF document");
-        File imageFile = new File(this.testResourcesDataPath, "eurotext.pdf");
-        List<IIOImage> imageList = ImageIOHelper.getIIOImageList(imageFile);
+        File inputFile = new File(this.testResourcesDataPath, "eurotext.pdf");
         String expResult = "The (quick) [brown] {fox} jumps!\nOver the $43,456.78 <lazy> #90 dog";
-        String result = instance.doOCR(imageList, null);
+        String result = instance.doOCR(inputFile, null);
         logger.info(result);
         assertEquals(expResult, result.substring(0, expResult.length()));
     }
@@ -230,7 +229,7 @@ public class Tesseract1Test {
         BufferedImage bi = ImageIO.read(imageFile);
         List<Word> result = instance.getWords(bi, pageIteratorLevel);
 
-        // print the complete result
+        // print the complete results
         for (Word word : result) {
             logger.info(word.toString());
         }
@@ -262,5 +261,26 @@ public class Tesseract1Test {
         }
 
         assertTrue(result.size() > 0);
+    }
+
+    /**
+     * Test of createDocumentsWithResults method, of class Tesseract1.
+     *
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testCreateDocumentsWithResults() throws Exception {
+        logger.info("createDocumentsWithResults for multiple images at given TessPageIteratorLevel");
+        File imageFile1 = new File(this.testResourcesDataPath, "eurotext.pdf");
+        File imageFile2 = new File(this.testResourcesDataPath, "eurotext.png");
+        String outputbase1 = "target/test-classes/test-results/docrenderer1-3";
+        String outputbase2 = "target/test-classes/test-results/docrenderer1-4";
+        List<RenderedFormat> formats = new ArrayList<RenderedFormat>(Arrays.asList(RenderedFormat.HOCR, RenderedFormat.PDF, RenderedFormat.TEXT));
+        List<OCRResult> results = instance.createDocumentsWithResults(new String[]{imageFile1.getPath(), imageFile2.getPath()}, new String[]{outputbase1, outputbase2}, formats, TessPageIteratorLevel.RIL_WORD);
+        assertTrue(new File(outputbase1 + ".pdf").exists());
+        assertEquals(2, results.size());
+        // Not work on Linux because unable to load pdf.ttf
+//        assertTrue(results.get(0).getConfidence() > 0);
+//        assertEquals(66, results.get(0).getWords().size());
     }
 }

@@ -147,3 +147,6 @@ Version 3.5.0 (29 June 2018)
 
 Version 3.5.1 (2 July 2018)
 - Link Tesseract 3.05.02 against Leptonica 1.75.3 (lept4j-1.9.4)
+
+Version 3.5.2 (28 July 2018)
+- Port recent fixes and enhancements in 4.1.x

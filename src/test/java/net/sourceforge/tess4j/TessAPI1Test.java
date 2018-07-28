@@ -136,7 +136,7 @@ public class TessAPI1Test {
         String result = utf8Text.getString(0);
         TessAPI1.TessDeleteText(utf8Text);
         logger.info(result);
-        assertEquals(expResult, result.substring(0, expResult.length()));
+        assertTrue(result.startsWith(expResult));
     }
 
     /**
@@ -162,7 +162,7 @@ public class TessAPI1Test {
         pRef.setValue(pix.getPointer());
         Leptonica1.pixDestroy(pRef);
 
-        assertEquals(expResult, result.substring(0, expResult.length()));
+        assertTrue(result.startsWith(expResult));
     }
 
     /**
@@ -632,7 +632,7 @@ public class TessAPI1Test {
             return;
         }
 
-        String outputbase = "target/test-classes/test-results/outputbase1";
+        String outputbase = "target/test-classes/test-results/ResultRenderer1";
         TessResultRenderer renderer = TessAPI1.TessHOcrRendererCreate(outputbase);
         TessAPI1.TessResultRendererInsert(renderer, TessAPI1.TessBoxTextRendererCreate(outputbase));
         TessAPI1.TessResultRendererInsert(renderer, TessAPI1.TessTextRendererCreate(outputbase));
