@@ -23,6 +23,7 @@ import java.awt.image.RenderedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
@@ -319,7 +320,7 @@ public class ImageIOHelper {
         ByteBuffer buf = ByteBuffer.allocateDirect(pixelData.length);
         buf.order(ByteOrder.nativeOrder());
         buf.put(pixelData);
-        buf.flip();
+        ((Buffer) buf).flip();
         return buf;
     }
 
