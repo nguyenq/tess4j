@@ -161,3 +161,6 @@ Version 4.1.1 (28 July 2018)
 
 Version 4.2.0 (11 August 2018)
 - Upgrade to Tesseract 4.0.0-beta.4 (fd49206)
+
+Version 4.2.1 (11 August 2018)
+- Recompile using JDK8 to avoid NoSuchMethodError: Method flip() does not exist in class java.nio.ByteBuffer
