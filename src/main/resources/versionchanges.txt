@@ -164,3 +164,4 @@ Version 4.2.0 (11 August 2018)
 
 Version 4.2.1 (11 August 2018)
 - Recompile using JDK8 to avoid NoSuchMethodError: Method flip() does not exist in class java.nio.ByteBuffer
+- Use explicit cast for compatibility with covariant return type on JDK 9's ByteBuffer methods, e.g., flip()
