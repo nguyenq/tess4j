@@ -158,3 +158,6 @@ Version 4.1.1 (28 July 2018)
 - Properly dispose of resources and temporary image files
 - Clean up code and test output resources
 - Fix NPE in Java 10
+
+Version 4.2.0 (11 August 2018)
+- Upgrade to Tesseract 4.0.0-beta.4 (fd49206)
