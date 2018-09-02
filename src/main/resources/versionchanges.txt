@@ -150,3 +150,6 @@ Version 3.5.1 (2 July 2018)
 
 Version 3.5.2 (28 July 2018)
 - Port recent fixes and enhancements in 4.1.x
+
+Version 3.5.3 (3 September 2018)
+- Fix Invalid memory access exception due of incorrect bit depth value

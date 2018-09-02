@@ -434,8 +434,15 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
      * @throws java.io.IOException
      */
     protected void setImage(RenderedImage image, Rectangle rect) throws IOException {
-        setImage(image.getWidth(), image.getHeight(), ImageIOHelper.getImageByteBuffer(image), rect, image
-                .getColorModel().getPixelSize());
+        ByteBuffer buff = ImageIOHelper.getImageByteBuffer(image);
+        int bpp;
+        DataBuffer dbuff = image.getData(new Rectangle(1,1)).getDataBuffer();
+        if (dbuff instanceof DataBufferByte) {
+            bpp = image.getColorModel().getPixelSize();
+        } else {
+            bpp = 8; // BufferedImage.TYPE_BYTE_GRAY image
+        }
+        setImage(image.getWidth(), image.getHeight(), buff, rect, bpp);
     }
 
     /**
