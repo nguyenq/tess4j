@@ -168,3 +168,6 @@ Version 4.2.1 (11 August 2018)
 
 Version 4.2.2 (3 September 2018)
 - Fix Invalid memory access exception due of incorrect bit depth value
+
+Version 4.2.3 (17 October 2018)
+- Update pdfbox dependencies
