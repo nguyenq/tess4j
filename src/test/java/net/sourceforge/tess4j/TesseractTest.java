@@ -246,7 +246,7 @@ public class TesseractTest {
 
         List<String> text = new ArrayList<String>();
         for (Word word : result.subList(0, expResults.length)) {
-            text.add(word.getText());
+            text.add(word.getText().trim());
         }
 
         assertArrayEquals(expResults, text.toArray());
