@@ -171,3 +171,6 @@ Version 4.2.2 (3 September 2018)
 
 Version 4.2.3 (17 October 2018)
 - Update pdfbox dependencies
+
+Version 4.3.0 (29 October 2018)
+- Upgrade to Tesseract 4.0.0 (5131699)
