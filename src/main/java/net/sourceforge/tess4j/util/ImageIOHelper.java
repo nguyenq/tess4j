@@ -17,6 +17,8 @@ package net.sourceforge.tess4j.util;
 
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.WritableRaster;
 import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
 import java.awt.image.RenderedImage;
@@ -254,9 +256,8 @@ public class ImageIOHelper {
      *
      * @param image an <code>IIOImage</code> object
      * @return a byte buffer of pixel data
-     * @throws IOException
      */
-    public static ByteBuffer getImageByteBuffer(IIOImage image) throws IOException {
+    public static ByteBuffer getImageByteBuffer(IIOImage image) {
         return getImageByteBuffer(image.getRenderedImage());
     }
 
@@ -265,32 +266,12 @@ public class ImageIOHelper {
      *
      * @param image an <code>RenderedImage</code> object
      * @return a byte buffer of pixel data
-     * @throws IOException
      */
-    public static ByteBuffer getImageByteBuffer(RenderedImage image) throws IOException {
-        //Set up the writeParam
-        TIFFImageWriteParam tiffWriteParam = new TIFFImageWriteParam(Locale.US);
-        tiffWriteParam.setCompressionMode(ImageWriteParam.MODE_DISABLED);
-
-        //Get tiff writer and set output to file
-        Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName(TIFF_FORMAT);
-        if (!writers.hasNext()) {
-            throw new RuntimeException(JAI_IMAGE_WRITER_MESSAGE);
-        }
-        ImageWriter writer = writers.next();
-
-        //Get the stream metadata
-        IIOMetadata streamMetadata = writer.getDefaultStreamMetadata(tiffWriteParam);
-
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ImageOutputStream ios = ImageIO.createImageOutputStream(outputStream);
-        writer.setOutput(ios);
-        writer.write(streamMetadata, new IIOImage(image, null, null), tiffWriteParam);
-//        writer.write(image);
-        writer.dispose();
-//        ImageIO.write(image, "tiff", ios); // this can be used in lieu of writer
-        ios.seek(0);
-        BufferedImage bi = ImageIO.read(ios);
+    public static ByteBuffer getImageByteBuffer(RenderedImage image) {
+        ColorModel cm = image.getColorModel();
+        WritableRaster wr = image.getData().createCompatibleWritableRaster(image.getWidth(), image.getHeight());
+        image.copyData(wr);
+        BufferedImage bi = new BufferedImage(cm, wr, cm.isAlphaPremultiplied(), null);
         return convertImageData(bi);
     }
 
