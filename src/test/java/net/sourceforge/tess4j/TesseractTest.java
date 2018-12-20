@@ -19,20 +19,14 @@ import java.awt.Rectangle;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Iterator;
-import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.ImageInputStream;
 
 import net.sourceforge.tess4j.util.ImageHelper;
-import net.sourceforge.tess4j.util.ImageIOHelper;
 import net.sourceforge.tess4j.util.LoggHelper;
 import net.sourceforge.tess4j.util.Utils;
 
