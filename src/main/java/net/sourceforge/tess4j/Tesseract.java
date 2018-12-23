@@ -823,6 +823,8 @@ public class Tesseract implements ITesseract {
      * Releases all of the native resources used by this instance.
      */
     protected void dispose() {
-        api.TessBaseAPIDelete(handle);
+        if (api != null && handle != null) {
+            api.TessBaseAPIDelete(handle);
+        }
     }
 }
