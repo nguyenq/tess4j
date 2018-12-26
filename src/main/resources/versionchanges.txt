@@ -174,3 +174,8 @@ Version 4.2.3 (17 October 2018)
 
 Version 4.3.0 (29 October 2018)
 - Upgrade to Tesseract 4.0.0 (5131699)
+
+Version 4.3.1 (26 December 2018)
+- Fix Windows build
+- Update Lept4J to 1.11.0 (Leptonica 1.77.0)
+- Improve RenderedImage to ByteBuffer conversion
