@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sourceforge.tess4j</groupId>
     <artifactId>tess4j</artifactId>
-    <version>4.3.2-SNAPSHOT</version>
+    <version>4.4.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Tess4J - Tesseract for Java</name>
@@ -223,7 +223,7 @@
         <dependency>
             <groupId>net.sourceforge.lept4j</groupId>
             <artifactId>lept4j</artifactId>
-            <version>1.10.0</version>
+            <version>1.11.0</version>
         </dependency>
         <dependency>
             <groupId>org.jboss</groupId>

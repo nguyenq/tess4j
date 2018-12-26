@@ -358,6 +358,31 @@ public class TessAPI1Test {
         TessAPI1.TessDeleteText(utf8Text);
         assertTrue(result.contains("<div class='ocr_page'"));
     }
+    
+    /**
+     * Test of TessBaseAPIGetAltoText method, of class TessAPI.
+     *
+     * @throws Exception while getting Alto text
+     */
+    @Test
+    public void testTessBaseAPIGetAltoText() throws Exception {
+        logger.info("TessBaseAPIGetAltoText");
+        String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
+        File tiff = new File(filename);
+        BufferedImage image = ImageIO.read(new FileInputStream(tiff));
+        ByteBuffer buf = ImageIOHelper.convertImageData(image);
+        int bpp = image.getColorModel().getPixelSize();
+        int bytespp = bpp / 8;
+        int bytespl = (int) Math.ceil(image.getWidth() * bpp / 8.0);
+        TessAPI1.TessBaseAPISetPageSegMode(handle, TessPageSegMode.PSM_AUTO);
+        TessAPI1.TessBaseAPIInit3(handle, datapath, language);
+        TessAPI1.TessBaseAPISetImage(handle, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
+        int page_number = 0;
+        Pointer utf8Text = TessAPI1.TessBaseAPIGetAltoText(handle, page_number);
+        String result = utf8Text.getString(0);
+        TessAPI1.TessDeleteText(utf8Text);
+        assertTrue(result.contains("<Page WIDTH=\"1024\" HEIGHT=\"800\" PHYSICAL_IMG_NR=\"0\" ID=\"page_0\">"));
+    }
 
     /**
      * Test of TessBaseAPIAnalyseLayout method, of class TessAPI1.

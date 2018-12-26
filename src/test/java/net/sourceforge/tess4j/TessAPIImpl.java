@@ -652,4 +652,14 @@ public class TessAPIImpl implements TessAPI {
     public void TessMonitorSetDeadlineMSecs(ETEXT_DESC monitor, int deadline) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    @Override
+    public TessResultRenderer TessAltoRendererCreate(String outputbase) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Pointer TessBaseAPIGetAltoText(TessBaseAPI handle, int page_number) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

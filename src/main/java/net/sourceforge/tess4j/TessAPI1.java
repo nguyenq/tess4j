@@ -76,6 +76,8 @@ public class TessAPI1 implements Library, ITessAPI {
 
     public static native TessResultRenderer TessHOcrRendererCreate2(String outputbase, int font_info);
 
+    public static native TessResultRenderer TessAltoRendererCreate(String outputbase);
+
     public static native TessResultRenderer TessPDFRendererCreate(String outputbase, String datadir, int textonly);
 
     public static native TessResultRenderer TessUnlvRendererCreate(String outputbase);
@@ -778,6 +780,16 @@ public class TessAPI1 implements Library, ITessAPI {
     public static native Pointer TessBaseAPIGetHOCRText(TessBaseAPI handle, int page_number);
 
     /**
+     * Make an XML-formatted string with Alto markup from the internal data
+     * structures.
+     *
+     * @param handle the TesseractAPI instance
+     * @param page_number page number
+     * @return the pointer to Alto text
+     */
+    public static native Pointer TessBaseAPIGetAltoText(TessBaseAPI handle, int page_number);
+
+    /**
      * The recognized text is returned as a char* which is coded as a UTF8 box
      * file and must be freed with the delete [] operator. page_number is a
      * 0-base page index that will appear in the box file.
@@ -1220,7 +1232,7 @@ public class TessAPI1 implements Library, ITessAPI {
     public static native String TessChoiceIteratorGetUTF8Text(TessChoiceIterator handle);
 
     public static native float TessChoiceIteratorConfidence(TessChoiceIterator handle);
-    
+
     /* Progress monitor */
     public static native ETEXT_DESC TessMonitorCreate();
 

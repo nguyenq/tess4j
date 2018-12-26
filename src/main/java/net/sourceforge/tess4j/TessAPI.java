@@ -76,6 +76,8 @@ public interface TessAPI extends Library, ITessAPI {
 
     TessResultRenderer TessHOcrRendererCreate2(String outputbase, int font_info);
 
+    TessResultRenderer TessAltoRendererCreate(String outputbase);
+
     TessResultRenderer TessPDFRendererCreate(String outputbase, String datadir, int textonly);
 
     TessResultRenderer TessUnlvRendererCreate(String outputbase);
@@ -775,6 +777,16 @@ public interface TessAPI extends Library, ITessAPI {
      * @return the pointer to hOCR text
      */
     Pointer TessBaseAPIGetHOCRText(TessBaseAPI handle, int page_number);
+
+    /**
+     * Make an XML-formatted string with Alto markup from the internal data
+     * structures.
+     *
+     * @param handle the TesseractAPI instance
+     * @param page_number page number
+     * @return the pointer to Alto text
+     */
+    Pointer TessBaseAPIGetAltoText(TessBaseAPI handle, int page_number);
 
     /**
      * The recognized text is returned as a char* which is coded as a UTF8 box
