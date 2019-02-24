@@ -30,21 +30,21 @@
                 JNA</a>, and <a href="https://java.net/projects/jai-imageio">JAI-ImageIO</a>
             are required. <a href="http://maven.apache.org/">Apache Maven</a> and <a href="http://www.junit.org/">
                 JUnit</a> are used for program building and unit testing. The Tesseract DLLs
-            were built with VS2015 and therefore depend on the <a href="https://www.microsoft.com/en-us/download/details.aspx?id=53587">
-                Visual C++ 2015 Redistributable Packages</a>.
+            were built with VS2017 (v141) and therefore depend on the <a href="https://visualstudio.microsoft.com/downloads/">
+                Visual C++ 2017 Redistributable Packages</a>.
         </p>
         <h3>
             INSTRUCTIONS
         </h3>
         <p>
-            Tesseract 4.0.beta-1 and Leptonica 1.75.3 (via Lept4J) 32- and 64-bit
+            Tesseract 4.1.0 and Leptonica 1.77 (via Lept4J) 32- and 64-bit
             DLLs, language data for English, and sample images are bundled with the library.
             <a href="https://github.com/tesseract-ocr/tessdata">Language data packs</a> for
             Tesseract should be decompressed and placed into the <code>tessdata</code> folder.
         </p>
         <p>
             The Linux shared object library (<code>libtesseract.so</code>) equivalent to the
-            DLL is available in Tesseract 4.0.beta-1, which can be built from the <a href="https://github.com/tesseract-ocr/tesseract"
+            DLL is available in Tesseract 4.1.0, which can be built from the <a href="https://github.com/tesseract-ocr/tesseract"
                 target="_blank">source</a> with the instructions given in <a href="https://github.com/tesseract-ocr/tesseract/wiki/Compiling"
                     target="_blank">Tesseract Wiki</a>.
         </p>
@@ -100,7 +100,7 @@ public class TesseractExample {
         ITesseract instance = new Tesseract(); // JNA Interface Mapping
         // ITesseract instance = new Tesseract1(); // JNA Direct Mapping
         // File tessDataFolder = LoadLibs.extractTessResources("tessdata"); // Maven build only; only English data bundled
-        // instance.setDatapath(tessDataFolder.getParent());
+        // instance.setDatapath(tessDataFolder.getPath());
 
         try {
             String result = instance.doOCR(imageFile);
