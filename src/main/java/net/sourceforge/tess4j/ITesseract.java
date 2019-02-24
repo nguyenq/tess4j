@@ -40,7 +40,7 @@ public interface ITesseract {
      */
     public enum RenderedFormat {
 
-        TEXT, HOCR, PDF, UNLV, BOX
+        TEXT, HOCR, PDF, UNLV, BOX, ALTO
     }
 
     /**

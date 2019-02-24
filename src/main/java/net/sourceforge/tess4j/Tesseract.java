@@ -554,6 +554,13 @@ public class Tesseract implements ITesseract {
                         api.TessResultRendererInsert(renderer, api.TessUnlvRendererCreate(outputbase));
                     }
                     break;
+                case ALTO:
+                    if (renderer == null) {
+                        renderer = api.TessAltoRendererCreate(outputbase);
+                    } else {
+                        api.TessResultRendererInsert(renderer, api.TessAltoRendererCreate(outputbase));
+                    }
+                    break;
             }
         }
 

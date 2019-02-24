@@ -534,6 +534,13 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
                         TessResultRendererInsert(renderer, TessUnlvRendererCreate(outputbase));
                     }
                     break;
+                case ALTO:
+                    if (renderer == null) {
+                        renderer = TessAltoRendererCreate(outputbase);
+                    } else {
+                        TessResultRendererInsert(renderer, TessAltoRendererCreate(outputbase));
+                    }
+                    break;                    
             }
         }
 
