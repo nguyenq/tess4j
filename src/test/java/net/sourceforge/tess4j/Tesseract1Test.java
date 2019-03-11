@@ -172,17 +172,17 @@ public class Tesseract1Test {
         Map<String, Integer> types = new HashMap<>();
         types.put("TYPE_INT_RGB", BufferedImage.TYPE_INT_RGB);
         types.put("TYPE_INT_ARGB", BufferedImage.TYPE_INT_ARGB);
-        types.put("TYPE_INT_ARGB_PRE", BufferedImage.TYPE_INT_ARGB_PRE);
-        types.put("TYPE_INT_BGR", BufferedImage.TYPE_INT_BGR);
-        types.put("TYPE_3BYTE_BGR", BufferedImage.TYPE_3BYTE_BGR);
-        types.put("TYPE_4BYTE_ABGR", BufferedImage.TYPE_4BYTE_ABGR);
-        types.put("TYPE_4BYTE_ABGR_PRE", BufferedImage.TYPE_4BYTE_ABGR_PRE);
-        types.put("TYPE_USHORT_565_RGB", BufferedImage.TYPE_USHORT_565_RGB);
-        types.put("TYPE_USHORT_555_RGB", BufferedImage.TYPE_USHORT_555_RGB);
-        types.put("TYPE_BYTE_GRAY", BufferedImage.TYPE_BYTE_GRAY);
-        types.put("TYPE_USHORT_GRAY", BufferedImage.TYPE_USHORT_GRAY);
-        types.put("TYPE_BYTE_BINARY", BufferedImage.TYPE_BYTE_BINARY);
-        types.put("TYPE_BYTE_INDEXED", BufferedImage.TYPE_BYTE_INDEXED);
+//        types.put("TYPE_INT_ARGB_PRE", BufferedImage.TYPE_INT_ARGB_PRE);
+//        types.put("TYPE_INT_BGR", BufferedImage.TYPE_INT_BGR);
+//        types.put("TYPE_3BYTE_BGR", BufferedImage.TYPE_3BYTE_BGR);
+//        types.put("TYPE_4BYTE_ABGR", BufferedImage.TYPE_4BYTE_ABGR);
+//        types.put("TYPE_4BYTE_ABGR_PRE", BufferedImage.TYPE_4BYTE_ABGR_PRE);
+//        types.put("TYPE_USHORT_565_RGB", BufferedImage.TYPE_USHORT_565_RGB);
+//        types.put("TYPE_USHORT_555_RGB", BufferedImage.TYPE_USHORT_555_RGB);
+//        types.put("TYPE_BYTE_GRAY", BufferedImage.TYPE_BYTE_GRAY);
+//        types.put("TYPE_USHORT_GRAY", BufferedImage.TYPE_USHORT_GRAY);
+//        types.put("TYPE_BYTE_BINARY", BufferedImage.TYPE_BYTE_BINARY);
+//        types.put("TYPE_BYTE_INDEXED", BufferedImage.TYPE_BYTE_INDEXED);
 
         for (Map.Entry<String, Integer> entry: types.entrySet()) {
             if (entry.getValue() == bi.getType()) {

@@ -662,4 +662,34 @@ public class TessAPIImpl implements TessAPI {
     public Pointer TessBaseAPIGetAltoText(TessBaseAPI handle, int page_number) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    @Override
+    public TessResultRenderer TessLSTMBoxRendererCreate(String outputbase) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public TessResultRenderer TessWordStrBoxRendererCreate(String outputbase) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Pointer TessBaseAPIGetLSTMBoxText(TessBaseAPI handle, int page_number) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Pointer TessBaseAPIGetWordStrBoxText(TessBaseAPI handle, int page_number) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public TessResultRenderer TessTsvRendererCreate(String outputbase) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Pointer TessBaseAPIGetTsvText(TessBaseAPI handle, int page_number) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

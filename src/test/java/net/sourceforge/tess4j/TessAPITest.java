@@ -213,7 +213,7 @@ public class TessAPITest {
     @Test
     public void testTessVersion() {
         logger.info("TessVersion");
-        String expResult = "4.0.0";
+        String expResult = "4.1.0";
         String result = api.TessVersion();
         logger.info(result);
         assertTrue(result.startsWith(expResult));
@@ -386,6 +386,24 @@ public class TessAPITest {
         String result = utf8Text.getString(0);
         api.TessDeleteText(utf8Text);
         assertTrue(result.contains("<Page WIDTH=\"1024\" HEIGHT=\"800\" PHYSICAL_IMG_NR=\"0\" ID=\"page_0\">"));
+        
+        // WordStr Box output
+        utf8Text = api.TessBaseAPIGetWordStrBoxText(handle, page_number);
+        result = utf8Text.getString(0);
+        api.TessDeleteText(utf8Text);
+        assertTrue(result.contains("WordStr"));
+        
+        // TSV output
+        utf8Text = api.TessBaseAPIGetTsvText(handle, page_number);
+        result = utf8Text.getString(0);
+        api.TessDeleteText(utf8Text);
+        assertTrue(result.contains("1\t"));
+
+        // LSTM Box output
+        utf8Text = api.TessBaseAPIGetLSTMBoxText(handle, page_number);
+        result = utf8Text.getString(0);
+        api.TessDeleteText(utf8Text);
+        assertTrue(result.contains("\t"));
     }
 
     /**

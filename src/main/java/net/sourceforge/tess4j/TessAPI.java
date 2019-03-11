@@ -78,11 +78,17 @@ public interface TessAPI extends Library, ITessAPI {
 
     TessResultRenderer TessAltoRendererCreate(String outputbase);
 
+    TessResultRenderer TessTsvRendererCreate(String outputbase);
+
     TessResultRenderer TessPDFRendererCreate(String outputbase, String datadir, int textonly);
 
     TessResultRenderer TessUnlvRendererCreate(String outputbase);
 
     TessResultRenderer TessBoxTextRendererCreate(String outputbase);
+
+    TessResultRenderer TessLSTMBoxRendererCreate(String outputbase);
+
+    TessResultRenderer TessWordStrBoxRendererCreate(String outputbase);
 
     void TessDeleteResultRenderer(TessResultRenderer renderer);
 
@@ -789,6 +795,17 @@ public interface TessAPI extends Library, ITessAPI {
     Pointer TessBaseAPIGetAltoText(TessBaseAPI handle, int page_number);
 
     /**
+     * Make a TSV-formatted string from the internal data structures.
+     * page_number is 0-based but will appear in the output as 1-based. Returned
+     * string must be freed with the delete [] operator.
+     *      
+     * @param handle the TesseractAPI instance
+     * @param page_number page number
+     * @return the pointer to TSV text
+     */
+    Pointer TessBaseAPIGetTsvText(TessBaseAPI handle, int page_number);
+
+    /**
      * The recognized text is returned as a char* which is coded as a UTF8 box
      * file and must be freed with the delete [] operator. page_number is a
      * 0-base page index that will appear in the box file.
@@ -798,6 +815,28 @@ public interface TessAPI extends Library, ITessAPI {
      * @return the pointer to box text
      */
     Pointer TessBaseAPIGetBoxText(TessBaseAPI handle, int page_number);
+
+    /**
+     * Create a UTF8 box file for LSTM training from the internal data
+     * structures. page_number is a 0-base page index that will appear in the
+     * box file. Returned string must be freed with the delete [] operator.
+     *
+     * @param handle the TesseractAPI instance
+     * @param page_number page number
+     * @return the pointer to LSTM Box text
+     */
+    Pointer TessBaseAPIGetLSTMBoxText(TessBaseAPI handle, int page_number);
+
+    /**
+     * Create a UTF8 box file with WordStr strings from the internal data
+     * structures. page_number is a 0-base page index that will appear in the
+     * box file. Returned string must be freed with the delete [] operator.
+     *
+     * @param handle the TesseractAPI instance
+     * @param page_number page number
+     * @return the pointer to WordStr Box text
+     */
+    Pointer TessBaseAPIGetWordStrBoxText(TessBaseAPI handle, int page_number);
 
     /**
      * The recognized text is returned as a char* which is coded as UNLV format

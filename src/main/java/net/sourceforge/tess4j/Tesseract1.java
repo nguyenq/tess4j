@@ -435,7 +435,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     protected void setImage(RenderedImage image, Rectangle rect) throws IOException {
         ByteBuffer buff = ImageIOHelper.getImageByteBuffer(image);
         int bpp;
-        DataBuffer dbuff = image.getData(new Rectangle(1,1)).getDataBuffer();
+        DataBuffer dbuff = image.getData(new Rectangle(1, 1)).getDataBuffer();
         if (dbuff instanceof DataBufferByte) {
             bpp = image.getColorModel().getPixelSize();
         } else {
@@ -540,7 +540,28 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
                     } else {
                         TessResultRendererInsert(renderer, TessAltoRendererCreate(outputbase));
                     }
-                    break;                    
+                    break;
+                case TSV:
+                    if (renderer == null) {
+                        renderer = TessTsvRendererCreate(outputbase);
+                    } else {
+                        TessResultRendererInsert(renderer, TessTsvRendererCreate(outputbase));
+                    }
+                    break;
+                case LSTMBOX:
+                    if (renderer == null) {
+                        renderer = TessLSTMBoxRendererCreate(outputbase);
+                    } else {
+                        TessResultRendererInsert(renderer, TessLSTMBoxRendererCreate(outputbase));
+                    }
+                    break;
+                case WORDSTRBOX:
+                    if (renderer == null) {
+                        renderer = TessWordStrBoxRendererCreate(outputbase);
+                    } else {
+                        TessResultRendererInsert(renderer, TessWordStrBoxRendererCreate(outputbase));
+                    }
+                    break;
             }
         }
 
