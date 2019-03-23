@@ -179,5 +179,5 @@ Version 4.3.1 (26 December 2018)
 - Fix Windows build
 - Improve RenderedImage to ByteBuffer conversion
 
-Version 4.4.0-SNAPSHOT (10 March 2019)
-- Upgrade to Tesseract 4.1.0-RC1 (d2c3309)
+Version 4.4.0-SNAPSHOT (23 March 2019)
+- Upgrade to Tesseract 4.1.0-RC1 (2fcb483)
