@@ -53,7 +53,7 @@ import org.slf4j.*;
  * <br>
  * Support for PDF documents is available through <code>Ghost4J</code>, a
  * <code>JNA</code> wrapper for <code>GPL Ghostscript</code>, which should be
- * installed and included in system path.<br>
+ * installed and included in system path. If Ghostscript is not available, PDFBox will be used.<br>
  * <br>
  * Any program that uses the library will need to ensure that the required
  * libraries (the <code>.jar</code> files for <code>jna</code>,
@@ -64,7 +64,6 @@ public class Tesseract implements ITesseract {
 
     private String language = "eng";
     private String datapath;
-    private RenderedFormat renderedFormat = RenderedFormat.TEXT;
     private int psm = -1;
     private int ocrEngineMode = TessOcrEngineMode.OEM_DEFAULT;
     private final Properties prop = new Properties();
@@ -151,8 +150,7 @@ public class Tesseract implements ITesseract {
      * @param hocr to enable or disable hocr output
      */
     public void setHocr(boolean hocr) {
-        this.renderedFormat = hocr ? RenderedFormat.HOCR : RenderedFormat.TEXT;
-        prop.setProperty("tessedit_create_hocr", hocr ? "1" : "0");
+        prop.setProperty("tessedit_create_hocr", hocr ? String.valueOf(TRUE) : String.valueOf(FALSE));
     }
 
     /**
@@ -227,7 +225,7 @@ public class Tesseract implements ITesseract {
                     result.append(doOCR(oimage, inputFile.getPath(), rect, i + 1));
                 }
 
-                if (renderedFormat == RenderedFormat.HOCR) {
+                if (String.valueOf(TRUE).equals(prop.getProperty("tessedit_create_hocr"))) {
                     result.insert(0, htmlBeginTag).append(htmlEndTag);
                 }
             } finally {
@@ -325,7 +323,7 @@ public class Tesseract implements ITesseract {
                 }
             }
 
-            if (renderedFormat == RenderedFormat.HOCR) {
+            if (String.valueOf(TRUE).equals(prop.getProperty("tessedit_create_hocr"))) {
                 sb.insert(0, htmlBeginTag).append(htmlEndTag);
             }
 
@@ -499,7 +497,22 @@ public class Tesseract implements ITesseract {
             api.TessBaseAPISetInputName(handle, filename);
         }
 
-        Pointer utf8Text = renderedFormat == RenderedFormat.HOCR ? api.TessBaseAPIGetHOCRText(handle, pageNum - 1) : api.TessBaseAPIGetUTF8Text(handle);
+        Pointer utf8Text;
+        if (String.valueOf(TRUE).equals(prop.getProperty("tessedit_create_hocr"))) {
+            utf8Text = api.TessBaseAPIGetHOCRText(handle, pageNum - 1);
+        } else if (String.valueOf(TRUE).equals(prop.getProperty("tessedit_write_unlv"))) {
+            utf8Text = api.TessBaseAPIGetUNLVText(handle);
+        } else if (String.valueOf(TRUE).equals(prop.getProperty("tessedit_create_alto"))) {
+            utf8Text = api.TessBaseAPIGetAltoText(handle, pageNum - 1);
+        } else if (String.valueOf(TRUE).equals(prop.getProperty("tessedit_create_lstmbox"))) {
+            utf8Text = api.TessBaseAPIGetLSTMBoxText(handle, pageNum - 1);
+        } else if (String.valueOf(TRUE).equals(prop.getProperty("tessedit_create_tsv"))) {
+            utf8Text = api.TessBaseAPIGetTsvText(handle, pageNum - 1);
+        } else if (String.valueOf(TRUE).equals(prop.getProperty("tessedit_create_wordstrbox"))) {
+            utf8Text = api.TessBaseAPIGetWordStrBoxText(handle, pageNum - 1);
+        } else {
+            utf8Text = api.TessBaseAPIGetUTF8Text(handle);
+        }
         String str = utf8Text.getString(0);
         api.TessDeleteText(utf8Text);
         return str;
