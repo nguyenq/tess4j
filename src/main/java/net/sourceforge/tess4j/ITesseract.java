@@ -216,6 +216,47 @@ public interface ITesseract {
     void createDocuments(String[] filenames, String[] outputbases, List<RenderedFormat> formats) throws TesseractException;
 
     /**
+     * Creates documents with OCR result for given renderers at specified page
+     * iterator level.
+     *
+     * @param bi input buffered image
+     * @param filename filename
+     * @param outputbase output filenames without extension
+     * @param formats types of renderer
+     * @param pageIteratorLevel TessPageIteratorLevel enum
+     * @return OCR result
+     * @throws TesseractException
+     */
+    OCRResult createDocumentsWithResults(BufferedImage bi, String filename, String outputbase, List<ITesseract.RenderedFormat> formats, int pageIteratorLevel) throws TesseractException;
+
+    /**
+     * Creates documents with OCR results for given renderers at specified page
+     * iterator level.
+     *
+     * @param bis array of input buffered images
+     * @param filenames array of filenames
+     * @param outputbases array of output filenames without extension
+     * @param formats types of renderer
+     * @param pageIteratorLevel TessPageIteratorLevel enum
+     * @return list of OCR results
+     * @throws TesseractException
+     */
+    List<OCRResult> createDocumentsWithResults(BufferedImage[] bis, String[] filenames, String[] outputbases, List<ITesseract.RenderedFormat> formats, int pageIteratorLevel) throws TesseractException;
+
+    /**
+     * Creates documents with OCR result for given renderers at specified page
+     * iterator level.
+     *
+     * @param filename input file
+     * @param outputbase output filenames without extension
+     * @param formats types of renderer
+     * @param pageIteratorLevel TessPageIteratorLevel enum
+     * @return OCR result
+     * @throws TesseractException
+     */
+    OCRResult createDocumentsWithResults(String filename, String outputbase, List<ITesseract.RenderedFormat> formats, int pageIteratorLevel) throws TesseractException;
+
+    /**
      * Creates documents with OCR results for given renderers at specified page
      * iterator level.
      *
@@ -223,7 +264,7 @@ public interface ITesseract {
      * @param outputbases array of output filenames without extension
      * @param formats types of renderer
      * @param pageIteratorLevel TessPageIteratorLevel enum
-     * @return OCR results
+     * @return list of OCR results
      * @throws TesseractException
      */
     List<OCRResult> createDocumentsWithResults(String[] filenames, String[] outputbases, List<ITesseract.RenderedFormat> formats, int pageIteratorLevel) throws TesseractException;
@@ -231,7 +272,7 @@ public interface ITesseract {
     /**
      * Gets segmented regions at specified page iterator level.
      *
-     * @param bi input image
+     * @param bi input buffered image
      * @param pageIteratorLevel TessPageIteratorLevel enum
      * @return list of <code>Rectangle</code>
      * @throws TesseractException
@@ -241,7 +282,7 @@ public interface ITesseract {
     /**
      * Gets recognized words at specified page iterator level.
      *
-     * @param bi input image
+     * @param bi input buffered image
      * @param pageIteratorLevel TessPageIteratorLevel enum
      * @return list of <code>Word</code>
      */

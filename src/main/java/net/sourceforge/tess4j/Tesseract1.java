@@ -32,6 +32,8 @@ import net.sourceforge.lept4j.Box;
 import net.sourceforge.lept4j.Boxa;
 import static net.sourceforge.lept4j.ILeptonica.L_CLONE;
 import net.sourceforge.lept4j.Leptonica1;
+import net.sourceforge.lept4j.Pix;
+import net.sourceforge.lept4j.util.LeptUtils;
 
 import net.sourceforge.tess4j.util.ImageIOHelper;
 import net.sourceforge.tess4j.util.LoggHelper;
@@ -46,7 +48,8 @@ import org.slf4j.*;
  * <br>
  * Support for PDF documents is available through <code>Ghost4J</code>, a
  * <code>JNA</code> wrapper for <code>GPL Ghostscript</code>, which should be
- * installed and included in system path. If Ghostscript is not available, PDFBox will be used.<br>
+ * installed and included in system path. If Ghostscript is not available,
+ * PDFBox will be used.<br>
  * <br>
  * Any program that uses the library will need to ensure that the required
  * libraries (the <code>.jar</code> files for <code>jna</code>,
@@ -477,24 +480,24 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
             TessBaseAPISetInputName(handle, filename);
         }
 
-        Pointer utf8Text;
+        Pointer textPtr;
         if (String.valueOf(TRUE).equals(prop.getProperty("tessedit_create_hocr"))) {
-            utf8Text = TessBaseAPIGetHOCRText(handle, pageNum - 1);
+            textPtr = TessBaseAPIGetHOCRText(handle, pageNum - 1);
         } else if (String.valueOf(TRUE).equals(prop.getProperty("tessedit_write_unlv"))) {
-            utf8Text = TessBaseAPIGetUNLVText(handle);
+            textPtr = TessBaseAPIGetUNLVText(handle);
         } else if (String.valueOf(TRUE).equals(prop.getProperty("tessedit_create_alto"))) {
-            utf8Text = TessBaseAPIGetAltoText(handle, pageNum - 1);
+            textPtr = TessBaseAPIGetAltoText(handle, pageNum - 1);
         } else if (String.valueOf(TRUE).equals(prop.getProperty("tessedit_create_lstmbox"))) {
-            utf8Text = TessBaseAPIGetLSTMBoxText(handle, pageNum - 1);
+            textPtr = TessBaseAPIGetLSTMBoxText(handle, pageNum - 1);
         } else if (String.valueOf(TRUE).equals(prop.getProperty("tessedit_create_tsv"))) {
-            utf8Text = TessBaseAPIGetTsvText(handle, pageNum - 1);
+            textPtr = TessBaseAPIGetTsvText(handle, pageNum - 1);
         } else if (String.valueOf(TRUE).equals(prop.getProperty("tessedit_create_wordstrbox"))) {
-            utf8Text = TessBaseAPIGetWordStrBoxText(handle, pageNum - 1);
+            textPtr = TessBaseAPIGetWordStrBoxText(handle, pageNum - 1);
         } else {
-            utf8Text = TessBaseAPIGetUTF8Text(handle);
+            textPtr = TessBaseAPIGetUTF8Text(handle);
         }
-        String str = utf8Text.getString(0);
-        TessDeleteText(utf8Text);
+        String str = textPtr.getString(0);
+        TessDeleteText(textPtr);
         return str;
     }
 
@@ -595,7 +598,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     }
 
     /**
-     * Creates documents.
+     * Creates documents for given renderer.
      *
      * @param filenames array of input files
      * @param outputbases array of output filenames without extension
@@ -639,7 +642,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     }
 
     /**
-     * Creates documents.
+     * Creates documents for given renderer.
      *
      * @param filename input file
      * @param renderer renderer
@@ -657,9 +660,32 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     }
 
     /**
+     * Creates documents for given renderer.
+     *
+     * @param bi buffered image
+     * @param filename input file
+     * @param renderer renderer
+     * @return the average text confidence for Tesseract page result
+     * @throws Exception
+     */
+    private int createDocuments(BufferedImage bi, String filename, TessResultRenderer renderer) throws Exception {
+        Pix pix = LeptUtils.convertImageToPix(bi);
+        TessResultRendererBeginDocument(renderer, null);
+        int result = TessBaseAPIProcessPage(handle, pix, 0, filename, null, 0, renderer);
+        TessResultRendererEndDocument(renderer);
+        LeptUtils.dispose(pix);
+
+        if (result == ITessAPI.FALSE) {
+            throw new TesseractException("Error during processing page.");
+        }
+
+        return TessBaseAPIMeanTextConf(handle);
+    }
+
+    /**
      * Gets segmented regions at specified page iterator level.
      *
-     * @param bi input image
+     * @param bi input buffered image
      * @param pageIteratorLevel TessPageIteratorLevel enum
      * @return list of <code>Rectangle</code>
      * @throws TesseractException
@@ -703,7 +729,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     /**
      * Gets recognized words at specified page iterator level.
      *
-     * @param bi input image
+     * @param bi input buffered image
      * @param pageIteratorLevel TessPageIteratorLevel enum
      * @return list of <code>Word</code>
      */
@@ -748,13 +774,99 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     }
 
     /**
+     * Creates documents with OCR result for given renderers at specified page
+     * iterator level.
+     *
+     * @param bi input buffered image
+     * @param filename filename
+     * @param outputbase output filenames without extension
+     * @param formats types of renderer
+     * @param pageIteratorLevel TessPageIteratorLevel enum
+     * @return OCR result
+     * @throws TesseractException
+     */
+    @Override
+    public OCRResult createDocumentsWithResults(BufferedImage bi, String filename, String outputbase, List<RenderedFormat> formats, int pageIteratorLevel) throws TesseractException {
+        List<OCRResult> results = createDocumentsWithResults(new BufferedImage[]{bi}, new String[]{filename}, new String[]{outputbase}, formats, pageIteratorLevel);
+        if (!results.isEmpty()) {
+            return results.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Creates documents with OCR results for given renderers at specified page
+     * iterator level.
+     *
+     * @param bis array of input buffered images
+     * @param filenames array of filenames
+     * @param outputbases array of output filenames without extension
+     * @param formats types of renderer
+     * @param pageIteratorLevel TessPageIteratorLevel enum
+     * @return list of OCR results
+     * @throws TesseractException
+     */
+    @Override
+    public List<OCRResult> createDocumentsWithResults(BufferedImage[] bis, String[] filenames, String[] outputbases, List<RenderedFormat> formats, int pageIteratorLevel) throws TesseractException {
+        if (bis.length != filenames.length || bis.length != outputbases.length) {
+            throw new RuntimeException("The three arrays must match in length.");
+        }
+
+        init();
+        setTessVariables();
+
+        List<OCRResult> results = new ArrayList<OCRResult>();
+
+        try {
+            for (int i = 0; i < bis.length; i++) {
+                try {
+                    TessResultRenderer renderer = createRenderers(outputbases[i], formats);
+                    int meanTextConfidence = createDocuments(bis[i], filenames[i], renderer);
+                    List<Word> words = meanTextConfidence > 0 ? getRecognizedWords(pageIteratorLevel) : new ArrayList<Word>();
+                    results.add(new OCRResult(meanTextConfidence, words));
+                    TessDeleteResultRenderer(renderer);
+                } catch (Exception e) {
+                    // skip the problematic image file
+                    logger.warn(e.getMessage(), e);
+                }
+            }
+        } finally {
+            dispose();
+        }
+
+        return results;
+    }
+
+    /**
+     * Creates documents with OCR result for given renderers at specified page
+     * iterator level.
+     *
+     * @param filename input file
+     * @param outputbase output filenames without extension
+     * @param formats types of renderer
+     * @param pageIteratorLevel TessPageIteratorLevel enum
+     * @return OCR result
+     * @throws TesseractException
+     */
+    @Override
+    public OCRResult createDocumentsWithResults(String filename, String outputbase, List<RenderedFormat> formats, int pageIteratorLevel) throws TesseractException {
+        List<OCRResult> results = createDocumentsWithResults(new String[]{filename}, new String[]{outputbase}, formats, pageIteratorLevel);
+        if (!results.isEmpty()) {
+            return results.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Creates documents with OCR results for given renderers at specified page
      * iterator level.
      *
      * @param filenames array of input files
      * @param outputbases array of output filenames without extension
      * @param formats types of renderer
-     * @return OCR results
+     * @return list of OCR results
      * @throws TesseractException
      */
     @Override

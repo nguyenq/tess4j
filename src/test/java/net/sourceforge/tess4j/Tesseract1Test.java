@@ -317,4 +317,22 @@ public class Tesseract1Test {
 //        assertTrue(results.get(0).getConfidence() > 0);
 //        assertEquals(66, results.get(0).getWords().size());
     }
+    
+    /**
+     * Test of createDocumentsWithResults method, of class Tesseract.
+     *
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testCreateDocumentsWithResults1() throws Exception {
+        logger.info("createDocumentsWithResults for a buffered image at given TessPageIteratorLevel");
+        File imageFile = new File(this.testResourcesDataPath, "eurotext.tif");
+        BufferedImage bi = ImageIO.read(imageFile);
+        String outputbase = "target/test-classes/test-results/docrenderer-5";
+        List<RenderedFormat> formats = new ArrayList<RenderedFormat>(Arrays.asList(RenderedFormat.HOCR, RenderedFormat.PDF, RenderedFormat.TEXT));
+        OCRResult result = instance.createDocumentsWithResults(bi, imageFile.getPath(),outputbase, formats, TessPageIteratorLevel.RIL_WORD);
+        assertTrue(new File(outputbase + ".pdf").exists());
+        assertTrue(result.getConfidence() > 0);
+        assertEquals(66, result.getWords().size());
+    }
 }
