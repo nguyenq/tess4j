@@ -220,7 +220,7 @@ public interface ITesseract {
      * iterator level.
      *
      * @param bi input buffered image
-     * @param filename filename
+     * @param filename filename (optional)
      * @param outputbase output filenames without extension
      * @param formats types of renderer
      * @param pageIteratorLevel TessPageIteratorLevel enum

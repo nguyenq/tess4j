@@ -663,14 +663,14 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
      * Creates documents for given renderer.
      *
      * @param bi buffered image
-     * @param filename input file
+     * @param filename filename (optional)
      * @param renderer renderer
      * @return the average text confidence for Tesseract page result
      * @throws Exception
      */
     private int createDocuments(BufferedImage bi, String filename, TessResultRenderer renderer) throws Exception {
         Pix pix = LeptUtils.convertImageToPix(bi);
-        TessResultRendererBeginDocument(renderer, null);
+        TessResultRendererBeginDocument(renderer, filename);
         int result = TessBaseAPIProcessPage(handle, pix, 0, filename, null, 0, renderer);
         TessResultRendererEndDocument(renderer);
         LeptUtils.dispose(pix);
@@ -778,7 +778,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
      * iterator level.
      *
      * @param bi input buffered image
-     * @param filename filename
+     * @param filename filename (optional)
      * @param outputbase output filenames without extension
      * @param formats types of renderer
      * @param pageIteratorLevel TessPageIteratorLevel enum

@@ -184,7 +184,7 @@ public class Tesseract1Test {
 //        types.put("TYPE_BYTE_BINARY", BufferedImage.TYPE_BYTE_BINARY);
 //        types.put("TYPE_BYTE_INDEXED", BufferedImage.TYPE_BYTE_INDEXED);
 
-        for (Map.Entry<String, Integer> entry: types.entrySet()) {
+        for (Map.Entry<String, Integer> entry : types.entrySet()) {
             if (entry.getValue() == bi.getType()) {
                 String result = instance.doOCR(bi);
                 logger.info("BufferedImage type: " + entry.getKey() + " (Original)");
@@ -317,9 +317,9 @@ public class Tesseract1Test {
 //        assertTrue(results.get(0).getConfidence() > 0);
 //        assertEquals(66, results.get(0).getWords().size());
     }
-    
+
     /**
-     * Test of createDocumentsWithResults method, of class Tesseract.
+     * Test of createDocumentsWithResults method, of class Tesseract1.
      *
      * @throws java.lang.Exception
      */
@@ -330,7 +330,7 @@ public class Tesseract1Test {
         BufferedImage bi = ImageIO.read(imageFile);
         String outputbase = "target/test-classes/test-results/docrenderer-5";
         List<RenderedFormat> formats = new ArrayList<RenderedFormat>(Arrays.asList(RenderedFormat.HOCR, RenderedFormat.PDF, RenderedFormat.TEXT));
-        OCRResult result = instance.createDocumentsWithResults(bi, imageFile.getPath(),outputbase, formats, TessPageIteratorLevel.RIL_WORD);
+        OCRResult result = instance.createDocumentsWithResults(bi, imageFile.getName(), outputbase, formats, TessPageIteratorLevel.RIL_WORD);
         assertTrue(new File(outputbase + ".pdf").exists());
         assertTrue(result.getConfidence() > 0);
         assertEquals(66, result.getWords().size());
