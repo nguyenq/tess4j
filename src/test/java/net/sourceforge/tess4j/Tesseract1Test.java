@@ -36,7 +36,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.*;
-import org.junit.Ignore;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -113,7 +112,6 @@ public class Tesseract1Test {
      *
      * @throws java.lang.Exception
      */
-    @Ignore
     @Test
     public void testDoOCR_File_With_Configs() throws Exception {
         logger.info("doOCR with configs");

@@ -210,7 +210,7 @@ public class TessAPI1Test {
     @Test
     public void testTessVersion() {
         logger.info("TessVersion");
-        String expResult = "5.0.0";
+        String expResult = "4.1.0";
         String result = TessAPI1.TessVersion();
         logger.info(result);
         assertTrue(result.startsWith(expResult));
@@ -378,27 +378,27 @@ public class TessAPI1Test {
         TessAPI1.TessBaseAPIInit3(handle, datapath, language);
         TessAPI1.TessBaseAPISetImage(handle, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
         int page_number = 0;
-        Pointer utf8Text = TessAPI1.TessBaseAPIGetAltoText(handle, page_number);
-        String result = utf8Text.getString(0);
-        TessAPI1.TessDeleteText(utf8Text);
+        Pointer textPtr = TessAPI1.TessBaseAPIGetAltoText(handle, page_number);
+        String result = textPtr.getString(0);
+        TessAPI1.TessDeleteText(textPtr);
         assertTrue(result.contains("<Page WIDTH=\"1024\" HEIGHT=\"800\" PHYSICAL_IMG_NR=\"0\" ID=\"page_0\">"));
               
         // WordStr Box output
-        utf8Text = TessAPI1.TessBaseAPIGetWordStrBoxText(handle, page_number);
-        result = utf8Text.getString(0);
-        TessAPI1.TessDeleteText(utf8Text);
+        textPtr = TessAPI1.TessBaseAPIGetWordStrBoxText(handle, page_number);
+        result = textPtr.getString(0);
+        TessAPI1.TessDeleteText(textPtr);
         assertTrue(result.contains("WordStr"));
         
         // TSV output
-        utf8Text = TessAPI1.TessBaseAPIGetTsvText(handle, page_number);
-        result = utf8Text.getString(0);
-        TessAPI1.TessDeleteText(utf8Text);
+        textPtr = TessAPI1.TessBaseAPIGetTsvText(handle, page_number);
+        result = textPtr.getString(0);
+        TessAPI1.TessDeleteText(textPtr);
         assertTrue(result.contains("1\t"));
 
         // LSTM Box output
-        utf8Text = TessAPI1.TessBaseAPIGetLSTMBoxText(handle, page_number);
-        result = utf8Text.getString(0);
-        TessAPI1.TessDeleteText(utf8Text);
+        textPtr = TessAPI1.TessBaseAPIGetLSTMBoxText(handle, page_number);
+        result = textPtr.getString(0);
+        TessAPI1.TessDeleteText(textPtr);
         assertTrue(result.contains("\t"));
     }
 
@@ -444,7 +444,6 @@ public class TessAPI1Test {
      *
      * @throws java.lang.Exception
      */
-    @org.junit.Ignore
     @Test
     public void testTessBaseAPIDetectOrientationScript() throws Exception {
         logger.info("TessBaseAPIDetectOrientationScript");

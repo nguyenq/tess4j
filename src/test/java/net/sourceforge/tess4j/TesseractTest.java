@@ -40,7 +40,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import org.slf4j.Logger;
@@ -113,7 +112,6 @@ public class TesseractTest {
      *
      * @throws java.lang.Exception
      */
-    @Ignore
     @Test
     public void testDoOCR_File_With_Configs() throws Exception {
         logger.info("doOCR with configs");

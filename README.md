@@ -16,9 +16,9 @@ The library provides optical character recognition (OCR) support for:
 
 ## Dependencies
 
-Microsoft Visual C++ 2017 x86 and x64 Runtimes
+Microsoft Visual C++ 2019 x86 and x64 Runtimes
 
-Since Tesseract and Leptonica Windows binaries were built using Visual Studio 2017 (v141) Platform Toolset, please ensure you have [Microsoft Visual C++ 2017 Redistributable](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads) installed.
+Since Tesseract and Leptonica Windows binaries were built using Visual Studio 2019 (v142) Platform Toolset, please ensure you have [Microsoft Visual C++ 2019 Redistributable](https://visualstudio.microsoft.com/downloads/) installed.
 
 ## Tutorial
 
