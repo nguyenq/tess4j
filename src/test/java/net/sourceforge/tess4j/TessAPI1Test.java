@@ -450,7 +450,7 @@ public class TessAPI1Test {
         File image = new File(testResourcesDataPath, "eurotext.png");
         int expResult = TRUE;
         Pix pix = Leptonica1.pixRead(image.getPath());
-        TessAPI1.TessBaseAPIInit3(handle, datapath, language);
+        TessAPI1.TessBaseAPIInit3(handle, datapath, "osd");
         TessAPI1.TessBaseAPISetImage2(handle, pix);
 
         IntBuffer orient_degB = IntBuffer.allocate(1);

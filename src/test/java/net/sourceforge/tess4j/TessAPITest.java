@@ -456,7 +456,7 @@ public class TessAPITest {
         int expResult = TRUE;
         Leptonica leptInstance = Leptonica.INSTANCE;
         Pix pix = leptInstance.pixRead(image.getPath());
-        api.TessBaseAPIInit3(handle, datapath, language);
+        api.TessBaseAPIInit3(handle, datapath, "osd");
         api.TessBaseAPISetImage2(handle, pix);
 
         IntBuffer orient_degB = IntBuffer.allocate(1);
