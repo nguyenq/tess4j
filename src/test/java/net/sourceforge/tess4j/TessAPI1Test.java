@@ -447,7 +447,7 @@ public class TessAPI1Test {
     @Test
     public void testTessBaseAPIDetectOrientationScript() throws Exception {
         logger.info("TessBaseAPIDetectOrientationScript");
-        File image = new File(testResourcesDataPath, "eurotext.png");
+        File image = new File(testResourcesDataPath, "eurotext90.png");
         int expResult = TRUE;
         Pix pix = Leptonica1.pixRead(image.getPath());
         TessAPI1.TessBaseAPIInit3(handle, datapath, "osd");
@@ -486,8 +486,8 @@ public class TessAPI1Test {
         IntBuffer direction = IntBuffer.allocate(1);
         IntBuffer order = IntBuffer.allocate(1);
         FloatBuffer deskew_angle = FloatBuffer.allocate(1);
-        File tiff = new File(this.testResourcesDataPath, "eurotext.tif");
-        BufferedImage image = ImageIO.read(new FileInputStream(tiff)); // require jai-imageio lib to read TIFF
+        File imageFile = new File(this.testResourcesDataPath, "eurotext90.png");
+        BufferedImage image = ImageIO.read(new FileInputStream(imageFile));
         ByteBuffer buf = ImageIOHelper.convertImageData(image);
         int bpp = image.getColorModel().getPixelSize();
         int bytespp = bpp / 8;

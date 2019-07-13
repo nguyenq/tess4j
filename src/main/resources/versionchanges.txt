@@ -179,7 +179,7 @@ Version 4.3.1 (26 December 2018)
 - Fix Windows build
 - Improve RenderedImage to ByteBuffer conversion
 
-Version 4.4.0 (8 July 2019)
+Version 4.4.0 (13 July 2019)
 - Upgrade to Tesseract 4.1.0 (5280bbc)
 - Upgrade to Leptonica 1.78.0 (lept4j-1.12.2)
 - Update dependencies
