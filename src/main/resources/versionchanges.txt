@@ -186,3 +186,4 @@ Version 4.4.0 (13 July 2019)
 
 Version 4.4.1 (7 October 2019)
 - Use tessdata_fast data
+- Use Native.loadLibrary method for backward compatibility with older JNA versions
