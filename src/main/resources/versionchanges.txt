@@ -183,3 +183,6 @@ Version 4.4.0 (13 July 2019)
 - Upgrade to Tesseract 4.1.0 (5280bbc)
 - Upgrade to Leptonica 1.78.0 (lept4j-1.12.2)
 - Update dependencies
+
+Version 4.4.1 (7 October 2019)
+- Use tessdata_fast data
