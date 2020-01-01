@@ -208,6 +208,7 @@ public class PdfGsUtilities {
      * @return number of pages
      */
     public static int getPdfPageCount(File inputPdfFile) {
+        String inputFile = inputPdfFile.getPath().replace('\\', '/');
         //get Ghostscript instance
         Ghostscript gs = Ghostscript.getInstance();
 
@@ -220,8 +221,9 @@ public class PdfGsUtilities {
         gsArgs.add("-dQUIET");
         gsArgs.add("-dNODISPLAY");
         gsArgs.add("-dBATCH");
+        gsArgs.add("--permit-file-read=" + inputFile);
         gsArgs.add("-c");
-        String cValue = String.format("(%s) (r) file runpdfbegin pdfpagecount = quit", inputPdfFile.getPath().replace('\\', '/'));
+        String cValue = String.format("(%s) (r) file runpdfbegin pdfpagecount = quit", inputFile);
         gsArgs.add(cValue);
 
         int pageCount = 0;
