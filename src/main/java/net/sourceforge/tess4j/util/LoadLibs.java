@@ -147,15 +147,15 @@ public class LoadLibs {
                 for (File resourceFile : FileUtils.listFiles(file, null, true)) {
                     int index = resourceFile.getPath().lastIndexOf(targetPath.getName()) + targetPath.getName().length();
                     File targetFile = new File(targetPath, resourceFile.getPath().substring(index));
-                    if (!targetFile.exists() || targetFile.length() != resourceFile.length()) {
+                    if (!targetFile.exists() || targetFile.length() != resourceFile.length() || targetFile.lastModified() != resourceFile.lastModified()) {
                         if (resourceFile.isFile()) {
-                            FileUtils.copyFile(resourceFile, targetFile);
+                            FileUtils.copyFile(resourceFile, targetFile, true);
                         }
                     }
                 }
             } else {
-                if (!targetPath.exists() || targetPath.length() != file.length()) {
-                    FileUtils.copyFile(file, targetPath);
+                if (!targetPath.exists() || targetPath.length() != file.length() || targetPath.lastModified() != file.lastModified()) {
+                    FileUtils.copyFile(file, targetPath, true);
                 }
             }
         }
