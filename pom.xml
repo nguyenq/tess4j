@@ -109,7 +109,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.1.1</version>
                 <configuration>
                     <detectJavaApiLink>false</detectJavaApiLink>
                     <offlineLinks>
@@ -130,7 +130,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.1.2</version>
+                <version>3.2.0</version>
                 <configuration>
                     <excludes>
                         <exclude>**/logback.xml</exclude>
