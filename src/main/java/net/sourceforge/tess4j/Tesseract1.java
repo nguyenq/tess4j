@@ -145,9 +145,25 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
      * <code>tessedit_char_whitelist</code>, etc.
      * @param value value for corresponding variable, e.g., "1", "0",
      * "0123456789", etc.
+     * @deprecated
+     * Use {@link setVariable(String key, String value)} instead.
      */
     @Override
+    @Deprecated
     public void setTessVariable(String key, String value) {
+        setVariable(key, value);
+    }
+
+    /**
+     * Set the value of Tesseract's internal parameter.
+     *
+     * @param key variable name, e.g., <code>tessedit_create_hocr</code>,
+     * <code>tessedit_char_whitelist</code>, etc.
+     * @param value value for corresponding variable, e.g., "1", "0",
+     * "0123456789", etc.
+     */
+    @Override
+    public void setVariable(String key, String value) {
         prop.setProperty(key, value);
     }
 
@@ -203,7 +219,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
                 int imageTotal = reader.getNumImages(true);
 
                 init();
-                setTessVariables();
+                setVariables();
 
                 for (int i = 0; i < imageTotal; i++) {
                     IIOImage oimage = reader.readAll(i, reader.getDefaultReadParam());
@@ -290,7 +306,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     @Override
     public String doOCR(List<IIOImage> imageList, String filename, Rectangle rect) throws TesseractException {
         init();
-        setTessVariables();
+        setVariables();
 
         try {
             StringBuilder sb = new StringBuilder();
@@ -388,7 +404,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     @Override
     public String doOCR(int xsize, int ysize, ByteBuffer buf, String filename, Rectangle rect, int bpp) throws TesseractException {
         init();
-        setTessVariables();
+        setVariables();
 
         try {
             setImage(xsize, ysize, buf, rect, bpp);
@@ -418,7 +434,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     /**
      * Sets Tesseract's internal parameters.
      */
-    protected void setTessVariables() {
+    protected void setVariables() {
         Enumeration<?> em = prop.propertyNames();
         while (em.hasMoreElements()) {
             String key = (String) em.nextElement();
@@ -612,7 +628,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
         }
 
         init();
-        setTessVariables();
+        setVariables();
 
         try {
             for (int i = 0; i < filenames.length; i++) {
@@ -693,7 +709,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     @Override
     public List<Rectangle> getSegmentedRegions(BufferedImage bi, int pageIteratorLevel) throws TesseractException {
         init();
-        setTessVariables();
+        setVariables();
 
         try {
             List<Rectangle> list = new ArrayList<Rectangle>();
@@ -736,7 +752,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     @Override
     public List<Word> getWords(BufferedImage bi, int pageIteratorLevel) {
         this.init();
-        this.setTessVariables();
+        this.setVariables();
 
         List<Word> words = new ArrayList<Word>();
 
@@ -814,7 +830,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
         }
 
         init();
-        setTessVariables();
+        setVariables();
 
         List<OCRResult> results = new ArrayList<OCRResult>();
 
@@ -876,7 +892,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
         }
 
         init();
-        setTessVariables();
+        setVariables();
 
         List<OCRResult> results = new ArrayList<OCRResult>();
 

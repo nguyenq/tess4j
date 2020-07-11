@@ -184,8 +184,21 @@ public interface ITesseract {
      * <code>tessedit_char_whitelist</code>, etc.
      * @param value value for corresponding variable, e.g., "1", "0",
      * "0123456789", etc.
+     * @deprecated
+     * Use {@link setVariable(String key, String value)} instead.
      */
+    @Deprecated
     void setTessVariable(String key, String value);
+    
+    /**
+     * Sets the value of Tesseract's internal parameter.
+     *
+     * @param key variable name, e.g., <code>tessedit_create_hocr</code>,
+     * <code>tessedit_char_whitelist</code>, etc.
+     * @param value value for corresponding variable, e.g., "1", "0",
+     * "0123456789", etc.
+     */
+    void setVariable(String key, String value);
 
     /**
      * Sets configs to be passed to Tesseract's <code>Init</code> method.
