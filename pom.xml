@@ -46,9 +46,9 @@
     </organization>
 
     <scm>
-        <connection>scm:svn:https://github.com/nguyenq/tess4j/trunk/</connection>
-        <developerConnection>scm:svn:https://github.com/nguyenq/tess4j/trunk/</developerConnection>
-        <url>https://github.com/nguyenq/tess4j/trunk/</url>
+        <connection>scm:svn:https://github.com/nguyenq/tess4j/branches/tess4j-4/</connection>
+        <developerConnection>scm:svn:https://github.com/nguyenq/tess4j/branches/tess4j-4/</developerConnection>
+        <url>https://github.com/nguyenq/tess4j/branches/tess4j-4/</url>
     </scm>
 
     <developers>
