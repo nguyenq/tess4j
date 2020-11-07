@@ -589,7 +589,9 @@ public class TessAPITest {
                     + " italic: %b, underlined: %b, monospace: %b, serif: %b, smallcap: %b", fontName, pointSize,
                     fontId, bold, italic, underlined, monospace, serif, smallcaps));
         } while (api.TessPageIteratorNext(pi, level) == TRUE);
-
+        api.TessPageIteratorDelete(pi);
+        api.TessResultIteratorDelete(ri);
+        
         assertTrue(true);
     }
 
@@ -642,6 +644,7 @@ public class TessAPITest {
                 logger.info("---------------------------------------------");
                 api.TessDeleteText(symbol);
             } while (api.TessResultIteratorNext(ri, level) == ITessAPI.TRUE);
+            api.TessResultIteratorDelete(ri);
         }
 
         assertTrue(true);

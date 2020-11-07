@@ -583,7 +583,9 @@ public class TessAPI1Test {
                     + " italic: %b, underlined: %b, monospace: %b, serif: %b, smallcap: %b", fontName, pointSize,
                     fontId, bold, italic, underlined, monospace, serif, smallcaps));
         } while (TessAPI1.TessPageIteratorNext(pi, level) == TRUE);
-
+        TessAPI1.TessPageIteratorDelete(pi);
+        TessAPI1.TessResultIteratorDelete(ri);
+        
         assertTrue(true);
     }
 
@@ -636,6 +638,7 @@ public class TessAPI1Test {
                 logger.info("---------------------------------------------");
                 TessAPI1.TessDeleteText(symbol);
             } while (TessAPI1.TessResultIteratorNext(ri, level) == TessAPI1.TRUE);
+            TessAPI1.TessResultIteratorDelete(ri);
         }
 
         assertTrue(true);
