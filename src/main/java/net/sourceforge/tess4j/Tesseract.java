@@ -787,6 +787,8 @@ public class Tesseract implements ITesseract {
                 Word word = new Word(text, confidence, new Rectangle(left, top, right - left, bottom - top));
                 words.add(word);
             } while (api.TessPageIteratorNext(pi, pageIteratorLevel) == TRUE);
+            api.TessPageIteratorDelete(pi);
+            api.TessResultIteratorDelete(ri);
         } catch (Exception e) {
             logger.warn(e.getMessage(), e);
         } finally {
@@ -965,6 +967,8 @@ public class Tesseract implements ITesseract {
                 Word word = new Word(text, confidence, new Rectangle(left, top, right - left, bottom - top));
                 words.add(word);
             } while (api.TessPageIteratorNext(pi, pageIteratorLevel) == TRUE);
+            api.TessPageIteratorDelete(pi);
+            api.TessResultIteratorDelete(ri);
         } catch (Exception e) {
             logger.warn(e.getMessage(), e);
         }
