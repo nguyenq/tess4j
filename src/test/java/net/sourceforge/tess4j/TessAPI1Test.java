@@ -358,7 +358,7 @@ public class TessAPI1Test {
         TessAPI1.TessDeleteText(utf8Text);
         assertTrue(result.contains("<div class='ocr_page'"));
     }
-    
+
     /**
      * Test of TessBaseAPIGetAltoText method, of class TessAPI.
      *
@@ -382,13 +382,13 @@ public class TessAPI1Test {
         String result = textPtr.getString(0);
         TessAPI1.TessDeleteText(textPtr);
         assertTrue(result.contains("<Page WIDTH=\"1024\" HEIGHT=\"800\" PHYSICAL_IMG_NR=\"0\" ID=\"page_0\">"));
-              
+
         // WordStr Box output
         textPtr = TessAPI1.TessBaseAPIGetWordStrBoxText(handle, page_number);
         result = textPtr.getString(0);
         TessAPI1.TessDeleteText(textPtr);
         assertTrue(result.contains("WordStr"));
-        
+
         // TSV output
         textPtr = TessAPI1.TessBaseAPIGetTsvText(handle, page_number);
         result = textPtr.getString(0);
@@ -583,9 +583,9 @@ public class TessAPI1Test {
                     + " italic: %b, underlined: %b, monospace: %b, serif: %b, smallcap: %b", fontName, pointSize,
                     fontId, bold, italic, underlined, monospace, serif, smallcaps));
         } while (TessAPI1.TessPageIteratorNext(pi, level) == TRUE);
-        TessAPI1.TessPageIteratorDelete(pi);
+//        TessAPI1.TessPageIteratorDelete(pi);
         TessAPI1.TessResultIteratorDelete(ri);
-        
+
         assertTrue(true);
     }
 
