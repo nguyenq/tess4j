@@ -766,6 +766,9 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
 
             do {
                 Pointer ptr = TessResultIteratorGetUTF8Text(ri, pageIteratorLevel);
+                if (ptr ==  null){
+                    continue;
+                }
                 String text = ptr.getString(0);
                 TessAPI1.TessDeleteText(ptr);
                 float confidence = TessResultIteratorConfidence(ri, pageIteratorLevel);
