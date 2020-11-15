@@ -750,6 +750,9 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
 
             do {
                 Pointer ptr = TessResultIteratorGetUTF8Text(ri, pageIteratorLevel);
+                if (ptr == null) {
+                    continue;
+                }
                 String text = ptr.getString(0);
                 TessAPI1.TessDeleteText(ptr);
                 float confidence = TessResultIteratorConfidence(ri, pageIteratorLevel);
@@ -766,7 +769,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
                 words.add(word);
             } while (TessPageIteratorNext(pi, pageIteratorLevel) == TRUE);
 //            TessPageIteratorDelete(pi);
-            TessResultIteratorDelete(ri);            
+            TessResultIteratorDelete(ri);
         } catch (Exception e) {
             logger.warn(e.getMessage(), e);
         } finally {
@@ -929,6 +932,9 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
 
             do {
                 Pointer ptr = TessResultIteratorGetUTF8Text(ri, pageIteratorLevel);
+                if (ptr == null) {
+                    continue;
+                }
                 String text = ptr.getString(0);
                 TessAPI1.TessDeleteText(ptr);
                 float confidence = TessResultIteratorConfidence(ri, pageIteratorLevel);
