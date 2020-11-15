@@ -788,6 +788,9 @@ public class Tesseract implements ITesseract {
 
             do {
                 Pointer ptr = api.TessResultIteratorGetUTF8Text(ri, pageIteratorLevel);
+                if (ptr == null) {
+                    continue;
+                }                
                 String text = ptr.getString(0);
                 api.TessDeleteText(ptr);
                 float confidence = api.TessResultIteratorConfidence(ri, pageIteratorLevel);
@@ -968,6 +971,9 @@ public class Tesseract implements ITesseract {
 
             do {
                 Pointer ptr = api.TessResultIteratorGetUTF8Text(ri, pageIteratorLevel);
+                if (ptr == null) {
+                    continue;
+                }                
                 String text = ptr.getString(0);
                 api.TessDeleteText(ptr);
                 float confidence = api.TessResultIteratorConfidence(ri, pageIteratorLevel);

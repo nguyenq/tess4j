@@ -145,8 +145,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
      * <code>tessedit_char_whitelist</code>, etc.
      * @param value value for corresponding variable, e.g., "1", "0",
      * "0123456789", etc.
-     * @deprecated
-     * Use {@link setVariable(String key, String value)} instead.
+     * @deprecated Use {@link setVariable(String key, String value)} instead.
      */
     @Override
     @Deprecated
@@ -766,7 +765,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
 
             do {
                 Pointer ptr = TessResultIteratorGetUTF8Text(ri, pageIteratorLevel);
-                if (ptr ==  null){
+                if (ptr == null) {
                     continue;
                 }
                 String text = ptr.getString(0);
@@ -785,7 +784,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
                 words.add(word);
             } while (TessPageIteratorNext(pi, pageIteratorLevel) == TRUE);
 //            TessPageIteratorDelete(pi);
-            TessResultIteratorDelete(ri);            
+            TessResultIteratorDelete(ri);
         } catch (Exception e) {
             logger.warn(e.getMessage(), e);
         } finally {
@@ -948,6 +947,9 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
 
             do {
                 Pointer ptr = TessResultIteratorGetUTF8Text(ri, pageIteratorLevel);
+                if (ptr == null) {
+                    continue;
+                }                
                 String text = ptr.getString(0);
                 TessAPI1.TessDeleteText(ptr);
                 float confidence = TessResultIteratorConfidence(ri, pageIteratorLevel);
