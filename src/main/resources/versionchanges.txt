@@ -202,6 +202,7 @@ Version 4.5.2 (14 July 2020)
 Version 4.5.3 (23 August 2020)
 - Update dependencies
 
-Version 4.5.4 (7 November 2020)
+Version 4.5.4 (15 November 2020)
 - Dispose Iterator objects after use
+- Fix possible NPE
 - Update dependencies
