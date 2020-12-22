@@ -136,6 +136,14 @@ public class PdfGsUtilities {
             }
         });
 
+        // workingFiles should be non-null here if the operation completed successfully
+        // https://docs.oracle.com/javase/7/docs/api/java/io/File.html#listFiles()
+        if (workingFiles == null) {
+            // Instead of throwing a NullPointerException, throw an IOException instead
+            // Clients of this library shouldn't be catching NullPointerExceptions thrown by this library
+            throw new IOException("Error extracting PDF Document");
+        }
+
         Arrays.sort(workingFiles, new Comparator<File>() {
             @Override
             public int compare(File f1, File f2) {
