@@ -359,11 +359,6 @@ public class TessAPIImpl implements TessAPI {
     }
 
     @Override
-    public int TessBaseAPIRecognizeForChopTest(ITessAPI.TessBaseAPI handle, ITessAPI.ETEXT_DESC monitor) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public ITessAPI.TessResultIterator TessBaseAPIGetIterator(ITessAPI.TessBaseAPI handle) {
         throw new UnsupportedOperationException("Not supported yet.");
     }

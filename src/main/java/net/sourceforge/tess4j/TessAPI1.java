@@ -700,15 +700,6 @@ public class TessAPI1 implements Library, ITessAPI {
     public static native int TessBaseAPIRecognize(TessBaseAPI handle, ETEXT_DESC monitor);
 
     /**
-     * Variant on <code>Recognize</code> used for testing chopper.
-     *
-     * @param handle the TesseractAPI instance
-     * @param monitor the result as Tesseract internal structures
-     * @return 0 on success
-     */
-    public static native int TessBaseAPIRecognizeForChopTest(TessBaseAPI handle, ETEXT_DESC monitor);
-
-    /**
      * Get a reading-order iterator to the results of LayoutAnalysis and/or
      * <code>Recognize</code>. The returned iterator must be deleted after use.
      * WARNING! This class points to data held within the

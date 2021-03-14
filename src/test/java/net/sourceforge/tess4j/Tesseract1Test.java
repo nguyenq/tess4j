@@ -40,6 +40,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import org.slf4j.Logger;
@@ -93,6 +94,7 @@ public class Tesseract1Test {
      * @throws java.lang.Exception
      */
     @Test
+    @Ignore
     public void testDoOCR_UNLV_Zone_File() throws Exception {
         logger.info("doOCR on a PNG image with UNLV zone file .uzn");
         //UNLV zone format: left top width height label
