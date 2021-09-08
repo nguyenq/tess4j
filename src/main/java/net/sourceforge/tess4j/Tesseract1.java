@@ -543,8 +543,9 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
                     }
                     break;
                 case PDF:
+                case PDF_TEXTONLY:
                     String dataPath = TessBaseAPIGetDatapath(handle);
-                    boolean textonly = String.valueOf(TRUE).equals(prop.getProperty("textonly_pdf"));
+                    boolean textonly = String.valueOf(TRUE).equals(prop.getProperty("textonly_pdf")) || format == RenderedFormat.PDF_TEXTONLY;
                     if (renderer == null) {
                         renderer = TessPDFRendererCreate(outputbase, dataPath, textonly ? TRUE : FALSE);
                     } else {
