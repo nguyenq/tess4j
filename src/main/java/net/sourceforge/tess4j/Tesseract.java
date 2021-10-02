@@ -150,7 +150,9 @@ public class Tesseract implements ITesseract {
     /**
      * Enables hocr output.
      *
-     * @param hocr to enable or disable hocr output
+     * @param hocr to enable hocr output
+     * @deprecated
+     * Use {@link setVariable("tessedit_create_hocr", "1")} instead.
      */
     public void setHocr(boolean hocr) {
         prop.setProperty("tessedit_create_hocr", hocr ? String.valueOf(TRUE) : String.valueOf(FALSE));
