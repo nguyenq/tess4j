@@ -244,11 +244,6 @@ public class TessAPIImpl implements TessAPI {
     }
 
     @Override
-    public int TessBaseAPIInitLangMod(ITessAPI.TessBaseAPI handle, String datapath, String language) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public void TessBaseAPIInitForAnalysePage(ITessAPI.TessBaseAPI handle) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
