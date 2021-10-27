@@ -363,25 +363,6 @@ public class TessAPI1 implements Library, ITessAPI {
     public static native PointerByReference TessBaseAPIGetAvailableLanguagesAsVector(TessBaseAPI handle);
 
     /**
-     * Init only the lang model component of Tesseract. The only functions that
-     * work after this init are <code>SetVariable</code> and
-     * <code>IsValidWord</code>. WARNING: temporary! This function will be
-     * removed from here and placed in a separate API at some future time.
-     *
-     * @param handle the TesseractAPI instance
-     * @param datapath The <code>datapath</code> must be the name of the parent
-     * directory of <code>tessdata</code> and must end in
-     * <i>/</i>. Any name after the last <i>/</i> will be stripped.
-     * @param language The language is (usually) an <code>ISO 639-3</code>
-     * string or <code>NULL</code> will default to eng. The language may be a
-     * string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;] indicating that
-     * multiple languages are to be loaded. E.g., hin+eng will load Hindi and
-     * English.
-     * @return api init language mode
-     */
-    public static native int TessBaseAPIInitLangMod(TessBaseAPI handle, String datapath, String language);
-
-    /**
      * Init only for page layout analysis. Use only for calls to
      * <code>SetImage</code> and <code>AnalysePage</code>. Calls that attempt
      * recognition will generate an error.
