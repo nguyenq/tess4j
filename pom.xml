@@ -201,7 +201,7 @@
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna</artifactId>
-            <version>5.8.0</version>
+            <version>5.10.0</version>
         </dependency>
         <dependency>
             <groupId>com.github.jai-imageio</groupId>
@@ -247,7 +247,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.2.4</version>
+            <version>1.2.6</version>
             <scope>test</scope>
         </dependency>
         <dependency>
