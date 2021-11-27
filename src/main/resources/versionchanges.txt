@@ -195,6 +195,6 @@ Version 4.5.1 (3 January 2020)
 - Update Leptonica 1.79.0 (lept4j-1.13.0)
 - Fix Permission denied issue with Ghostscript 9.50
 
-Version 5.0.0-SNAPSHOT (12 November 2021)
-- Upgrade to Tesseract 5.0.0-rc1 (5884036)
+Version 5.0.0-SNAPSHOT (27 November 2021)
+- Upgrade to Tesseract 5.0.0-rc3 (8b21e4f)
 - Update Leptonica 1.82.0 (lept4j-1.16.0)
