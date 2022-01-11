@@ -54,7 +54,7 @@ public class LoadLibs {
     /**
      * Native library name.
      */
-    public static final String LIB_NAME = "libtesseract500";
+    public static final String LIB_NAME = "libtesseract501";
     public static final String LIB_NAME_NON_WIN = "tesseract";
 
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(new LoggHelper().toString());
