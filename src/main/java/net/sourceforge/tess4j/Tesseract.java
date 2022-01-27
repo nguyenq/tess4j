@@ -53,10 +53,7 @@ import org.slf4j.*;
  * engine. The extended capabilities are provided by the
  * <code>Java Advanced Imaging Image I/O Tools</code>.<br>
  * <br>
- * Support for PDF documents is available through <code>Ghost4J</code>, a
- * <code>JNA</code> wrapper for <code>GPL Ghostscript</code>, which should be
- * installed and included in system path. If Ghostscript is not available,
- * PDFBox will be used.<br>
+ * Support for PDF documents is available through <code>PDFBox</code>.<br>
  * <br>
  * Any program that uses the library will need to ensure that the required
  * libraries (the <code>.jar</code> files for <code>jna</code>,

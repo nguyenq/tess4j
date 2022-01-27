@@ -333,8 +333,7 @@ public class ImageIOHelper {
      * Gets a list of <code>BufferedImage</code> objects for an image file.
      *
      * @param inputFile input image file. It can be any of the supported
-     * formats, including TIFF, JPEG, GIF, PNG, BMP, JPEG, and PDF if GPL
-     * Ghostscript or PDFBox is installed
+     * formats, including TIFF, JPEG, GIF, PNG, BMP, JPEG, and PDF
      * @return a list of <code>BufferedImage</code> objects
      * @throws IOException
      */
@@ -378,8 +377,7 @@ public class ImageIOHelper {
      * Gets a list of <code>IIOImage</code> objects for an image file.
      *
      * @param inputFile input image file. It can be any of the supported
-     * formats, including TIFF, JPEG, GIF, PNG, BMP, JPEG, and PDF if GPL
-     * Ghostscript or PDFBox is installed
+     * formats, including TIFF, JPEG, GIF, PNG, BMP, JPEG, and PDF
      * @return a list of <code>IIOImage</code> objects
      * @throws IOException
      */
