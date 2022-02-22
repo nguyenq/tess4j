@@ -19,15 +19,9 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * PDF utilities based on Ghostscript or PDFBox with Ghostscript as default. If
- * Ghostscript is not available on the system, then PDFBox is used. Call
- * <code>System.setProperty(PDF_LIBRARY, PDFBOX);</code> to set PDFBox as
- * default.
+ * PDF utilities based on PDFBox.
  */
 public class PdfUtilities {
-
-    public static final String PDF_LIBRARY = "pdf.library";
-    public static final String PDFBOX = "pdfbox";
 
     /**
      * Converts PDF to TIFF format.
@@ -37,16 +31,7 @@ public class PdfUtilities {
      * @throws IOException
      */
     public static File convertPdf2Tiff(File inputPdfFile) throws IOException {
-        if (PDFBOX.equals(System.getProperty(PDF_LIBRARY))) {
-            return PdfBoxUtilities.convertPdf2Tiff(inputPdfFile);
-        } else {
-            try {
-                return PdfGsUtilities.convertPdf2Tiff(inputPdfFile);
-            } catch (Exception e) {
-                System.setProperty(PDF_LIBRARY, PDFBOX);
-                return convertPdf2Tiff(inputPdfFile);
-            }
-        }
+        return PdfBoxUtilities.convertPdf2Tiff(inputPdfFile);
     }
 
     /**
@@ -57,16 +42,7 @@ public class PdfUtilities {
      * @throws java.io.IOException
      */
     public static File[] convertPdf2Png(File inputPdfFile) throws IOException {
-        if (PDFBOX.equals(System.getProperty(PDF_LIBRARY))) {
-            return PdfBoxUtilities.convertPdf2Png(inputPdfFile);
-        } else {
-            try {
-                return PdfGsUtilities.convertPdf2Png(inputPdfFile);
-            } catch (Exception e) {
-                System.setProperty(PDF_LIBRARY, PDFBOX);
-                return convertPdf2Png(inputPdfFile);
-            }
-        }
+        return PdfBoxUtilities.convertPdf2Png(inputPdfFile);
     }
 
     /**
@@ -99,16 +75,7 @@ public class PdfUtilities {
      * @param lastPage end page
      */
     public static void splitPdf(File inputPdfFile, File outputPdfFile, int firstPage, int lastPage) {
-        if (PDFBOX.equals(System.getProperty(PDF_LIBRARY))) {
-            PdfBoxUtilities.splitPdf(inputPdfFile, outputPdfFile, firstPage, lastPage);
-        } else {
-            try {
-                PdfGsUtilities.splitPdf(inputPdfFile, outputPdfFile, firstPage, lastPage);
-            } catch (Exception e) {
-                System.setProperty(PDF_LIBRARY, PDFBOX);
-                splitPdf(inputPdfFile, outputPdfFile, firstPage, lastPage);
-            }
-        }
+        PdfBoxUtilities.splitPdf(inputPdfFile, outputPdfFile, firstPage, lastPage);
     }
 
     /**
@@ -130,16 +97,7 @@ public class PdfUtilities {
      * @return number of pages
      */
     public static int getPdfPageCount(File inputPdfFile) {
-        if (PDFBOX.equals(System.getProperty(PDF_LIBRARY))) {
-            return PdfBoxUtilities.getPdfPageCount(inputPdfFile);
-        } else {
-            try {
-                return PdfGsUtilities.getPdfPageCount(inputPdfFile);
-            } catch (Exception e) {
-                System.setProperty(PDF_LIBRARY, PDFBOX);
-                return getPdfPageCount(inputPdfFile);
-            }
-        }
+        return PdfBoxUtilities.getPdfPageCount(inputPdfFile);
     }
 
     /**
@@ -149,15 +107,6 @@ public class PdfUtilities {
      * @param outputPdfFile output file
      */
     public static void mergePdf(File[] inputPdfFiles, File outputPdfFile) {
-        if (PDFBOX.equals(System.getProperty(PDF_LIBRARY))) {
-            PdfBoxUtilities.mergePdf(inputPdfFiles, outputPdfFile);
-        } else {
-            try {
-                PdfGsUtilities.mergePdf(inputPdfFiles, outputPdfFile);
-            } catch (Exception e) {
-                System.setProperty(PDF_LIBRARY, PDFBOX);
-                mergePdf(inputPdfFiles, outputPdfFile);
-            }
-        }
+        PdfBoxUtilities.mergePdf(inputPdfFiles, outputPdfFile);
     }
 }

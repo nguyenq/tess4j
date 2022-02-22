@@ -24,18 +24,12 @@ import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import org.junit.Before;
 
 public class PdfUtilitiesTest {
 
     private static final Logger logger = LoggerFactory.getLogger(new LoggHelper().toString());
     private static final String TEST_RESOURCES_DATA_PATH = "src/test/resources/test-data/";
     private static final String TEST_RESOURCES_RESULTS_PATH = "src/test/resources/test-results/";
-
-    @Before
-    public void setUp() {
-        System.setProperty(PdfUtilities.PDF_LIBRARY, PdfUtilities.PDFBOX);    // Note: comment out to test Ghostscript
-    }
 
     /**
      * Test of convertPdf2Tiff method, of class PdfUtilities.

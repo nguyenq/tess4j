@@ -217,3 +217,4 @@ Version 4.6.0 (27 November 2021)
 
 Version 4.6.1 (22 February 2022)
 - Update dependencies
+- Remove ghost4j dependency due to log4j vulnerabilities
