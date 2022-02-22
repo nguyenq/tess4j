@@ -56,8 +56,8 @@ import org.slf4j.*;
  * Support for PDF documents is available through <code>PDFBox</code>.<br>
  * <br>
  * Any program that uses the library will need to ensure that the required
- * libraries (the <code>.jar</code> files for <code>jna</code>,
- * <code>jai-imageio</code>, and <code>ghost4j</code>) are in its compile and
+ * libraries (the <code>.jar</code> files for <code>jna</code> and
+ * <code>jai-imageio</code>) are in its compile and
  * run-time <code>classpath</code>.
  */
 public class Tesseract implements ITesseract {
