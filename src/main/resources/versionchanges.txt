@@ -207,5 +207,6 @@ Version 5.1.0 (11 January 2022)
 Version 5.1.1 (26 January 2022)
 - Remove ghost4j dependency due to log4j vulnerabilities
 
-Version 5.1.2 (22 February 2022)
+Version 5.2.0 (4 March 2022)
+- Upgrade to Tesseract 5.1.0 (d737372)
 - Update dependencies
