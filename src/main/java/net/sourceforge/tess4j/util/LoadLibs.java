@@ -82,7 +82,7 @@ public class LoadLibs {
      * <code>Native.loadLibrary()</code>.
      */
     public static TessAPI getTessAPIInstance() {
-        return (TessAPI) Native.loadLibrary(getTesseractLibName(), TessAPI.class);
+        return (TessAPI) Native.load(getTesseractLibName(), TessAPI.class);
     }
 
     /**
