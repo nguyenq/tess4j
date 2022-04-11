@@ -61,9 +61,7 @@ public class LoadLibs {
 
     static {
         System.setProperty("jna.encoding", "UTF8");
-        String model = System.getProperty("sun.arch.data.model",
-                                          System.getProperty("com.ibm.vm.bitmode"));
-        String resourcePrefix = "32".equals(model) ? "win32-x86" : "win32-x86-64";
+        String resourcePrefix = Platform.RESOURCE_PREFIX;
         File targetTempFolder = extractTessResources(resourcePrefix);
         if (targetTempFolder != null && targetTempFolder.exists()) {
             String userCustomizedPath = System.getProperty(JNA_LIBRARY_PATH);
