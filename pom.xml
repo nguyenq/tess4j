@@ -236,7 +236,7 @@
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jboss-vfs</artifactId>
-            <version>3.2.16.Final</version>
+            <version>3.2.17.Final</version>
         </dependency>
         <!-- Logging Dependencies -->
         <dependency>
