@@ -214,3 +214,7 @@ Version 5.2.0 (4 March 2022)
 Version 5.2.1 (26 April 2022)
 - Only extract resources appropriate to the platform
 - Update dependencies
+
+Version 5.3.0 (7 July 2022)
+- Upgrade to Tesseract 5.2.0 (5ad5325)
+- Update dependencies

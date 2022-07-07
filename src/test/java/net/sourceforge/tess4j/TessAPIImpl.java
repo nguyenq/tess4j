@@ -227,6 +227,11 @@ public class TessAPIImpl implements TessAPI {
     public int TessBaseAPIInit4(ITessAPI.TessBaseAPI handle, String datapath, String language, int oem, PointerByReference configs, int configs_size, PointerByReference vars_vec, PointerByReference vars_values, NativeSize vars_vec_size, int set_only_non_debug_params) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+    
+    @Override
+    public int TessBaseAPIInit5(TessBaseAPI handle, String data, int data_size, String language, int oem, PointerByReference configs, int configs_size, PointerByReference vars_vec, PointerByReference vars_values, NativeSize vars_vec_size, int set_only_non_debug_params) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
     @Override
     public String TessBaseAPIGetInitLanguagesAsString(ITessAPI.TessBaseAPI handle) {

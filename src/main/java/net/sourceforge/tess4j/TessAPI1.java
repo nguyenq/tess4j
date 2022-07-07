@@ -264,9 +264,9 @@ public class TessAPI1 implements Library, ITessAPI {
      * not contain "debug" in the name will be set.
      *
      * @param handle the TesseractAPI instance
-     * @param datapath The <code>datapath</code> must be the name of the parent
-     * directory of <code>tessdata</code> and must end in
-     * <i>/</i>. Any name after the last <i>/</i> will be stripped.
+     * @param datapath The <code>datapath</code> must be the name of the data 
+     * directory or some other file in which the data directory resides 
+     * (for instance <code>argv[0]</code>.)
      * @param language The language is (usually) an <code>ISO 639-3</code>
      * string or <code>NULL</code> will default to <code>eng</code>. The
      * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;]
@@ -282,9 +282,9 @@ public class TessAPI1 implements Library, ITessAPI {
 
     /**
      * @param handle the TesseractAPI instance
-     * @param datapath The <code>datapath</code> must be the name of the parent
-     * directory of <code>tessdata</code> and must end in
-     * <i>/</i>. Any name after the last <i>/</i> will be stripped.
+     * @param datapath The <code>datapath</code> must be the name of the data 
+     * directory or some other file in which the data directory resides 
+     * (for instance <code>argv[0]</code>.)
      * @param language The language is (usually) an <code>ISO 639-3</code>
      * string or <code>NULL</code> will default to <code>eng</code>. The
      * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;]
@@ -297,9 +297,9 @@ public class TessAPI1 implements Library, ITessAPI {
 
     /**
      * @param handle the TesseractAPI instance
-     * @param datapath The <code>datapath</code> must be the name of the parent
-     * directory of <code>tessdata</code> and must end in
-     * <i>/</i>. Any name after the last <i>/</i> will be stripped.
+     * @param datapath The <code>datapath</code> must be the name of the data 
+     * directory or some other file in which the data directory resides 
+     * (for instance <code>argv[0]</code>.)
      * @param language The language is (usually) an <code>ISO 639-3</code>
      * string or <code>NULL</code> will default to <code>eng</code>. The
      * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;]
@@ -312,9 +312,9 @@ public class TessAPI1 implements Library, ITessAPI {
     /**
      *
      * @param handle the TesseractAPI instance
-     * @param datapath The <code>datapath</code> must be the name of the parent
-     * directory of <code>tessdata</code> and must end in
-     * <i>/</i>. Any name after the last <i>/</i> will be stripped.
+     * @param datapath The <code>datapath</code> must be the name of the data 
+     * directory or some other file in which the data directory resides 
+     * (for instance <code>argv[0]</code>.)
      * @param language The language is (usually) an <code>ISO 639-3</code>
      * string or <code>NULL</code> will default to <code>eng</code>. The
      * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;]
@@ -330,6 +330,30 @@ public class TessAPI1 implements Library, ITessAPI {
      * @return 0 on success and -1 on initialization failure
      */
     public static native int TessBaseAPIInit4(TessBaseAPI handle, String datapath, String language, int oem, PointerByReference configs, int configs_size, PointerByReference vars_vec, PointerByReference vars_values, NativeSize vars_vec_size, int set_only_non_debug_params);
+
+    /**
+     *
+     * @param handle the TesseractAPI instance
+     * @param data In-memory version reads the <code>traineddata</code> file 
+     * directly from the given <code>data[data_size]</code> array. Also 
+     * implements the version with a <code>datapath</code> in <code>data</code>,
+     * flagged by <code>data_size = 0</code>.
+     * @param data_size
+     * @param language The language is (usually) an <code>ISO 639-3</code>
+     * string or <code>NULL</code> will default to <code>eng</code>. The
+     * language may be a string of the form [~]&lt;lang&gt;[+[~]&lt;lang&gt;]
+     * indicating that multiple languages are to be loaded. E.g.,
+     * <code>hin+eng</code> will load Hindi and English.
+     * @param oem ocr engine mode
+     * @param configs pointer configuration
+     * @param configs_size pointer configuration size
+     * @param vars_vec
+     * @param vars_values
+     * @param vars_vec_size
+     * @param set_only_non_debug_params
+     * @return 0 on success and -1 on initialization failure
+     */
+    public static native int TessBaseAPIInit5(TessBaseAPI handle, String data, int data_size, String language, int oem, PointerByReference configs, int configs_size, PointerByReference vars_vec, PointerByReference vars_values, NativeSize vars_vec_size, int set_only_non_debug_params);
 
     /**
      * Returns the languages string used in the last valid initialization. If
