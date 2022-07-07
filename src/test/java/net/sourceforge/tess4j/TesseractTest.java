@@ -94,7 +94,6 @@ public class TesseractTest {
      * @throws java.lang.Exception
      */
     @Test
-    @Ignore
     public void testDoOCR_UNLV_Zone_File() throws Exception {
         logger.info("doOCR on a PNG image with UNLV zone file .uzn");
         //UNLV zone format: left top width height label
