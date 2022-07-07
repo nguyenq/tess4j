@@ -310,7 +310,6 @@ public class TessAPI1 implements Library, ITessAPI {
     public static native int TessBaseAPIInit3(TessBaseAPI handle, String datapath, String language);
 
     /**
-     *
      * @param handle the TesseractAPI instance
      * @param datapath The <code>datapath</code> must be the name of the data 
      * directory or some other file in which the data directory resides 
@@ -332,7 +331,6 @@ public class TessAPI1 implements Library, ITessAPI {
     public static native int TessBaseAPIInit4(TessBaseAPI handle, String datapath, String language, int oem, PointerByReference configs, int configs_size, PointerByReference vars_vec, PointerByReference vars_values, NativeSize vars_vec_size, int set_only_non_debug_params);
 
     /**
-     *
      * @param handle the TesseractAPI instance
      * @param data In-memory version reads the <code>traineddata</code> file 
      * directly from the given <code>data[data_size]</code> array. Also 
