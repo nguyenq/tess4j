@@ -57,8 +57,8 @@ import org.slf4j.*;
  * <br>
  * Any program that uses the library will need to ensure that the required
  * libraries (the <code>.jar</code> files for <code>jna</code> and
- * <code>jai-imageio</code>) are in its compile and
- * run-time <code>classpath</code>.
+ * <code>jai-imageio</code>) are in its compile and run-time
+ * <code>classpath</code>.
  */
 public class Tesseract implements ITesseract {
 
@@ -71,6 +71,8 @@ public class Tesseract implements ITesseract {
 
     private TessAPI api;
     private TessBaseAPI handle;
+
+    private boolean alreadyInvoked;
 
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(new LoggHelper().toString());
 
@@ -161,8 +163,7 @@ public class Tesseract implements ITesseract {
      * <code>tessedit_char_whitelist</code>, etc.
      * @param value value for corresponding variable, e.g., "1", "0",
      * "0123456789", etc.
-     * @deprecated
-     * Use {@link setVariable(String key, String value)} instead.
+     * @deprecated Use {@link setVariable(String key, String value)} instead.
      */
     @Override
     @Deprecated
@@ -772,45 +773,71 @@ public class Tesseract implements ITesseract {
      */
     @Override
     public List<Word> getWords(BufferedImage bi, int pageIteratorLevel) {
-        this.init();
-        this.setVariables();
+        return getWords(Arrays.asList(bi), pageIteratorLevel);
+    }
 
+    /**
+     * Gets recognized words at specified page iterator level.
+     *
+     * @param biList list of input buffered image
+     * @param pageIteratorLevel TessPageIteratorLevel enum
+     * @return list of <code>Word</code>
+     */
+    @Override
+    public List<Word> getWords(List<BufferedImage> biList, int pageIteratorLevel) {
+        if (!alreadyInvoked) {
+            this.init();
+            this.setVariables();
+        }
+
+        String pageSeparator = api.TessBaseAPIGetStringVariable(handle, PAGE_SEPARATOR);
         List<Word> words = new ArrayList<Word>();
 
         try {
-            setImage(bi, null);
+            for (BufferedImage bi : biList) {
+                setImage(bi, null);
 
-            api.TessBaseAPIRecognize(handle, null);
-            TessResultIterator ri = api.TessBaseAPIGetIterator(handle);
-            TessPageIterator pi = api.TessResultIteratorGetPageIterator(ri);
-            api.TessPageIteratorBegin(pi);
+                api.TessBaseAPIRecognize(handle, null);
+                TessResultIterator ri = api.TessBaseAPIGetIterator(handle);
+                TessPageIterator pi = api.TessResultIteratorGetPageIterator(ri);
+                api.TessPageIteratorBegin(pi);
 
-            do {
-                Pointer ptr = api.TessResultIteratorGetUTF8Text(ri, pageIteratorLevel);
-                if (ptr == null) {
-                    continue;
-                }                
-                String text = ptr.getString(0);
-                api.TessDeleteText(ptr);
-                float confidence = api.TessResultIteratorConfidence(ri, pageIteratorLevel);
-                IntBuffer leftB = IntBuffer.allocate(1);
-                IntBuffer topB = IntBuffer.allocate(1);
-                IntBuffer rightB = IntBuffer.allocate(1);
-                IntBuffer bottomB = IntBuffer.allocate(1);
-                api.TessPageIteratorBoundingBox(pi, pageIteratorLevel, leftB, topB, rightB, bottomB);
-                int left = leftB.get();
-                int top = topB.get();
-                int right = rightB.get();
-                int bottom = bottomB.get();
-                Word word = new Word(text, confidence, new Rectangle(left, top, right - left, bottom - top));
-                words.add(word);
-            } while (api.TessPageIteratorNext(pi, pageIteratorLevel) == TRUE);
+                do {
+                    Pointer ptr = api.TessResultIteratorGetUTF8Text(ri, pageIteratorLevel);
+                    if (ptr == null) {
+                        continue;
+                    }
+                    String text = ptr.getString(0);
+                    api.TessDeleteText(ptr);
+                    float confidence = api.TessResultIteratorConfidence(ri, pageIteratorLevel);
+                    IntBuffer leftB = IntBuffer.allocate(1);
+                    IntBuffer topB = IntBuffer.allocate(1);
+                    IntBuffer rightB = IntBuffer.allocate(1);
+                    IntBuffer bottomB = IntBuffer.allocate(1);
+                    api.TessPageIteratorBoundingBox(pi, pageIteratorLevel, leftB, topB, rightB, bottomB);
+                    int left = leftB.get();
+                    int top = topB.get();
+                    int right = rightB.get();
+                    int bottom = bottomB.get();
+                    Word word = new Word(text, confidence, new Rectangle(left, top, right - left, bottom - top));
+                    words.add(word);
+                } while (api.TessPageIteratorNext(pi, pageIteratorLevel) == TRUE);
 //            api.TessPageIteratorDelete(pi);
-            api.TessResultIteratorDelete(ri);
+                api.TessResultIteratorDelete(ri);
+
+                words.add(new Word(pageSeparator, 100, new Rectangle())); // add page separator
+            }
+
+            // remove last page separator
+            if (!words.isEmpty()) {
+                words.remove(words.size() - 1);
+            }
         } catch (Exception e) {
             logger.warn(e.getMessage(), e);
         } finally {
-            dispose();
+            if (!alreadyInvoked) {
+                dispose();
+            }
         }
 
         return words;
@@ -866,9 +893,9 @@ public class Tesseract implements ITesseract {
                 try {
                     TessResultRenderer renderer = createRenderers(outputbases[i], formats);
                     int meanTextConfidence = createDocuments(bis[i], filenames[i], renderer);
+                    api.TessDeleteResultRenderer(renderer);
                     List<Word> words = meanTextConfidence > 0 ? getRecognizedWords(pageIteratorLevel) : new ArrayList<Word>();
                     results.add(new OCRResult(meanTextConfidence, words));
-                    api.TessDeleteResultRenderer(renderer);
                 } catch (Exception e) {
                     // skip the problematic image file
                     logger.warn(e.getMessage(), e);
@@ -934,9 +961,9 @@ public class Tesseract implements ITesseract {
 
                     TessResultRenderer renderer = createRenderers(outputbases[i], formats);
                     int meanTextConfidence = createDocuments(imageFile.getPath(), renderer);
-                    List<Word> words = meanTextConfidence > 0 ? getRecognizedWords(pageIteratorLevel) : new ArrayList<Word>();
-                    results.add(new OCRResult(meanTextConfidence, words));
                     api.TessDeleteResultRenderer(renderer);
+                    List<Word> words = meanTextConfidence > 0 ? getRecognizedWords(imageFile, pageIteratorLevel) : new ArrayList<Word>();
+                    results.add(new OCRResult(meanTextConfidence, words));
                 } catch (Exception e) {
                     // skip the problematic image file
                     logger.warn(e.getMessage(), e);
@@ -955,7 +982,8 @@ public class Tesseract implements ITesseract {
     }
 
     /**
-     * Gets result words at specified page iterator level from recognized pages.
+     * Gets result words at specified page iterator level from a recognized
+     * page.
      *
      * @param pageIteratorLevel TessPageIteratorLevel enum
      * @return list of <code>Word</code>
@@ -972,7 +1000,7 @@ public class Tesseract implements ITesseract {
                 Pointer ptr = api.TessResultIteratorGetUTF8Text(ri, pageIteratorLevel);
                 if (ptr == null) {
                     continue;
-                }                
+                }
                 String text = ptr.getString(0);
                 api.TessDeleteText(ptr);
                 float confidence = api.TessResultIteratorConfidence(ri, pageIteratorLevel);
@@ -992,6 +1020,36 @@ public class Tesseract implements ITesseract {
             api.TessResultIteratorDelete(ri);
         } catch (Exception e) {
             logger.warn(e.getMessage(), e);
+        }
+
+        return words;
+    }
+
+    /**
+     * Gets result words at specified page iterator level from pages. For
+     * multi-page images, it reruns recognition, doubling processing time.
+     *
+     * @param pageIteratorLevel TessPageIteratorLevel enum
+     * @return list of <code>Word</code>
+     */
+    private List<Word> getRecognizedWords(File inputFile, int pageIteratorLevel) {
+        List<Word> words = new ArrayList<Word>();
+
+        try {
+            List<BufferedImage> biList = ImageIOHelper.getImageList(inputFile);
+
+            if (biList.isEmpty()) {
+                return words;
+            } else if (biList.size() == 1) {
+                return getRecognizedWords(pageIteratorLevel);
+            } else {
+                alreadyInvoked = true;
+                return getWords(biList, pageIteratorLevel);
+            }
+        } catch (IOException e) {
+            logger.warn(e.getMessage(), e);
+        } finally {
+            alreadyInvoked = false;
         }
 
         return words;

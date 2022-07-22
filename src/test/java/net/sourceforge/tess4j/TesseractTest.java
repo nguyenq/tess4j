@@ -40,7 +40,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import org.slf4j.Logger;
@@ -310,8 +309,8 @@ public class TesseractTest {
     @Test
     public void testCreateDocumentsWithResults() throws Exception {
         logger.info("createDocumentsWithResults for multiple images at given TessPageIteratorLevel");
-        File imageFile1 = new File(this.testResourcesDataPath, "eurotext.pdf");
-        File imageFile2 = new File(this.testResourcesDataPath, "eurotext.png");
+        File imageFile1 = new File(this.testResourcesDataPath, "eurotext.png");
+        File imageFile2 = new File(this.testResourcesDataPath, "multipage-pdf.pdf");
         String outputbase1 = "target/test-classes/test-results/docrenderer-3";
         String outputbase2 = "target/test-classes/test-results/docrenderer-4";
         List<RenderedFormat> formats = new ArrayList<RenderedFormat>(Arrays.asList(RenderedFormat.HOCR, RenderedFormat.PDF, RenderedFormat.TEXT));

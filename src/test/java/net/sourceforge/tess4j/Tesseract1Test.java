@@ -304,8 +304,8 @@ public class Tesseract1Test {
     @Test
     public void testCreateDocumentsWithResults() throws Exception {
         logger.info("createDocumentsWithResults for multiple images at given TessPageIteratorLevel");
-        File imageFile1 = new File(this.testResourcesDataPath, "eurotext.pdf");
-        File imageFile2 = new File(this.testResourcesDataPath, "eurotext.png");
+        File imageFile1 = new File(this.testResourcesDataPath, "eurotext.png");
+        File imageFile2 = new File(this.testResourcesDataPath, "multipage-pdf.pdf");
         String outputbase1 = "target/test-classes/test-results/docrenderer1-3";
         String outputbase2 = "target/test-classes/test-results/docrenderer1-4";
         List<RenderedFormat> formats = new ArrayList<RenderedFormat>(Arrays.asList(RenderedFormat.HOCR, RenderedFormat.PDF, RenderedFormat.TEXT));

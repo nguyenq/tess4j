@@ -35,6 +35,8 @@ public interface ITesseract {
             + "</head>\n<body>\n";
     String htmlEndTag = "</body>\n</html>\n";
 
+    String PAGE_SEPARATOR = "page_separator";
+
     /**
      * Rendered formats supported by Tesseract.
      */
@@ -184,12 +186,11 @@ public interface ITesseract {
      * <code>tessedit_char_whitelist</code>, etc.
      * @param value value for corresponding variable, e.g., "1", "0",
      * "0123456789", etc.
-     * @deprecated
-     * Use {@link setVariable(String key, String value)} instead.
+     * @deprecated Use {@link setVariable(String key, String value)} instead.
      */
     @Deprecated
     void setTessVariable(String key, String value);
-    
+
     /**
      * Sets the value of Tesseract's internal parameter.
      *
@@ -300,4 +301,13 @@ public interface ITesseract {
      * @return list of <code>Word</code>
      */
     List<Word> getWords(BufferedImage bi, int pageIteratorLevel);
+
+    /**
+     * Gets recognized words at specified page iterator level.
+     *  
+     * @param biList list of input buffered image
+     * @param pageIteratorLevel
+     * @return list of <code>Word</code>
+     */
+    List<Word> getWords(List<BufferedImage> biList, int pageIteratorLevel);
 }

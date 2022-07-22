@@ -62,6 +62,6 @@ public class Word {
 
     @Override
     public String toString() {
-        return String.format("%s [Confidence: %f Bounding box: %d %d %d %d]", text, confidence, rect.x, rect.y, rect.width, rect.height);
+        return String.format("{ Text: %s, Confidence: %f, Bounding box: %d %d %d %d }", text, confidence, rect.x, rect.y, rect.width, rect.height);
     }
 }
