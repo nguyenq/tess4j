@@ -707,7 +707,8 @@ public class Tesseract implements ITesseract {
      */
     private int createDocuments(BufferedImage bi, String filename, TessResultRenderer renderer) throws Exception {
         Pix pix = LeptUtils.convertImageToPix(bi);
-        api.TessResultRendererBeginDocument(renderer, filename);
+        String title = api.TessBaseAPIGetStringVariable(handle, DOCUMENT_TITLE);
+        api.TessResultRendererBeginDocument(renderer, title);
         int result = api.TessBaseAPIProcessPage(handle, pix, 0, filename, null, 0, renderer);
         api.TessResultRendererEndDocument(renderer);
         LeptUtils.dispose(pix);
@@ -779,7 +780,7 @@ public class Tesseract implements ITesseract {
     /**
      * Gets recognized words at specified page iterator level.
      *
-     * @param biList list of input buffered image
+     * @param biList list of input buffered images
      * @param pageIteratorLevel TessPageIteratorLevel enum
      * @return list of <code>Word</code>
      */

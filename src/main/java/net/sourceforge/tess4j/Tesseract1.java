@@ -686,7 +686,8 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
      */
     private int createDocuments(BufferedImage bi, String filename, TessResultRenderer renderer) throws Exception {
         Pix pix = LeptUtils.convertImageToPix(bi);
-        TessResultRendererBeginDocument(renderer, filename);
+        String title = TessBaseAPIGetStringVariable(handle, DOCUMENT_TITLE);
+        TessResultRendererBeginDocument(renderer, title);
         int result = TessBaseAPIProcessPage(handle, pix, 0, filename, null, 0, renderer);
         TessResultRendererEndDocument(renderer);
         LeptUtils.dispose(pix);
@@ -757,7 +758,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     /**
      * Gets recognized words at specified page iterator level.
      *
-     * @param biList list of input buffered image
+     * @param biList list of input buffered images
      * @param pageIteratorLevel TessPageIteratorLevel enum
      * @return list of <code>Word</code>
      */
@@ -960,7 +961,8 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     }
 
     /**
-     * Gets result words at specified page iterator level from a recognized page.
+     * Gets result words at specified page iterator level from a recognized
+     * page.
      *
      * @param pageIteratorLevel TessPageIteratorLevel enum
      * @return list of <code>Word</code>

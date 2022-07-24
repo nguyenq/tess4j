@@ -36,6 +36,7 @@ public interface ITesseract {
     String htmlEndTag = "</body>\n</html>\n";
 
     String PAGE_SEPARATOR = "page_separator";
+    String DOCUMENT_TITLE = "document_title";
 
     /**
      * Rendered formats supported by Tesseract.
@@ -305,7 +306,7 @@ public interface ITesseract {
     /**
      * Gets recognized words at specified page iterator level.
      *  
-     * @param biList list of input buffered image
+     * @param biList list of input buffered images
      * @param pageIteratorLevel
      * @return list of <code>Word</code>
      */

@@ -314,6 +314,7 @@ public class TesseractTest {
         String outputbase1 = "target/test-classes/test-results/docrenderer-3";
         String outputbase2 = "target/test-classes/test-results/docrenderer-4";
         List<RenderedFormat> formats = new ArrayList<RenderedFormat>(Arrays.asList(RenderedFormat.HOCR, RenderedFormat.PDF, RenderedFormat.TEXT));
+        instance.setVariable(ITesseract.DOCUMENT_TITLE, "My document");
         List<OCRResult> results = instance.createDocumentsWithResults(new String[]{imageFile1.getPath(), imageFile2.getPath()}, new String[]{outputbase1, outputbase2}, formats, TessPageIteratorLevel.RIL_WORD);
         assertTrue(new File(outputbase1 + ".pdf").exists());
         assertEquals(2, results.size());
@@ -333,7 +334,8 @@ public class TesseractTest {
         BufferedImage bi = ImageIO.read(imageFile);
         String outputbase = "target/test-classes/test-results/docrenderer-5";
         List<RenderedFormat> formats = new ArrayList<RenderedFormat>(Arrays.asList(RenderedFormat.HOCR, RenderedFormat.PDF, RenderedFormat.TEXT));
-        OCRResult result = instance.createDocumentsWithResults(bi, imageFile.getName(), outputbase, formats, TessPageIteratorLevel.RIL_WORD);
+        instance.setVariable(ITesseract.DOCUMENT_TITLE, "My document");
+        OCRResult result = instance.createDocumentsWithResults(bi, imageFile.getPath(), outputbase, formats, TessPageIteratorLevel.RIL_WORD);
         assertTrue(new File(outputbase + ".pdf").exists());
         assertTrue(result.getConfidence() > 0);
         assertEquals(66, result.getWords().size());
