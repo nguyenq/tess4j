@@ -1030,6 +1030,7 @@ public class Tesseract implements ITesseract {
      * Gets result words at specified page iterator level from pages. For
      * multi-page images, it reruns recognition, doubling processing time.
      *
+     * @param inputFile input file
      * @param pageIteratorLevel TessPageIteratorLevel enum
      * @return list of <code>Word</code>
      */
