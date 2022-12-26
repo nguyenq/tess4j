@@ -31,7 +31,7 @@ import javax.imageio.stream.ImageInputStream;
 import net.sourceforge.lept4j.Box;
 import net.sourceforge.lept4j.Boxa;
 import static net.sourceforge.lept4j.ILeptonica.L_CLONE;
-import net.sourceforge.lept4j.Leptonica;
+import net.sourceforge.lept4j.Leptonica1;
 import net.sourceforge.lept4j.Pix;
 import net.sourceforge.lept4j.util.LeptUtils;
 import static net.sourceforge.tess4j.ITessAPI.FALSE;
@@ -689,9 +689,9 @@ public class Tesseract implements ITesseract {
         api.TessBaseAPISetInputName(handle, filename); //for reading a UNLV zone file
         int result = api.TessBaseAPIProcessPages(handle, filename, null, 0, renderer);
 
-        if (result == ITessAPI.FALSE) {
-            throw new TesseractException("Error during processing page.");
-        }
+//        if (result == ITessAPI.FALSE) {
+//            throw new TesseractException("Error during processing page.");
+//        }
 
         return api.TessBaseAPIMeanTextConf(handle);
     }
@@ -713,9 +713,9 @@ public class Tesseract implements ITesseract {
         api.TessResultRendererEndDocument(renderer);
         LeptUtils.dispose(pix);
 
-        if (result == ITessAPI.FALSE) {
-            throw new TesseractException("Error during processing page.");
-        }
+//        if (result == ITessAPI.FALSE) {
+//            throw new TesseractException("Error during processing page.");
+//        }
 
         return api.TessBaseAPIMeanTextConf(handle);
     }
@@ -738,22 +738,21 @@ public class Tesseract implements ITesseract {
             setImage(bi, null);
 
             Boxa boxes = api.TessBaseAPIGetComponentImages(handle, pageIteratorLevel, TRUE, null, null);
-            Leptonica leptInstance = Leptonica.INSTANCE;
-            int boxCount = leptInstance.boxaGetCount(boxes);
+            int boxCount = Leptonica1.boxaGetCount(boxes);
             for (int i = 0; i < boxCount; i++) {
-                Box box = leptInstance.boxaGetBox(boxes, i, L_CLONE);
+                Box box = Leptonica1.boxaGetBox(boxes, i, L_CLONE);
                 if (box == null) {
                     continue;
                 }
                 list.add(new Rectangle(box.x, box.y, box.w, box.h));
                 PointerByReference pRef = new PointerByReference();
                 pRef.setValue(box.getPointer());
-                leptInstance.boxDestroy(pRef);
+                Leptonica1.boxDestroy(pRef);
             }
 
             PointerByReference pRef = new PointerByReference();
             pRef.setValue(boxes.getPointer());
-            leptInstance.boxaDestroy(pRef);
+            Leptonica1.boxaDestroy(pRef);
 
             return list;
         } catch (IOException ioe) {

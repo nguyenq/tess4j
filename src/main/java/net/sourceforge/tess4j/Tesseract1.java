@@ -692,9 +692,9 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
         TessResultRendererEndDocument(renderer);
         LeptUtils.dispose(pix);
 
-        if (result == ITessAPI.FALSE) {
-            throw new TesseractException("Error during processing page.");
-        }
+//        if (result == ITessAPI.FALSE) {
+//            throw new TesseractException("Error during processing page.");
+//        }
 
         return TessBaseAPIMeanTextConf(handle);
     }

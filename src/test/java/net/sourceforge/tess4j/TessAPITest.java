@@ -47,7 +47,7 @@ import com.sun.jna.ptr.PointerByReference;
 import net.sourceforge.lept4j.Box;
 import net.sourceforge.lept4j.Boxa;
 import static net.sourceforge.lept4j.ILeptonica.L_CLONE;
-import net.sourceforge.lept4j.Leptonica;
+import net.sourceforge.lept4j.Leptonica1;
 import net.sourceforge.lept4j.Pix;
 import net.sourceforge.lept4j.util.LeptUtils;
 
@@ -150,8 +150,7 @@ public class TessAPITest {
         logger.info("TessBaseAPIGetUTF8Text_Pix");
         String expResult = expOCRResult;
         File tiff = new File(this.testResourcesDataPath, "eurotext.tif");
-        Leptonica leptInstance = Leptonica.INSTANCE;
-        Pix pix = leptInstance.pixRead(tiff.getPath());
+        Pix pix = Leptonica1.pixRead(tiff.getPath());
         api.TessBaseAPIInit3(handle, datapath, language);
         api.TessBaseAPISetImage2(handle, pix);
         Pointer utf8Text = api.TessBaseAPIGetUTF8Text(handle);
@@ -162,7 +161,7 @@ public class TessAPITest {
         //release Pix resource
         PointerByReference pRef = new PointerByReference();
         pRef.setValue(pix.getPointer());
-        leptInstance.pixDestroy(pRef);
+        Leptonica1.pixDestroy(pRef);
 
         assertTrue(result.startsWith(expResult));
     }
@@ -177,17 +176,16 @@ public class TessAPITest {
         logger.info("TessBaseAPIGetComponentImages");
         File image = new File(this.testResourcesDataPath, "eurotext.png");
         int expResult = 12; // number of lines in the test image
-        Leptonica leptInstance = Leptonica.INSTANCE;
-        Pix pix = leptInstance.pixRead(image.getPath());
+        Pix pix = Leptonica1.pixRead(image.getPath());
         api.TessBaseAPIInit3(handle, datapath, language);
         api.TessBaseAPISetImage2(handle, pix);
         PointerByReference pixa = null;
         PointerByReference blockids = null;
         Boxa boxes = api.TessBaseAPIGetComponentImages(handle, TessPageIteratorLevel.RIL_TEXTLINE, TRUE, pixa, blockids);
 //        boxes = api.TessBaseAPIGetRegions(handle, pixa); // equivalent to TessPageIteratorLevel.RIL_BLOCK
-        int boxCount = leptInstance.boxaGetCount(boxes);
+        int boxCount = Leptonica1.boxaGetCount(boxes);
         for (int i = 0; i < boxCount; i++) {
-            Box box = leptInstance.boxaGetBox(boxes, i, L_CLONE);
+            Box box = Leptonica1.boxaGetBox(boxes, i, L_CLONE);
             if (box == null) {
                 continue;
             }
@@ -213,7 +211,7 @@ public class TessAPITest {
     @Test
     public void testTessVersion() {
         logger.info("TessVersion");
-        String expResult = "5.2.0";
+        String expResult = "5.3.0";
         String result = api.TessVersion();
         logger.info(result);
         assertTrue(result.startsWith(expResult));
@@ -416,8 +414,7 @@ public class TessAPITest {
         logger.info("TessBaseAPIAnalyseLayout");
         File image = new File(testResourcesDataPath, "eurotext.png");
         int expResult = 12; // number of lines in the test image
-        Leptonica leptInstance = Leptonica.INSTANCE;
-        Pix pix = leptInstance.pixRead(image.getPath());
+        Pix pix = Leptonica1.pixRead(image.getPath());
         api.TessBaseAPIInit3(handle, datapath, language);
         api.TessBaseAPISetImage2(handle, pix);
         int pageIteratorLevel = TessPageIteratorLevel.RIL_TEXTLINE;
@@ -440,7 +437,7 @@ public class TessAPITest {
         api.TessPageIteratorDelete(pi);
         PointerByReference pRef = new PointerByReference();
         pRef.setValue(pix.getPointer());
-        leptInstance.pixDestroy(pRef);
+        Leptonica1.pixDestroy(pRef);
         assertEquals(expResult, i);
     }
 
@@ -454,8 +451,7 @@ public class TessAPITest {
         logger.info("TessBaseAPIDetectOrientationScript");
         File image = new File(testResourcesDataPath, "eurotext90.png");
         int expResult = TRUE;
-        Leptonica leptInstance = Leptonica.INSTANCE;
-        Pix pix = leptInstance.pixRead(image.getPath());
+        Pix pix = Leptonica1.pixRead(image.getPath());
         api.TessBaseAPIInit3(handle, datapath, "osd");
         api.TessBaseAPISetImage2(handle, pix);
 
@@ -475,7 +471,7 @@ public class TessAPITest {
 
         PointerByReference pRef = new PointerByReference();
         pRef.setValue(pix.getPointer());
-        leptInstance.pixDestroy(pRef);
+        Leptonica1.pixDestroy(pRef);
         assertEquals(expResult, result);
     }
 

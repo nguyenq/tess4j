@@ -223,3 +223,7 @@ Version 5.4.0 (24 July 2022)
 - Fix createDocumentsWithResults for multi-page image (Issue #233)
 - Fix TessResultRendererBeginDocument exception with null input (Issue #234)
 - New API method
+
+Version 5.5.0 (26 December 2022)
+- Upgrade to Tesseract 5.3.0
+- Update dependencies and Maven plugins
