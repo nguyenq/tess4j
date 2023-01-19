@@ -22,26 +22,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
 import javax.imageio.ImageIO;
-
-import net.sourceforge.tess4j.util.ImageHelper;
-import net.sourceforge.tess4j.util.LoggHelper;
-import net.sourceforge.tess4j.util.Utils;
-
-import net.sourceforge.tess4j.ITesseract.RenderedFormat;
-import net.sourceforge.tess4j.ITessAPI.TessPageIteratorLevel;
-
-import com.recognition.software.jdeskew.ImageDeskew;
 import java.awt.Graphics2D;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import net.sourceforge.tess4j.util.ImageHelper;
+import net.sourceforge.tess4j.util.LoggHelper;
+import net.sourceforge.tess4j.util.Utils;
+import net.sourceforge.tess4j.ITesseract.RenderedFormat;
+import net.sourceforge.tess4j.ITessAPI.TessPageIteratorLevel;
+import com.recognition.software.jdeskew.ImageDeskew;
+
+import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,21 +48,21 @@ public class Tesseract1Test {
     private final String datapath = "src/main/resources/tessdata";
     private final String testResourcesDataPath = "src/test/resources/test-data";
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() throws Exception {
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDownClass() throws Exception {
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         instance = new Tesseract1();
         instance.setDatapath(new File(datapath).getPath());
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
     }
 

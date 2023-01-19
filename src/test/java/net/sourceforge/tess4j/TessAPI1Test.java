@@ -15,8 +15,6 @@
  */
 package net.sourceforge.tess4j;
 
-import static org.junit.Assert.assertArrayEquals;
-
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
@@ -26,22 +24,10 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.Arrays;
-
 import javax.imageio.ImageIO;
-
-import net.sourceforge.tess4j.util.LoggHelper;
-import net.sourceforge.tess4j.util.Utils;
-import net.sourceforge.tess4j.util.ImageIOHelper;
 
 import com.ochafik.lang.jnaerator.runtime.NativeSize;
 import com.sun.jna.NativeLong;
-
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import com.sun.jna.Pointer;
 import com.sun.jna.StringArray;
 import com.sun.jna.ptr.PointerByReference;
@@ -51,15 +37,17 @@ import static net.sourceforge.lept4j.ILeptonica.L_CLONE;
 import net.sourceforge.lept4j.Leptonica1;
 import net.sourceforge.lept4j.Pix;
 import net.sourceforge.lept4j.util.LeptUtils;
-
 import net.sourceforge.tess4j.ITessAPI.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import net.sourceforge.tess4j.util.LoggHelper;
+import net.sourceforge.tess4j.util.Utils;
+import net.sourceforge.tess4j.util.ImageIOHelper;
 import static net.sourceforge.tess4j.ITessAPI.FALSE;
 import static net.sourceforge.tess4j.ITessAPI.TRUE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TessAPI1Test {
 
@@ -71,20 +59,20 @@ public class TessAPI1Test {
 
     TessBaseAPI handle;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() throws Exception {
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDownClass() throws Exception {
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         handle = TessAPI1.TessBaseAPICreate();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         TessAPI1.TessBaseAPIDelete(handle);
     }
