@@ -227,3 +227,6 @@ Version 5.4.0 (24 July 2022)
 Version 5.5.0 (26 December 2022)
 - Upgrade to Tesseract 5.3.0
 - Update dependencies and Maven plugins
+
+Version 5.6.0 (29 January 2023)
+- Update Leptonica 1.83.1 (lept4j-1.18.0)
