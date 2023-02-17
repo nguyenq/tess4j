@@ -24,6 +24,9 @@ Since Tesseract and Leptonica Windows binaries were built using Visual Studio 20
 
 [Development with Tess4J in NetBeans, Eclipse, and Command-line](http://tess4j.sourceforge.net/tutorial/)
 
+## Mac Users
+For MacOS users, [there is a library](https://github.com/EasyG0ing1/FixTess4j4Mac) available that will help you add the required C library into Tess4j, which will prevent the no resource available error.
+
 ## Contributors
 
 A big thanks to GitHub and all of Tess4J's contributors.
