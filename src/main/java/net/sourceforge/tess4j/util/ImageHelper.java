@@ -15,6 +15,7 @@
  */
 package net.sourceforge.tess4j.util;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
@@ -101,6 +102,26 @@ public class ImageHelper {
     public static BufferedImage convertImageToBinary(BufferedImage image) {
         BufferedImage tmp = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_BYTE_BINARY);
         Graphics2D g2 = tmp.createGraphics();
+        g2.drawImage(image, 0, 0, null);
+        g2.dispose();
+        return tmp;
+    }
+    
+    /**
+     * Removes alpha channel from image
+     * 
+     * @param image
+     * @return 
+     */
+    public static BufferedImage removeAlphaChannel(BufferedImage image) {
+        if (!image.getColorModel().hasAlpha()) {
+            return image;
+        }
+        
+        BufferedImage tmp = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2 = tmp.createGraphics();
+        g2.setColor(Color.WHITE);
+        g2.fillRect(0, 0, tmp.getWidth(), tmp.getHeight());
         g2.drawImage(image, 0, 0, null);
         g2.dispose();
         return tmp;
