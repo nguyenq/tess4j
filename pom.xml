@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sourceforge.tess4j</groupId>
     <artifactId>tess4j</artifactId>
-    <version>5.7.1-SNAPSHOT</version>
+    <version>5.8.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Tess4J - Tesseract for Java</name>
@@ -183,7 +183,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.9.3</version>
+            <version>5.10.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
