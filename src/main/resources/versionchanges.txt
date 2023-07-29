@@ -234,5 +234,5 @@ Version 5.6.0 (29 January 2023)
 Version 5.7.0 (3 April 2023)
 - Upgrade to Tesseract 5.3.1
 
-Version 5.8.0 (28 July 2023)
+Version 5.8.0 (29 July 2023)
 - Upgrade to Tesseract 5.3.2
