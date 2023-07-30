@@ -314,7 +314,8 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
             for (IIOImage oimage : imageList) {
                 pageNum++;
                 try {
-                    setImage(oimage.getRenderedImage(), rect);
+                    setImage(oimage.getRenderedImage());
+                    setROI(rect);
                     sb.append(getOCRText(filename, pageNum));
                 } catch (IOException ioe) {
                     // skip the problematic image
@@ -351,7 +352,8 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
         String text = "";
 
         try {
-            setImage(oimage.getRenderedImage(), rect);
+            setImage(oimage.getRenderedImage());
+            setROI(rect);
             text = getOCRText(filename, pageNum);
         } catch (IOException ioe) {
             // skip the problematic image
@@ -406,7 +408,8 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
         setVariables();
 
         try {
-            setImage(xsize, ysize, buf, rect, bpp);
+            setImage(xsize, ysize, buf, bpp);
+            setROI(rect);
             return getOCRText(filename, 1);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -445,10 +448,9 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
      * A wrapper for {@link #setImage(int, int, ByteBuffer, Rectangle, int)}.
      *
      * @param image a rendered image
-     * @param rect region of interest
      * @throws java.io.IOException
      */
-    protected void setImage(RenderedImage image, Rectangle rect) throws IOException {
+    protected void setImage(RenderedImage image) throws IOException {
         ByteBuffer buff = ImageIOHelper.getImageByteBuffer(image);
         int bpp;
         DataBuffer dbuff = image.getData(new Rectangle(1, 1)).getDataBuffer();
@@ -457,7 +459,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
         } else {
             bpp = 8; // BufferedImage.TYPE_BYTE_GRAY image
         }
-        setImage(image.getWidth(), image.getHeight(), buff, rect, bpp);
+        setImage(image.getWidth(), image.getHeight(), buff, bpp);
     }
 
     /**
@@ -466,17 +468,21 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
      * @param xsize width of image
      * @param ysize height of image
      * @param buf pixel data
-     * @param rect the bounding rectangle defines the region of the image to be
-     * recognized. A rectangle of zero dimension or <code>null</code> indicates
-     * the whole image.
      * @param bpp bits per pixel, represents the bit depth of the image, with 1
      * for binary bitmap, 8 for gray, and 24 for color RGB.
      */
-    protected void setImage(int xsize, int ysize, ByteBuffer buf, Rectangle rect, int bpp) {
+    protected void setImage(int xsize, int ysize, ByteBuffer buf, int bpp) {
         int bytespp = bpp / 8;
         int bytespl = (int) Math.ceil(xsize * bpp / 8.0);
         TessBaseAPISetImage(handle, buf, xsize, ysize, bytespp, bytespl);
+    }
 
+    /**
+     * Sets region of interest.
+     *
+     * @param rect region of interest
+     */
+    protected void setROI(Rectangle rect) {
         if (rect != null && !rect.isEmpty()) {
             TessBaseAPISetRectangle(handle, rect.x, rect.y, rect.width, rect.height);
         }
@@ -695,7 +701,6 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
 //        if (result == ITessAPI.FALSE) {
 //            throw new TesseractException("Error during processing page.");
 //        }
-
         return TessBaseAPIMeanTextConf(handle);
     }
 
@@ -714,7 +719,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
 
         try {
             List<Rectangle> list = new ArrayList<Rectangle>();
-            setImage(bi, null);
+            setImage(bi);
 
             Boxa boxes = TessBaseAPIGetComponentImages(handle, pageIteratorLevel, TRUE, null, null);
             int boxCount = Leptonica1.boxaGetCount(boxes);
@@ -774,7 +779,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
 
         try {
             for (BufferedImage bi : biList) {
-                setImage(bi, null);
+                setImage(bi);
 
                 TessBaseAPIRecognize(handle, null);
                 TessResultIterator ri = TessBaseAPIGetIterator(handle);
