@@ -198,7 +198,7 @@ public class TessAPI1Test {
     @Test
     public void testTessVersion() {
         logger.info("TessVersion");
-        String expResult = "5.3.2";
+        String expResult = "5.3.3";
         String result = TessAPI1.TessVersion();
         logger.info(result);
         assertTrue(result.startsWith(expResult));
