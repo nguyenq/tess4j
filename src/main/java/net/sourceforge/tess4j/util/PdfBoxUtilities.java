@@ -24,8 +24,8 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-
-import org.apache.pdfbox.io.MemoryUsageSetting;
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.io.RandomAccessReadBufferedFile;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.multipdf.Splitter;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -88,7 +88,7 @@ public class PdfBoxUtilities {
 
         PDDocument document = null;
         try {
-            document = PDDocument.load(inputPdfFile);
+            document = Loader.loadPDF(new RandomAccessReadBufferedFile(inputPdfFile));
             PDFRenderer pdfRenderer = new PDFRenderer(document);
             for (int page = 0; page < document.getNumberOfPages(); ++page) {
                 BufferedImage bim = pdfRenderer.renderImageWithDPI(page, 300, ImageType.RGB);
@@ -150,7 +150,7 @@ public class PdfBoxUtilities {
     public static void splitPdf(File inputPdfFile, File outputPdfFile, int firstPage, int lastPage) {
         PDDocument document = null;
         try {
-            document = PDDocument.load(inputPdfFile);
+            document = Loader.loadPDF(new RandomAccessReadBufferedFile(inputPdfFile));
             Splitter splitter = new Splitter();
 
             splitter.setStartPage(firstPage);
@@ -187,7 +187,7 @@ public class PdfBoxUtilities {
     public static int getPdfPageCount(File inputPdfFile) {
         PDDocument document = null;
         try {
-            document = PDDocument.load(inputPdfFile);
+            document = Loader.loadPDF(new RandomAccessReadBufferedFile(inputPdfFile));
             return document.getNumberOfPages();
         } catch (IOException ioe) {
             logger.error("Error counting PDF pages => " + ioe);
@@ -215,7 +215,7 @@ public class PdfBoxUtilities {
             for (File inputPdfFile : inputPdfFiles) {
                 mergerUtility.addSource(inputPdfFile);
             }
-            mergerUtility.mergeDocuments(MemoryUsageSetting.setupMainMemoryOnly());
+            mergerUtility.mergeDocuments(null);
         } catch (IOException ioe) {
             logger.error("Error counting PDF pages => " + ioe);
         }
