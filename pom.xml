@@ -220,12 +220,12 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.14.0</version>
+            <version>2.15.0</version>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.lept4j</groupId>
             <artifactId>lept4j</artifactId>
-            <version>1.18.1</version>
+            <version>1.18.2</version>
         </dependency>
         <dependency>
             <groupId>org.jboss</groupId>
