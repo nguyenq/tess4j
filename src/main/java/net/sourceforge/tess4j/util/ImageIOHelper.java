@@ -93,7 +93,7 @@ public class ImageIOHelper {
      * @throws IOException
      */
     public static List<File> createTiffFiles(File imageFile, int index, boolean preserve) throws IOException {
-        List<File> tiffFiles = new ArrayList<File>();
+        List<File> tiffFiles = new ArrayList<>();
 
         String imageFormat = getImageFileFormat(imageFile);
 
@@ -164,7 +164,7 @@ public class ImageIOHelper {
     }
 
     public static List<File> createTiffFiles(List<IIOImage> imageList, int index, int dpiX, int dpiY) throws IOException {
-        List<File> tiffFiles = new ArrayList<File>();
+        List<File> tiffFiles = new ArrayList<>();
 
         //Set up the writeParam
         TIFFImageWriteParam tiffWriteParam = new TIFFImageWriteParam(Locale.US);
@@ -341,7 +341,7 @@ public class ImageIOHelper {
         // convert to TIFF if PDF
         File imageFile = getImageFile(inputFile);
 
-        List<BufferedImage> biList = new ArrayList<BufferedImage>();
+        List<BufferedImage> biList = new ArrayList<>();
         String imageFormat = getImageFileFormat(imageFile);
 
         Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName(imageFormat);
@@ -385,7 +385,7 @@ public class ImageIOHelper {
         // convert to TIFF if PDF
         File imageFile = getImageFile(inputFile);
 
-        List<IIOImage> iioImageList = new ArrayList<IIOImage>();
+        List<IIOImage> iioImageList = new ArrayList<>();
         String imageFormat = getImageFileFormat(imageFile);
 
         Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName(imageFormat);
@@ -424,13 +424,23 @@ public class ImageIOHelper {
      *
      * @param bi input image
      * @return a list of <code>IIOImage</code> objects
-     * @throws IOException
      */
-    public static List<IIOImage> getIIOImageList(BufferedImage bi) throws IOException {
-        List<IIOImage> iioImageList = new ArrayList<IIOImage>();
+    @Deprecated
+    public static List<IIOImage> getIIOImageList(BufferedImage bi) {
+        List<IIOImage> iioImageList = new ArrayList<>();
         IIOImage oimage = new IIOImage(bi, null, null);
         iioImageList.add(oimage);
         return iioImageList;
+    }
+    
+    /**
+     * Gets an <code>IIOImage</code> object for a <code>BufferedImage</code>.
+     *
+     * @param bi input image
+     * @return an <code>IIOImage</code> object
+     */
+    public static IIOImage getIIOImage(BufferedImage bi) {
+        return new IIOImage(bi, null, null);
     }
 
     /**
@@ -513,7 +523,7 @@ public class ImageIOHelper {
      * @throws IOException
      */
     public static void mergeTiff(BufferedImage[] inputImages, File outputTiff, String compressionType) throws IOException {
-        List<IIOImage> imageList = new ArrayList<IIOImage>();
+        List<IIOImage> imageList = new ArrayList<>();
 
         for (BufferedImage inputImage : inputImages) {
             imageList.add(new IIOImage(inputImage, null, null));
@@ -625,7 +635,7 @@ public class ImageIOHelper {
      * @return a map of meta data
      */
     public static Map<String, String> readImageData(IIOImage oimage) {
-        Map<String, String> dict = new HashMap<String, String>();
+        Map<String, String> dict = new HashMap<>();
 
         IIOMetadata imageMetadata = oimage.getMetadata();
         if (imageMetadata != null) {

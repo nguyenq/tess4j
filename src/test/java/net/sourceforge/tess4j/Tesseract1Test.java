@@ -129,9 +129,52 @@ public class Tesseract1Test {
         File imageFile = new File(this.testResourcesDataPath, "eurotext.bmp");
         Rectangle rect = new Rectangle(0, 0, 1024, 800); // define an equal or smaller region of interest on the image
         String expResult = "The (quick) [brown] {fox} jumps!\nOver the $43,456.78 <lazy> #90 dog";
-        String result = instance.doOCR(imageFile, rect);
+        String result = instance.doOCR(imageFile, Arrays.asList(rect));
         logger.info(result);
         assertEquals(expResult, result.substring(0, expResult.length()));
+    }
+
+    /**
+     * Test of doOCR method, of class Tesseract1.
+     *
+     * @throws Exception while processing image.
+     */
+    @Test
+    public void testDoOCR_File_Rectangles() throws Exception {
+        logger.info("doOCR on a PNG image with bounding rectangles");
+        File imageFile = new File(this.testResourcesDataPath, "eurotext.png");
+        Rectangle rect = new Rectangle(97, 162, 747, 50); // Third Line
+        Rectangle rect2 = new Rectangle(97, 209, 828, 55); // Fourth Line
+        Rectangle rect3 = new Rectangle(92, 56, 810, 107); // First 2 Lines
+        String expResult = "& duck/goose, as 12.5% of E-mail\n"
+                + "from aspammer@website.com is spam.\n"
+                + "The (quick) [brown] {fox} jumps!\n"
+                + "Over the $43,456.78 <lazy> #90 dog\n";
+        String result = instance.doOCR(imageFile, Arrays.asList(rect, rect2, rect3));
+        logger.info(result);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of doOCR method, of class Tesseract1.
+     *
+     * @throws Exception while processing image.
+     */
+    @Test
+    public void testDoOCR_BufferedImage_Rectangles() throws Exception {
+        logger.info("doOCR on a PNG image with bounding rectangles");
+        File imageFile = new File(this.testResourcesDataPath, "eurotext.png");
+        BufferedImage bi = ImageIO.read(imageFile);
+        Rectangle rect = new Rectangle(97, 162, 747, 50); // Third Line
+        Rectangle rect2 = new Rectangle(97, 209, 828, 55); // Fourth Line
+        Rectangle rect3 = new Rectangle(92, 56, 810, 107); // First 2 Lines
+        String expResult = "& duck/goose, as 12.5% of E-mail\n"
+                + "from aspammer@website.com is spam.\n"
+                + "The (quick) [brown] {fox} jumps!\n"
+                + "Over the $43,456.78 <lazy> #90 dog\n";
+        String result = instance.doOCR(bi, imageFile.getName(), Arrays.asList(rect, rect2, rect3));
+        logger.info(result);
+        assertEquals(expResult, result);
     }
 
     /**
@@ -144,7 +187,7 @@ public class Tesseract1Test {
         logger.info("doOCR on a PDF document");
         File inputFile = new File(this.testResourcesDataPath, "eurotext.pdf");
         String expResult = "The (quick) [brown] {fox} jumps!\nOver the $43,456.78 <lazy> #90 dog";
-        String result = instance.doOCR(inputFile, null);
+        String result = instance.doOCR(inputFile);
         logger.info(result);
         assertEquals(expResult, result.substring(0, expResult.length()));
     }

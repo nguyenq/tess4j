@@ -65,7 +65,20 @@ public interface ITesseract {
      * @return the recognized text
      * @throws TesseractException
      */
+    @Deprecated
     String doOCR(File imageFile, Rectangle rect) throws TesseractException;
+
+    /**
+     * Performs OCR operation.
+     *
+     * @param imageFile an image file
+     * @param rects list of the bounding rectangles defines the regions of the
+     * image to be recognized. A rectangle of zero dimension or
+     * <code>null</code> indicates the whole image.
+     * @return the recognized text
+     * @throws TesseractException
+     */
+    String doOCR(File imageFile, List<Rectangle> rects) throws TesseractException;
 
     /**
      * Performs OCR operation.
@@ -86,7 +99,22 @@ public interface ITesseract {
      * @return the recognized text
      * @throws TesseractException
      */
+    @Deprecated
     String doOCR(BufferedImage bi, Rectangle rect) throws TesseractException;
+
+    /**
+     * Performs OCR operation.
+     *
+     * @param bi a buffered image
+     * @param filename input file name. Needed only for training and reading a
+     * UNLV zone file.
+     * @param rects list of the bounding rectangles defines the regions of the
+     * image to be recognized. A rectangle of zero dimension or
+     * <code>null</code> indicates the whole image.
+     * @return the recognized text
+     * @throws TesseractException
+     */
+    String doOCR(BufferedImage bi, String filename, List<Rectangle> rects) throws TesseractException;
 
     /**
      * Performs OCR operation.
@@ -98,6 +126,7 @@ public interface ITesseract {
      * @return the recognized text
      * @throws TesseractException
      */
+    @Deprecated
     String doOCR(List<IIOImage> imageList, Rectangle rect) throws TesseractException;
 
     /**
@@ -112,7 +141,22 @@ public interface ITesseract {
      * @return the recognized text
      * @throws TesseractException
      */
+    @Deprecated
     String doOCR(List<IIOImage> imageList, String filename, Rectangle rect) throws TesseractException;
+
+    /**
+     * Performs OCR operation.
+     *
+     * @param imageList a list of <code>IIOImage</code> objects
+     * @param filename input file name. Needed only for training and reading a
+     * UNLV zone file.
+     * @param rects list of the bounding rectangles defines the regions
+     * of the image to be recognized. A rectangle of zero dimension or
+     * <code>null</code> indicates the whole image.
+     * @return the recognized text
+     * @throws TesseractException
+     */
+    String doOCR(List<IIOImage> imageList, String filename, List<Rectangle> rects) throws TesseractException;
 
     /**
      * Performs OCR operation. Use <code>SetImage</code>, (optionally)
@@ -130,6 +174,7 @@ public interface ITesseract {
      * @return the recognized text
      * @throws TesseractException
      */
+    @Deprecated
     String doOCR(int xsize, int ysize, ByteBuffer buf, Rectangle rect, int bpp) throws TesseractException;
 
     /**
@@ -150,7 +195,28 @@ public interface ITesseract {
      * @return the recognized text
      * @throws TesseractException
      */
+    @Deprecated
     String doOCR(int xsize, int ysize, ByteBuffer buf, String filename, Rectangle rect, int bpp) throws TesseractException;
+
+    /**
+     * Performs OCR operation. Use <code>SetImage</code>, (optionally)
+     * <code>SetRectangle</code>, and one or more of the <code>Get*Text</code>
+     * functions.
+     *
+     * @param xsize width of image
+     * @param ysize height of image
+     * @param buf pixel data
+     * @param bpp bits per pixel, represents the bit depth of the image, with 1
+     * for binary bitmap, 8 for gray, and 24 for color RGB.
+     * @param filename input file name. Needed only for training and reading a
+     * UNLV zone file.
+     * @param rects list of the bounding rectangles defines the regions of the
+     * image to be recognized. A rectangle of zero dimension or
+     * <code>null</code> indicates the whole image.
+     * @return the recognized text
+     * @throws TesseractException
+     */
+    String doOCR(int xsize, int ysize, ByteBuffer buf, int bpp, String filename, List<Rectangle> rects) throws TesseractException;
 
     /**
      * Sets tessdata path.
@@ -305,7 +371,7 @@ public interface ITesseract {
 
     /**
      * Gets recognized words at specified page iterator level.
-     *  
+     *
      * @param biList list of input buffered images
      * @param pageIteratorLevel
      * @return list of <code>Word</code>

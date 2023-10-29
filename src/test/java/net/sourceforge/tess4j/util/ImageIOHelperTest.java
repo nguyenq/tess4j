@@ -135,9 +135,8 @@ public class ImageIOHelperTest {
         logger.info("getIIOImageList");
         File imageFile = new File(TEST_RESOURCES_DATA_PATH, "eurotext.png");
         BufferedImage bi = ImageIO.read(imageFile);
-        int expResult = 1;
-        List<IIOImage> result = ImageIOHelper.getIIOImageList(bi);
-        assertEquals(expResult, result.size());
+        IIOImage result = ImageIOHelper.getIIOImage(bi);
+        assertNotNull(result);
     }
 
     /**
