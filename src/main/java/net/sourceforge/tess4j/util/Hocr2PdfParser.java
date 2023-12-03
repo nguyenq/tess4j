@@ -18,8 +18,6 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.awt.*;
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
 
 import static java.lang.Float.valueOf;
 
@@ -255,7 +253,6 @@ public class Hocr2PdfParser implements ContentHandler, ErrorHandler {
     }
 
     public void parse() throws SAXException, IOException, ParserConfigurationException {
-
         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
         SAXParser parser = parserFactory.newSAXParser();
         XMLReader reader = parser.getXMLReader();

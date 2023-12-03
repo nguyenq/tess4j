@@ -15,14 +15,6 @@
  */
 package net.sourceforge.tess4j.util;
 
-import org.apache.pdfbox.multipdf.PDFMergerUtility;
-import org.apache.pdfbox.multipdf.Splitter;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.rendering.ImageType;
-import org.apache.pdfbox.rendering.PDFRenderer;
-import org.apache.pdfbox.tools.imageio.ImageIOUtil;
-import org.slf4j.LoggerFactory;
-
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
@@ -231,6 +223,7 @@ public class PdfBoxUtilities {
 
     /**
      * Merge text from hocr file into a pdf
+     *
      * @param inputHocr input hocr file
      * @param inputPdfStr input pdf file
      * @param outputPdfStr ouput pdf file result of merging
@@ -238,13 +231,9 @@ public class PdfBoxUtilities {
      * @throws Exception
      */
     public static void mergeHocrIntoAPdf(String inputHocr, String inputPdfStr, String outputPdfStr, boolean visible) throws Exception {
-        try (
-                PDDocument pdDocument = Loader.loadPDF(new File(inputPdfStr))
-        ) {
+        try (PDDocument pdDocument = Loader.loadPDF(new File(inputPdfStr))) {
             final Hocr2PdfParser hocr2PdfParser = new Hocr2PdfParser(inputHocr, pdDocument, visible, false, null);
-
             hocr2PdfParser.parse();
-
             pdDocument.save(outputPdfStr);
         }
     }
