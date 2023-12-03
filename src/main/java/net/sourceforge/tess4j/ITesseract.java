@@ -150,13 +150,13 @@ public interface ITesseract {
      * @param imageList a list of <code>IIOImage</code> objects
      * @param filename input file name. Needed only for training and reading a
      * UNLV zone file.
-     * @param rects list of the bounding rectangles defines the regions
-     * of the image to be recognized. A rectangle of zero dimension or
+     * @param roiss list of list of the bounding rectangles defines the regions
+     * of the images to be recognized. A rectangle of zero dimension or
      * <code>null</code> indicates the whole image.
      * @return the recognized text
      * @throws TesseractException
      */
-    String doOCR(List<IIOImage> imageList, String filename, List<Rectangle> rects) throws TesseractException;
+    String doOCR(List<IIOImage> imageList, String filename, List<List<Rectangle>> roiss) throws TesseractException;
 
     /**
      * Performs OCR operation. Use <code>SetImage</code>, (optionally)

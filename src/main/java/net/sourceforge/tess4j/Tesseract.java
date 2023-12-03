@@ -308,7 +308,7 @@ public class Tesseract implements ITesseract {
      */
     @Override
     public String doOCR(BufferedImage bi, String filename, List<Rectangle> rects) throws TesseractException {
-        return doOCR(Arrays.asList(ImageIOHelper.getIIOImage(bi)), filename, rects);
+        return doOCR(Arrays.asList(ImageIOHelper.getIIOImage(bi)), filename, Arrays.asList(rects));
     }
 
     /**
@@ -324,7 +324,7 @@ public class Tesseract implements ITesseract {
     @Deprecated
     @Override
     public String doOCR(List<IIOImage> imageList, Rectangle rect) throws TesseractException {
-        return doOCR(imageList, null, Arrays.asList(rect));
+        return doOCR(imageList, null, Arrays.asList(Arrays.asList(rect)));
     }
 
     /**
@@ -342,7 +342,7 @@ public class Tesseract implements ITesseract {
     @Deprecated
     @Override
     public String doOCR(List<IIOImage> imageList, String filename, Rectangle rect) throws TesseractException {
-        return doOCR(imageList, filename, Arrays.asList(rect));
+        return doOCR(imageList, filename, Arrays.asList(Arrays.asList(rect)));
     }
 
     /**
@@ -351,14 +351,14 @@ public class Tesseract implements ITesseract {
      * @param imageList a list of <code>IIOImage</code> objects
      * @param filename input file name. Needed only for training and reading a
      * UNLV zone file.
-     * @param rects list of the bounding rectangles defines the regions
-     * of the image to be recognized. A rectangle of zero dimension or
+     * @param roiss list of list of the bounding rectangles defines the regions
+     * of the images to be recognized. A rectangle of zero dimension or
      * <code>null</code> indicates the whole image.
      * @return the recognized text
      * @throws TesseractException
      */
     @Override
-    public String doOCR(List<IIOImage> imageList, String filename, List<Rectangle> rects) throws TesseractException {
+    public String doOCR(List<IIOImage> imageList, String filename, List<List<Rectangle>> roiss) throws TesseractException {
         init();
         setVariables();
 
@@ -367,7 +367,13 @@ public class Tesseract implements ITesseract {
             int pageNum = 0;
 
             for (IIOImage oimage : imageList) {
-                sb.append(doOCR(oimage, filename, rects, ++pageNum));
+                List<Rectangle> rois;
+                if (roiss == null || roiss.isEmpty() || pageNum >= roiss.size()) {
+                    rois = null;
+                } else {
+                    rois = roiss.get(pageNum);
+                }
+                sb.append(doOCR(oimage, filename, rois, ++pageNum));
             }
 
             if (String.valueOf(TRUE).equals(prop.getProperty("tessedit_create_hocr"))) {
