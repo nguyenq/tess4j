@@ -74,7 +74,7 @@ public class ImageHelper {
      * A replacement for the standard <code>BufferedImage.getSubimage</code>
      * method.
      *
-     * @param image
+     * @param image input image
      * @param x the X coordinate of the upper-left corner of the specified
      * rectangular region
      * @param y the Y coordinate of the upper-left corner of the specified
@@ -110,8 +110,8 @@ public class ImageHelper {
     /**
      * Removes alpha channel from image
      * 
-     * @param image
-     * @return 
+     * @param image input image
+     * @return image with alpha channel removed
      */
     public static BufferedImage removeAlphaChannel(BufferedImage image) {
         if (!image.getColorModel().hasAlpha()) {
@@ -220,8 +220,8 @@ public class ImageHelper {
      * Clones an image.
      * http://stackoverflow.com/questions/3514158/how-do-you-clone-a-bufferedimage
      *
-     * @param bi
-     * @return
+     * @param bi input image
+     * @return cloned image
      */
     public static BufferedImage cloneImage(BufferedImage bi) {
         ColorModel cm = bi.getColorModel();

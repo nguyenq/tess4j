@@ -46,7 +46,7 @@ public class ImageDeskew {
     /**
      * Constructor.
      * 
-     * @param image 
+     * @param image input image
      */
     public ImageDeskew(BufferedImage image) {
         this.cImage = image;
@@ -55,7 +55,7 @@ public class ImageDeskew {
     /**
      * Calculates the skew angle of the image cImage.
      * 
-     * @return 
+     * @return the skew angle
      */
     public double getSkewAngle() {
         ImageDeskew.HoughLine[] hl;

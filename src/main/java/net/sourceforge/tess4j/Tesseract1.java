@@ -519,7 +519,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     }
 
     /**
-     * A wrapper for {@link #setImage(int, int, ByteBuffer, Rectangle, int)}.
+     * A wrapper for {@link #setImage(int, int, ByteBuffer, int)}.
      *
      * @param image a rendered image
      * @throws java.io.IOException

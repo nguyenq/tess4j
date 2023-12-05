@@ -631,7 +631,7 @@ public class ImageIOHelper {
     /**
      * Reads image meta data.
      *
-     * @param oimage
+     * @param oimage input image
      * @return a map of meta data
      */
     public static Map<String, String> readImageData(IIOImage oimage) {

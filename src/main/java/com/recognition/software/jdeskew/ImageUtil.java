@@ -22,9 +22,9 @@ public class ImageUtil {
      * Whether the pixel is black.
      * 
      * @param image source image
-     * @param x
-     * @param y
-     * @return 
+     * @param x x-coordinate
+     * @param y y-coordinate
+     * @return true if pixel is black; false, otherwise
      */
     public static boolean isBlack(BufferedImage image, int x, int y) {
         if (image.getType() == BufferedImage.TYPE_BYTE_BINARY) {
@@ -41,10 +41,10 @@ public class ImageUtil {
      * Whether the pixel is black.
      * 
      * @param image source image
-     * @param x
-     * @param y
-     * @param luminanceCutOff
-     * @return 
+     * @param x x-coordinate
+     * @param y y-coordinate
+     * @param luminanceCutOff luminance threshold
+     * @return true if pixel is black; false, otherwise
      */
     public static boolean isBlack(BufferedImage image, int x, int y, int luminanceCutOff) {
         int pixelRGBValue;
