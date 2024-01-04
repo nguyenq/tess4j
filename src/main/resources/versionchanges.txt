@@ -242,3 +242,6 @@ Version 5.9.0 (3 December 2023)
 - Update PDFBox and other dependencies
 - Add API support for multiple regions of interest (ROI) per image or page
 - Add a utility method to merge hocr file into pdf file
+
+Version 5.10.0 (4 January 2024)
+- Update Leptonica 1.84.1 (lept4j-1.19.0)
