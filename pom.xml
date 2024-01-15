@@ -1,11 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sourceforge.tess4j</groupId>
     <artifactId>tess4j</artifactId>
     <version>5.6.1-SNAPSHOT</version>
     <packaging>jar</packaging>
-
     <name>Tess4J - Tesseract for Java</name>
     <url>http://tess4j.sourceforge.net</url>
     <description>
@@ -25,13 +24,11 @@
         Multi-page TIFF images
         PDF document format
     </description>
-
     <parent>
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>
         <version>9</version>
     </parent>
-
     <licenses>
         <license>
             <name>Apache License 2.0</name>
@@ -39,18 +36,15 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-
     <organization>
         <name>Tess4J</name>
         <url>http://tess4j.sourceforge.net</url>
     </organization>
-
     <scm>
         <connection>scm:svn:https://github.com/nguyenq/tess4j/trunk/</connection>
         <developerConnection>scm:svn:https://github.com/nguyenq/tess4j/trunk/</developerConnection>
         <url>https://github.com/nguyenq/tess4j/trunk/</url>
     </scm>
-
     <developers>
         <developer>
             <name>Quan Nguyen</name>
@@ -62,7 +56,6 @@
             <timezone>+1</timezone>
         </developer>
     </developers>
-
     <contributors>
         <contributor>
             <name>Dmitry Katsubo</name>
@@ -73,7 +66,6 @@
             </roles>
         </contributor>
     </contributors>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <manifest.implementation.vendor>Tess4J</manifest.implementation.vendor>
@@ -81,8 +73,13 @@
         <manifest.implementation.title>${project.groupId}:${project.artifactId}</manifest.implementation.title>
         <manifest.implementation.version>${project.version}</manifest.implementation.version>
         <manifest.implementation.vendor>Tess4J</manifest.implementation.vendor>
+        <maven-javadoc-plugin>3.4.1</maven-javadoc-plugin>
+        <maven-resources-plugin>3.3.0</maven-resources-plugin>
+        <maven-surefire-plugin>3.0.0-M8</maven-surefire-plugin>
+        <maven-jar-plugin>3.3.0</maven-jar-plugin>
+        <nexus-staging-maven-plugin>1.6.13</nexus-staging-maven-plugin>
+        <maven-compiler-plugin>3.10.1</maven-compiler-plugin>
     </properties>
-
     <distributionManagement>
         <snapshotRepository>
             <id>nexus-snapshots</id>
@@ -93,13 +90,12 @@
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
-  
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.10.1</version>
+                <version>${maven-compiler-plugin}</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -109,12 +105,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M8</version>
+                <version>${maven-surefire-plugin}</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.4.1</version>
+                <version>${maven-javadoc-plugin}</version>
                 <configuration>
                     <detectJavaApiLink>false</detectJavaApiLink>
                     <offlineLinks>
@@ -123,11 +119,11 @@
                         </offlineLink>
                     </offlineLinks>
                 </configuration>
-            </plugin>            
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>3.3.0</version>
+                <version>${maven-resources-plugin}</version>
                 <configuration>
                     <includeEmptyDirs>true</includeEmptyDirs>
                 </configuration>
@@ -135,7 +131,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.3.0</version>
+                <version>${maven-jar-plugin}</version>
                 <configuration>
                     <excludes>
                         <exclude>**/logback.xml</exclude>
@@ -168,7 +164,7 @@
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.13</version>
+                <version>${nexus-staging-maven-plugin}</version>
                 <extensions>true</extensions>
                 <configuration>
                     <serverId>nexus</serverId>
@@ -177,7 +173,6 @@
             </plugin>
         </plugins>
     </build>
-
     <dependencies>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -244,4 +239,5 @@
             <version>2.0.6</version>
         </dependency>
     </dependencies>
+    
 </project>
