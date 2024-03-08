@@ -246,5 +246,6 @@ Version 5.9.0 (3 December 2023)
 Version 5.10.0 (4 January 2024)
 - Update Leptonica 1.84.1 (lept4j-1.19.0)
 
-Version 5.11.0 (1 March 2024)
+Version 5.11.0 (7 March 2024)
 - Upgrade to Tesseract 5.3.4
+- Update lept4j-1.19.1
