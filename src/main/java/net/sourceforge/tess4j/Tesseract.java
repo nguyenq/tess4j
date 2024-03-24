@@ -67,7 +67,7 @@ public class Tesseract implements ITesseract {
     private int psm = -1;
     private int ocrEngineMode = TessOcrEngineMode.OEM_DEFAULT;
     private final Properties prop = new Properties();
-    private final List<String> configList = new ArrayList<String>();
+    private final List<String> configList = new ArrayList<>();
 
     private TessAPI api;
     private TessBaseAPI handle;
@@ -811,7 +811,7 @@ public class Tesseract implements ITesseract {
         setVariables();
 
         try {
-            List<Rectangle> list = new ArrayList<Rectangle>();
+            List<Rectangle> list = new ArrayList<>();
             setImage(bi);
 
             Boxa boxes = api.TessBaseAPIGetComponentImages(handle, pageIteratorLevel, TRUE, null, null);
@@ -868,7 +868,7 @@ public class Tesseract implements ITesseract {
         }
 
         String pageSeparator = api.TessBaseAPIGetStringVariable(handle, PAGE_SEPARATOR);
-        List<Word> words = new ArrayList<Word>();
+        List<Word> words = new ArrayList<>();
 
         try {
             for (BufferedImage bi : biList) {
@@ -963,7 +963,7 @@ public class Tesseract implements ITesseract {
         init();
         setVariables();
 
-        List<OCRResult> results = new ArrayList<OCRResult>();
+        List<OCRResult> results = new ArrayList<>();
 
         try {
             for (int i = 0; i < bis.length; i++) {
@@ -971,7 +971,7 @@ public class Tesseract implements ITesseract {
                     TessResultRenderer renderer = createRenderers(outputbases[i], formats);
                     int meanTextConfidence = createDocuments(bis[i], filenames[i], renderer);
                     api.TessDeleteResultRenderer(renderer);
-                    List<Word> words = meanTextConfidence > 0 ? getRecognizedWords(pageIteratorLevel) : new ArrayList<Word>();
+                    List<Word> words = meanTextConfidence > 0 ? getRecognizedWords(pageIteratorLevel) : new ArrayList<>();
                     results.add(new OCRResult(meanTextConfidence, words));
                 } catch (Exception e) {
                     // skip the problematic image file
@@ -1025,7 +1025,7 @@ public class Tesseract implements ITesseract {
         init();
         setVariables();
 
-        List<OCRResult> results = new ArrayList<OCRResult>();
+        List<OCRResult> results = new ArrayList<>();
 
         try {
             for (int i = 0; i < filenames.length; i++) {
@@ -1039,7 +1039,7 @@ public class Tesseract implements ITesseract {
                     TessResultRenderer renderer = createRenderers(outputbases[i], formats);
                     int meanTextConfidence = createDocuments(imageFile.getPath(), renderer);
                     api.TessDeleteResultRenderer(renderer);
-                    List<Word> words = meanTextConfidence > 0 ? getRecognizedWords(imageFile, pageIteratorLevel) : new ArrayList<Word>();
+                    List<Word> words = meanTextConfidence > 0 ? getRecognizedWords(imageFile, pageIteratorLevel) : new ArrayList<>();
                     results.add(new OCRResult(meanTextConfidence, words));
                 } catch (Exception e) {
                     // skip the problematic image file
@@ -1066,7 +1066,7 @@ public class Tesseract implements ITesseract {
      * @return list of <code>Word</code>
      */
     private List<Word> getRecognizedWords(int pageIteratorLevel) {
-        List<Word> words = new ArrayList<Word>();
+        List<Word> words = new ArrayList<>();
 
         try {
             TessResultIterator ri = api.TessBaseAPIGetIterator(handle);
@@ -1111,7 +1111,7 @@ public class Tesseract implements ITesseract {
      * @return list of <code>Word</code>
      */
     private List<Word> getRecognizedWords(File inputFile, int pageIteratorLevel) {
-        List<Word> words = new ArrayList<Word>();
+        List<Word> words = new ArrayList<>();
 
         try {
             List<BufferedImage> biList = ImageIOHelper.getImageList(inputFile);
