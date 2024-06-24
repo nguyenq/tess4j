@@ -582,6 +582,8 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
             textPtr = TessBaseAPIGetUNLVText(handle);
         } else if (String.valueOf(TRUE).equals(prop.getProperty("tessedit_create_alto"))) {
             textPtr = TessBaseAPIGetAltoText(handle, pageNum - 1);
+        } else if (String.valueOf(TRUE).equals(prop.getProperty("tessedit_create_page_xml"))) {
+            textPtr = TessBaseAPIGetPAGEText(handle, pageNum - 1);
         } else if (String.valueOf(TRUE).equals(prop.getProperty("tessedit_create_lstmbox"))) {
             textPtr = TessBaseAPIGetLSTMBoxText(handle, pageNum - 1);
         } else if (String.valueOf(TRUE).equals(prop.getProperty("tessedit_create_tsv"))) {
@@ -653,6 +655,13 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
                         TessResultRendererInsert(renderer, TessAltoRendererCreate(outputbase));
                     }
                     break;
+                case PAGE:
+                    if (renderer == null) {
+                        renderer = TessPAGERendererCreate(outputbase);
+                    } else {
+                        TessResultRendererInsert(renderer, TessPAGERendererCreate(outputbase));
+                    }
+                    break;                    
                 case TSV:
                     if (renderer == null) {
                         renderer = TessTsvRendererCreate(outputbase);

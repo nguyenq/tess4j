@@ -77,6 +77,8 @@ public interface TessAPI extends Library, ITessAPI {
     TessResultRenderer TessHOcrRendererCreate2(String outputbase, int font_info);
 
     TessResultRenderer TessAltoRendererCreate(String outputbase);
+    
+    TessResultRenderer TessPAGERendererCreate(String outputbase);
 
     TessResultRenderer TessTsvRendererCreate(String outputbase);
 
@@ -532,6 +534,14 @@ public interface TessAPI extends Library, ITessAPI {
      * @return internal thresholded image
      */
     Pix TessBaseAPIGetThresholdedImage(TessBaseAPI handle);
+    
+    /**
+     * Return average gradient of lines on page.
+     * 
+     * @param handle
+     * @return average gradient (angle) of lines on page
+     */
+    float TessBaseAPIGetGradient(TessBaseAPI handle);
 
     /**
      * Get the result of page layout analysis as a Leptonica-style
@@ -787,6 +797,16 @@ public interface TessAPI extends Library, ITessAPI {
      * @return the pointer to Alto text
      */
     Pointer TessBaseAPIGetAltoText(TessBaseAPI handle, int page_number);
+    
+    /**
+     * Make an XML-formatted string with PAGE markup from the internal data
+     * structures.
+     *
+     * @param handle the TesseractAPI instance
+     * @param page_number page number
+     * @return the pointer to PAGE text
+     */
+    Pointer TessBaseAPIGetPAGEText(TessBaseAPI handle, int page_number);
 
     /**
      * Make a TSV-formatted string from the internal data structures.
@@ -940,6 +960,11 @@ public interface TessAPI extends Library, ITessAPI {
      * ASCII string, the name of the script, e.g. "Latin";
      * <code>script_conf</code> is confidence level in the script.
      *
+     * @param handle the TesseractAPI instance
+     * @param orient_deg
+     * @param orient_conf
+     * @param script_name
+     * @param script_conf
      * @return TRUE on success and writes values to each parameter as an output
      */
     int TessBaseAPIDetectOrientationScript(TessBaseAPI handle, IntBuffer orient_deg, FloatBuffer orient_conf, PointerByReference script_name, FloatBuffer script_conf);

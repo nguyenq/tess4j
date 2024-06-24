@@ -249,3 +249,6 @@ Version 5.10.0 (4 January 2024)
 Version 5.11.0 (7 March 2024)
 - Upgrade to Tesseract 5.3.4
 - Update lept4j-1.19.1
+
+Version 5.12.0 (24 June 2024)
+- Upgrade to Tesseract 5.4.1

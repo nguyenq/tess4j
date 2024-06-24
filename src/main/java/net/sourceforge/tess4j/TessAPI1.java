@@ -78,6 +78,8 @@ public class TessAPI1 implements Library, ITessAPI {
 
     public static native TessResultRenderer TessAltoRendererCreate(String outputbase);
     
+    public static native TessResultRenderer TessPAGERendererCreate(String outputbase);
+    
     public static native TessResultRenderer TessTsvRendererCreate(String outputbase);
 
     public static native TessResultRenderer TessPDFRendererCreate(String outputbase, String datadir, int textonly);
@@ -533,6 +535,14 @@ public class TessAPI1 implements Library, ITessAPI {
      * @return internal thresholded image
      */
     public static native Pix TessBaseAPIGetThresholdedImage(TessBaseAPI handle);
+    
+    /**
+     * Return average gradient of lines on page.
+     * 
+     * @param handle
+     * @return average gradient (angle) of lines on page
+     */
+    public static native float TessBaseAPIGetGradient(TessBaseAPI handle);
 
     /**
      * Get the result of page layout analysis as a Leptonica-style
@@ -790,6 +800,16 @@ public class TessAPI1 implements Library, ITessAPI {
     public static native Pointer TessBaseAPIGetAltoText(TessBaseAPI handle, int page_number);
     
     /**
+     * Make an XML-formatted string with PAGE markup from the internal data
+     * structures.
+     *
+     * @param handle the TesseractAPI instance
+     * @param page_number page number
+     * @return the pointer to PAGE text
+     */
+    public static native Pointer TessBaseAPIGetPAGEText(TessBaseAPI handle, int page_number);
+    
+    /**
      * Make a TSV-formatted string from the internal data structures.
      * page_number is 0-based but will appear in the output as 1-based. Returned
      * string must be freed with the delete [] operator.
@@ -942,6 +962,11 @@ public class TessAPI1 implements Library, ITessAPI {
      * ASCII string, the name of the script, e.g. "Latin";
      * <code>script_conf</code> is confidence level in the script.
      *
+     * @param handle the TesseractAPI instance
+     * @param orient_deg
+     * @param orient_conf
+     * @param script_name
+     * @param script_conf
      * @return TRUE on success and writes values to each parameter as an output
      */
     public static native int TessBaseAPIDetectOrientationScript(TessBaseAPI handle, IntBuffer orient_deg, FloatBuffer orient_conf, PointerByReference script_name, FloatBuffer script_conf);

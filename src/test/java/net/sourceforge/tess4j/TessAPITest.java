@@ -201,7 +201,7 @@ public class TessAPITest {
     @Test
     public void testTessVersion() {
         logger.info("TessVersion");
-        String expResult = "5.3.4";
+        String expResult = "5.4.1";
         String result = api.TessVersion();
         logger.info(result);
         assertTrue(result.startsWith(expResult));
@@ -501,6 +501,28 @@ public class TessAPITest {
                     deskew_angle.get()));
         }
         assertEquals(expResult, actualResult);
+    }
+        
+    /**
+     * Test of TessBaseAPIGetGradient method, of class TessAPI.
+     *
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testTessBaseAPIGetGradient() throws Exception {
+        logger.info("TessBaseAPIGetGradient");
+        File image = new File(testResourcesDataPath, "eurotext_deskew.png");
+        float expResult = -0.38202247f;
+        Pix pix = Leptonica1.pixRead(image.getPath());
+        api.TessBaseAPIInit3(handle, datapath, "eng");
+        api.TessBaseAPISetImage2(handle, pix);
+        api.TessBaseAPIAnalyseLayout(handle);
+        float result = api.TessBaseAPIGetGradient(handle);
+        logger.info("Average gradient (angle): " + result);
+        PointerByReference pRef = new PointerByReference();
+        pRef.setValue(pix.getPointer());
+        Leptonica1.pixDestroy(pRef);
+        assertEquals(expResult, result);
     }
 
     /**

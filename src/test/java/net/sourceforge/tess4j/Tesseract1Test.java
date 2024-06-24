@@ -270,6 +270,7 @@ public class Tesseract1Test {
         BufferedImage bi = ImageIO.read(imageFile);
         ImageDeskew id = new ImageDeskew(bi);
         double imageSkewAngle = id.getSkewAngle(); // determine skew angle
+        logger.info("Skew angle: " + imageSkewAngle);
         if ((imageSkewAngle > MINIMUM_DESKEW_THRESHOLD || imageSkewAngle < -(MINIMUM_DESKEW_THRESHOLD))) {
             bi = ImageHelper.rotateImage(bi, -imageSkewAngle); // deskew image
         }
