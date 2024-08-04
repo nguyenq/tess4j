@@ -252,3 +252,6 @@ Version 5.11.0 (7 March 2024)
 
 Version 5.12.0 (24 June 2024)
 - Upgrade to Tesseract 5.4.1
+
+Version 5.13.0 (3 August 2024)
+- Add a convenient method to get OSD data

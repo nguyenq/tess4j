@@ -49,7 +49,6 @@ import static net.sourceforge.tess4j.ITessAPI.TRUE;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-
 public class TessAPITest {
 
     private static final Logger logger = LoggerFactory.getLogger(new LoggHelper().toString());
@@ -350,7 +349,7 @@ public class TessAPITest {
         api.TessDeleteText(utf8Text);
         assertTrue(result.contains("<div class='ocr_page'"));
     }
-    
+
     /**
      * Test of TessBaseAPIGetAltoText method, of class TessAPI.
      *
@@ -374,13 +373,13 @@ public class TessAPITest {
         String result = textPtr.getString(0);
         api.TessDeleteText(textPtr);
         assertTrue(result.contains("<Page WIDTH=\"1024\" HEIGHT=\"800\" PHYSICAL_IMG_NR=\"0\" ID=\"page_0\">"));
-        
+
         // WordStr Box output
         textPtr = api.TessBaseAPIGetWordStrBoxText(handle, page_number);
         result = textPtr.getString(0);
         api.TessDeleteText(textPtr);
         assertTrue(result.contains("WordStr"));
-        
+
         // TSV output
         textPtr = api.TessBaseAPIGetTsvText(handle, page_number);
         result = textPtr.getString(0);
@@ -489,20 +488,18 @@ public class TessAPITest {
         int actualResult = api.TessBaseAPIGetPageSegMode(handle);
         logger.info("PSM: " + Utils.getConstantName(actualResult, TessPageSegMode.class));
         api.TessBaseAPISetImage(handle, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
-        int success = api.TessBaseAPIRecognize(handle, null);
-        if (success == 0) {
-            TessPageIterator pi = api.TessBaseAPIAnalyseLayout(handle);
-            api.TessPageIteratorOrientation(pi, orientation, direction, order, deskew_angle);
-            logger.info(String.format(
-                    "Orientation: %s\nWritingDirection: %s\nTextlineOrder: %s\nDeskew angle: %.4f\n",
-                    Utils.getConstantName(orientation.get(), TessOrientation.class),
-                    Utils.getConstantName(direction.get(), TessWritingDirection.class),
-                    Utils.getConstantName(order.get(), TessTextlineOrder.class),
-                    deskew_angle.get()));
-        }
+        TessPageIterator pi = api.TessBaseAPIAnalyseLayout(handle);
+        api.TessPageIteratorOrientation(pi, orientation, direction, order, deskew_angle);
+        logger.info(String.format(
+                "Orientation: %s\nWritingDirection: %s\nTextlineOrder: %s\nDeskew angle: %.4f\n",
+                Utils.getConstantName(orientation.get(), TessOrientation.class),
+                Utils.getConstantName(direction.get(), TessWritingDirection.class),
+                Utils.getConstantName(order.get(), TessTextlineOrder.class),
+                deskew_angle.get()));
+
         assertEquals(expResult, actualResult);
     }
-        
+
     /**
      * Test of TessBaseAPIGetGradient method, of class TessAPI.
      *
@@ -599,7 +596,7 @@ public class TessAPITest {
         } while (api.TessPageIteratorNext(pi, level) == TRUE);
 //        api.TessPageIteratorDelete(pi);
         api.TessResultIteratorDelete(ri);
-        
+
         assertTrue(true);
     }
 

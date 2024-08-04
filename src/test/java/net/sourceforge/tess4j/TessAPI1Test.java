@@ -485,17 +485,15 @@ public class TessAPI1Test {
         int actualResult = TessAPI1.TessBaseAPIGetPageSegMode(handle);
         logger.info("PSM: " + Utils.getConstantName(actualResult, TessPageSegMode.class));
         TessAPI1.TessBaseAPISetImage(handle, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
-        int success = TessAPI1.TessBaseAPIRecognize(handle, null);
-        if (success == 0) {
-            TessAPI1.TessPageIterator pi = TessAPI1.TessBaseAPIAnalyseLayout(handle);
-            TessAPI1.TessPageIteratorOrientation(pi, orientation, direction, order, deskew_angle);
-            logger.info(String.format(
-                    "Orientation: %s\nWritingDirection: %s\nTextlineOrder: %s\nDeskew angle: %.4f\n",
-                    Utils.getConstantName(orientation.get(), TessOrientation.class),
-                    Utils.getConstantName(direction.get(), TessWritingDirection.class),
-                    Utils.getConstantName(order.get(), TessTextlineOrder.class),
-                    deskew_angle.get()));
-        }
+        TessAPI1.TessPageIterator pi = TessAPI1.TessBaseAPIAnalyseLayout(handle);
+        TessAPI1.TessPageIteratorOrientation(pi, orientation, direction, order, deskew_angle);
+        logger.info(String.format(
+                "Orientation: %s\nWritingDirection: %s\nTextlineOrder: %s\nDeskew angle: %.4f\n",
+                Utils.getConstantName(orientation.get(), TessOrientation.class),
+                Utils.getConstantName(direction.get(), TessWritingDirection.class),
+                Utils.getConstantName(order.get(), TessTextlineOrder.class),
+                deskew_angle.get()));
+        
         assertEquals(expResult, actualResult);
     }
     

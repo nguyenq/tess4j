@@ -294,7 +294,7 @@ public class TesseractTest {
         File imageFile2 = new File(this.testResourcesDataPath, "eurotext.png");
         String outputbase1 = "target/test-classes/test-results/docrenderer-1";
         String outputbase2 = "target/test-classes/test-results/docrenderer-2";
-        List<RenderedFormat> formats = new ArrayList<RenderedFormat>(Arrays.asList(RenderedFormat.HOCR, RenderedFormat.PDF, RenderedFormat.TEXT));
+        List<RenderedFormat> formats = new ArrayList<>(Arrays.asList(RenderedFormat.HOCR, RenderedFormat.PDF, RenderedFormat.TEXT));
         instance.createDocuments(new String[]{imageFile1.getPath(), imageFile2.getPath()}, new String[]{outputbase1, outputbase2}, formats);
         assertTrue(new File(outputbase1 + ".pdf").exists());
     }
@@ -322,7 +322,7 @@ public class TesseractTest {
             logger.info(word.toString());
         }
 
-        List<String> text = new ArrayList<String>();
+        List<String> text = new ArrayList<>();
         for (Word word : result.subList(0, expResults.length)) {
             text.add(word.getText().trim());
         }
@@ -348,7 +348,7 @@ public class TesseractTest {
             logger.info(String.format("Box[%d]: x=%d, y=%d, w=%d, h=%d", i, rect.x, rect.y, rect.width, rect.height));
         }
 
-        assertTrue(result.size() > 0);
+        assertTrue(!result.isEmpty());
     }
 
     /**
@@ -363,7 +363,7 @@ public class TesseractTest {
         File imageFile2 = new File(this.testResourcesDataPath, "multipage-pdf.pdf");
         String outputbase1 = "target/test-classes/test-results/docrenderer-3";
         String outputbase2 = "target/test-classes/test-results/docrenderer-4";
-        List<RenderedFormat> formats = new ArrayList<RenderedFormat>(Arrays.asList(RenderedFormat.HOCR, RenderedFormat.PDF, RenderedFormat.TEXT));
+        List<RenderedFormat> formats = new ArrayList<>(Arrays.asList(RenderedFormat.HOCR, RenderedFormat.PDF, RenderedFormat.TEXT));
         instance.setVariable(ITesseract.DOCUMENT_TITLE, "My document");
         List<OCRResult> results = instance.createDocumentsWithResults(new String[]{imageFile1.getPath(), imageFile2.getPath()}, new String[]{outputbase1, outputbase2}, formats, TessPageIteratorLevel.RIL_WORD);
         assertTrue(new File(outputbase1 + ".pdf").exists());
@@ -383,11 +383,28 @@ public class TesseractTest {
         File imageFile = new File(this.testResourcesDataPath, "eurotext.tif");
         BufferedImage bi = ImageIO.read(imageFile);
         String outputbase = "target/test-classes/test-results/docrenderer-5";
-        List<RenderedFormat> formats = new ArrayList<RenderedFormat>(Arrays.asList(RenderedFormat.HOCR, RenderedFormat.PDF, RenderedFormat.TEXT));
+        List<RenderedFormat> formats = new ArrayList<>(Arrays.asList(RenderedFormat.HOCR, RenderedFormat.PDF, RenderedFormat.TEXT));
         instance.setVariable(ITesseract.DOCUMENT_TITLE, "My document");
         OCRResult result = instance.createDocumentsWithResults(bi, imageFile.getPath(), outputbase, formats, TessPageIteratorLevel.RIL_WORD);
         assertTrue(new File(outputbase + ".pdf").exists());
         assertTrue(result.getConfidence() > 0);
         assertEquals(66, result.getWords().size());
+    }
+    
+    /**
+     * Test of getOSD method, of class Tesseract.
+     *
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testGetOSD() {
+        logger.info("getOSD");
+        File imageFile = new File(this.testResourcesDataPath, "eurotext90.png");
+        OSDResult result = instance.getOSD(imageFile);
+        logger.info(result.toString());
+        assertEquals(90, result.getOrientDeg());
+        assertTrue(result.getOrientConf() > 0);
+        assertEquals("Latin", result.getScriptName());
+        assertTrue(result.getScriptConf() > 0);
     }
 }

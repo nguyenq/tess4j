@@ -22,6 +22,7 @@ import java.awt.Rectangle;
 import java.awt.image.*;
 import java.io.*;
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.*;
 import javax.imageio.IIOImage;
@@ -34,6 +35,7 @@ import static net.sourceforge.lept4j.ILeptonica.L_CLONE;
 import net.sourceforge.lept4j.Leptonica1;
 import net.sourceforge.lept4j.Pix;
 import net.sourceforge.lept4j.util.LeptUtils;
+import static net.sourceforge.tess4j.ITessAPI.TRUE;
 
 import net.sourceforge.tess4j.util.ImageIOHelper;
 import net.sourceforge.tess4j.util.LoggHelper;
@@ -333,8 +335,8 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
      * @param imageList a list of <code>IIOImage</code> objects
      * @param filename input file name. Needed only for training and reading a
      * UNLV zone file.
-     * @param roiss list of list of the bounding rectangles defines the regions of the
-     * images to be recognized. A rectangle of zero dimension or
+     * @param roiss list of list of the bounding rectangles defines the regions
+     * of the images to be recognized. A rectangle of zero dimension or
      * <code>null</code> indicates the whole image.
      * @return the recognized text
      * @throws TesseractException
@@ -661,7 +663,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
                     } else {
                         TessResultRendererInsert(renderer, TessPAGERendererCreate(outputbase));
                     }
-                    break;                    
+                    break;
                 case TSV:
                     if (renderer == null) {
                         renderer = TessTsvRendererCreate(outputbase);
@@ -1046,6 +1048,65 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
         }
 
         return results;
+    }
+
+    /**
+     * Gets the detected orientation of the input imageFile and apparent script
+     * (alphabet).
+     *
+     * @param imageFile an image file
+     * @return imageFile orientation and script name
+     */
+    @Override
+    public OSDResult getOSD(File imageFile) {
+        try {
+            // if PDF, convert to multi-page TIFF
+            imageFile = ImageIOHelper.getImageFile(imageFile);
+            BufferedImage bi = ImageIO.read(new FileInputStream(imageFile));
+            return getOSD(bi);
+        } catch (Exception e) {
+            logger.warn(e.getMessage(), e);
+        }
+
+        return new OSDResult();
+    }
+
+    /**
+     * Gets the detected orientation of the input image and apparent script
+     * (alphabet).
+     *
+     * @param bi a buffered image
+     * @return image orientation and script name
+     */
+    @Override
+    public OSDResult getOSD(BufferedImage bi) {
+        init();
+        setVariables();
+
+        try {
+            TessBaseAPIInit3(handle, datapath, "osd");
+            setImage(bi);
+
+            IntBuffer orient_degB = IntBuffer.allocate(1);
+            FloatBuffer orient_confB = FloatBuffer.allocate(1);
+            PointerByReference script_nameB = new PointerByReference();
+            FloatBuffer script_confB = FloatBuffer.allocate(1);
+
+            int result = TessBaseAPIDetectOrientationScript(handle, orient_degB, orient_confB, script_nameB, script_confB);
+            if (result == TRUE) {
+                int orient_deg = orient_degB.get();
+                float orient_conf = orient_confB.get();
+                String script_name = script_nameB.getValue().getString(0);
+                float script_conf = script_confB.get();
+                return new OSDResult(orient_deg, orient_conf, script_name, script_conf);
+            }
+        } catch (IOException ioe) {
+            logger.warn(ioe.getMessage(), ioe);
+        } finally {
+            dispose();
+        }
+
+        return new OSDResult();
     }
 
     /**

@@ -22,6 +22,7 @@ import java.awt.Rectangle;
 import java.awt.image.*;
 import java.io.*;
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.*;
 import javax.imageio.IIOImage;
@@ -1065,6 +1066,65 @@ public class Tesseract implements ITesseract {
         }
 
         return results;
+    }
+
+    /**
+     * Gets the detected orientation of the input imageFile and apparent script
+     * (alphabet).
+     *
+     * @param imageFile an image file
+     * @return imageFile orientation and script name
+     */
+    @Override
+    public OSDResult getOSD(File imageFile) {
+        try {
+            // if PDF, convert to multi-page TIFF
+            imageFile = ImageIOHelper.getImageFile(imageFile);
+            BufferedImage bi = ImageIO.read(new FileInputStream(imageFile));
+            return getOSD(bi);
+        } catch (Exception e) {
+            logger.warn(e.getMessage(), e);
+        }
+
+        return new OSDResult();
+    }
+
+    /**
+     * Gets the detected orientation of the input image and apparent script
+     * (alphabet).
+     *
+     * @param bi a buffered image
+     * @return image orientation and script name
+     */
+    @Override
+    public OSDResult getOSD(BufferedImage bi) {
+        init();
+        setVariables();
+
+        try {
+            api.TessBaseAPIInit3(handle, datapath, "osd");
+            setImage(bi);
+
+            IntBuffer orient_degB = IntBuffer.allocate(1);
+            FloatBuffer orient_confB = FloatBuffer.allocate(1);
+            PointerByReference script_nameB = new PointerByReference();
+            FloatBuffer script_confB = FloatBuffer.allocate(1);
+
+            int result = api.TessBaseAPIDetectOrientationScript(handle, orient_degB, orient_confB, script_nameB, script_confB);
+            if (result == TRUE) {
+                int orient_deg = orient_degB.get();
+                float orient_conf = orient_confB.get();
+                String script_name = script_nameB.getValue().getString(0);
+                float script_conf = script_confB.get();
+                return new OSDResult(orient_deg, orient_conf, script_name, script_conf);
+            }
+        } catch (IOException ioe) {
+            logger.warn(ioe.getMessage(), ioe);
+        } finally {
+            dispose();
+        }
+
+        return new OSDResult();
     }
 
     /**

@@ -377,4 +377,18 @@ public interface ITesseract {
      * @return list of <code>Word</code>
      */
     List<Word> getWords(List<BufferedImage> biList, int pageIteratorLevel);
+    
+    /**
+     * Gets the detected orientation of the input image and apparent script (alphabet).
+     * @param imageFile an image file
+     * @return image orientation and script name
+     */
+    OSDResult getOSD(File imageFile);
+    
+    /**
+     * Gets the detected orientation of the input image and apparent script (alphabet).
+     * @param bi a buffered image
+     * @return image orientation and script name
+     */
+    OSDResult getOSD(BufferedImage bi);
 }
