@@ -19,8 +19,10 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.List;
 import javax.imageio.IIOImage;
+import net.sourceforge.tess4j.util.ImageIOHelper;
 
 /**
  * An interface represents common OCR methods.
@@ -53,12 +55,14 @@ public interface ITesseract {
      * @return the recognized text
      * @throws TesseractException
      */
-    String doOCR(File imageFile) throws TesseractException;
+    default String doOCR(File imageFile) throws TesseractException {
+        return doOCR(imageFile, (List<Rectangle>) null);
+    }
 
     /**
      * Performs OCR operation.
      *
-     * @param imageFile an image file
+     * @param inputFile an image file
      * @param rect the bounding rectangle defines the region of the image to be
      * recognized. A rectangle of zero dimension or <code>null</code> indicates
      * the whole image.
@@ -66,7 +70,9 @@ public interface ITesseract {
      * @throws TesseractException
      */
     @Deprecated
-    String doOCR(File imageFile, Rectangle rect) throws TesseractException;
+    default String doOCR(File inputFile, Rectangle rect) throws TesseractException {
+        return doOCR(inputFile, Arrays.asList(rect));
+    }
 
     /**
      * Performs OCR operation.
@@ -87,7 +93,9 @@ public interface ITesseract {
      * @return the recognized text
      * @throws TesseractException
      */
-    String doOCR(BufferedImage bi) throws TesseractException;
+    default String doOCR(BufferedImage bi) throws TesseractException {
+        return doOCR(bi, null, (List<Rectangle>) null);
+    }
 
     /**
      * Performs OCR operation.
@@ -100,7 +108,9 @@ public interface ITesseract {
      * @throws TesseractException
      */
     @Deprecated
-    String doOCR(BufferedImage bi, Rectangle rect) throws TesseractException;
+    default String doOCR(BufferedImage bi, Rectangle rect) throws TesseractException {
+        return doOCR(bi, null, Arrays.asList(rect));
+    }
 
     /**
      * Performs OCR operation.
@@ -114,7 +124,9 @@ public interface ITesseract {
      * @return the recognized text
      * @throws TesseractException
      */
-    String doOCR(BufferedImage bi, String filename, List<Rectangle> rects) throws TesseractException;
+    default String doOCR(BufferedImage bi, String filename, List<Rectangle> rects) throws TesseractException{
+        return doOCR(Arrays.asList(ImageIOHelper.getIIOImage(bi)), filename, Arrays.asList(rects));
+    }
 
     /**
      * Performs OCR operation.
@@ -127,7 +139,9 @@ public interface ITesseract {
      * @throws TesseractException
      */
     @Deprecated
-    String doOCR(List<IIOImage> imageList, Rectangle rect) throws TesseractException;
+    default String doOCR(List<IIOImage> imageList, Rectangle rect) throws TesseractException {
+        return doOCR(imageList, null, Arrays.asList(Arrays.asList(rect)));
+    }
 
     /**
      * Performs OCR operation.
@@ -142,7 +156,9 @@ public interface ITesseract {
      * @throws TesseractException
      */
     @Deprecated
-    String doOCR(List<IIOImage> imageList, String filename, Rectangle rect) throws TesseractException;
+    default String doOCR(List<IIOImage> imageList, String filename, Rectangle rect) throws TesseractException {
+        return doOCR(imageList, filename, Arrays.asList(Arrays.asList(rect)));
+    }
 
     /**
      * Performs OCR operation.
@@ -175,7 +191,9 @@ public interface ITesseract {
      * @throws TesseractException
      */
     @Deprecated
-    String doOCR(int xsize, int ysize, ByteBuffer buf, Rectangle rect, int bpp) throws TesseractException;
+    default String doOCR(int xsize, int ysize, ByteBuffer buf, Rectangle rect, int bpp) throws TesseractException {
+        return doOCR(xsize, ysize, buf, bpp, null, Arrays.asList(rect));
+    }
 
     /**
      * Performs OCR operation. Use <code>SetImage</code>, (optionally)
@@ -196,7 +214,9 @@ public interface ITesseract {
      * @throws TesseractException
      */
     @Deprecated
-    String doOCR(int xsize, int ysize, ByteBuffer buf, String filename, Rectangle rect, int bpp) throws TesseractException;
+    default String doOCR(int xsize, int ysize, ByteBuffer buf, String filename, Rectangle rect, int bpp) throws TesseractException {
+        return doOCR(xsize, ysize, buf, bpp, filename, Arrays.asList(rect));
+    }
 
     /**
      * Performs OCR operation. Use <code>SetImage</code>, (optionally)
@@ -256,7 +276,9 @@ public interface ITesseract {
      * @deprecated Use {@link setVariable(String key, String value)} instead.
      */
     @Deprecated
-    void setTessVariable(String key, String value);
+    default void setTessVariable(String key, String value) {
+        setVariable(key, value);
+    }
 
     /**
      * Sets the value of Tesseract's internal parameter.
@@ -284,7 +306,9 @@ public interface ITesseract {
      * @param formats types of renderers
      * @throws TesseractException
      */
-    void createDocuments(String filename, String outputbase, List<RenderedFormat> formats) throws TesseractException;
+    default void createDocuments(String filename, String outputbase, List<RenderedFormat> formats) throws TesseractException {
+        createDocuments(new String[]{filename}, new String[]{outputbase}, formats);
+    }
 
     /**
      * Creates documents for given renderers.
@@ -367,7 +391,9 @@ public interface ITesseract {
      * @param pageIteratorLevel TessPageIteratorLevel enum
      * @return list of <code>Word</code>
      */
-    List<Word> getWords(BufferedImage bi, int pageIteratorLevel);
+    default List<Word> getWords(BufferedImage bi, int pageIteratorLevel) {
+        return getWords(Arrays.asList(bi), pageIteratorLevel);
+    }
 
     /**
      * Gets recognized words at specified page iterator level.
