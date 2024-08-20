@@ -465,13 +465,13 @@ public class TessAPITest {
     }
 
     /**
-     * Test of Orientation and script detection (OSD).
+     * Test of page orientation, writing direction and deskew angle detection.
      *
-     * @throws Exception while processing image
+     * @throws Exception while processing the image
      */
     @Test
-    public void testOSD() throws Exception {
-        logger.info("OSD");
+    public void testTessPageIteratorOrientation() throws Exception {
+        logger.info("TessPageIteratorOrientation");
         int expResult = TessPageSegMode.PSM_AUTO_OSD;
         IntBuffer orientation = IntBuffer.allocate(1);
         IntBuffer direction = IntBuffer.allocate(1);
