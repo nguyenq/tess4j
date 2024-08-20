@@ -878,11 +878,11 @@ public class Tesseract implements ITesseract {
     }
 
     /**
-     * Gets the detected orientation of the input imageFile and apparent script
+     * Gets the detected orientation of the input image and apparent script
      * (alphabet).
      *
      * @param imageFile an image file
-     * @return imageFile orientation and script name
+     * @return image orientation and script name
      */
     @Override
     public OSDResult getOSD(File imageFile) {
