@@ -256,3 +256,7 @@ Version 5.12.0 (24 June 2024)
 Version 5.13.0 (20 August 2024)
 - Add a convenient method to get OSD data
 - Use default methods in interface to reduce code duplication
+
+Version 5.14.0 (16 November 2024)
+- Upgrade to Tesseract 5.5.0
+- Update Leptonica 1.85.0 (lept4j-1.20.0)
