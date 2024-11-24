@@ -62,21 +62,6 @@ public interface ITesseract {
     /**
      * Performs OCR operation.
      *
-     * @param inputFile an image file
-     * @param rect the bounding rectangle defines the region of the image to be
-     * recognized. A rectangle of zero dimension or <code>null</code> indicates
-     * the whole image.
-     * @return the recognized text
-     * @throws TesseractException
-     */
-    @Deprecated
-    default String doOCR(File inputFile, Rectangle rect) throws TesseractException {
-        return doOCR(inputFile, Arrays.asList(rect));
-    }
-
-    /**
-     * Performs OCR operation.
-     *
      * @param imageFile an image file
      * @param rects list of the bounding rectangles defines the regions of the
      * image to be recognized. A rectangle of zero dimension or
@@ -101,21 +86,6 @@ public interface ITesseract {
      * Performs OCR operation.
      *
      * @param bi a buffered image
-     * @param rect the bounding rectangle defines the region of the image to be
-     * recognized. A rectangle of zero dimension or <code>null</code> indicates
-     * the whole image.
-     * @return the recognized text
-     * @throws TesseractException
-     */
-    @Deprecated
-    default String doOCR(BufferedImage bi, Rectangle rect) throws TesseractException {
-        return doOCR(bi, null, Arrays.asList(rect));
-    }
-
-    /**
-     * Performs OCR operation.
-     *
-     * @param bi a buffered image
      * @param filename input file name. Needed only for training and reading a
      * UNLV zone file.
      * @param rects list of the bounding rectangles defines the regions of the
@@ -132,38 +102,6 @@ public interface ITesseract {
      * Performs OCR operation.
      *
      * @param imageList a list of <code>IIOImage</code> objects
-     * @param rect the bounding rectangle defines the region of the image to be
-     * recognized. A rectangle of zero dimension or <code>null</code> indicates
-     * the whole image.
-     * @return the recognized text
-     * @throws TesseractException
-     */
-    @Deprecated
-    default String doOCR(List<IIOImage> imageList, Rectangle rect) throws TesseractException {
-        return doOCR(imageList, null, Arrays.asList(Arrays.asList(rect)));
-    }
-
-    /**
-     * Performs OCR operation.
-     *
-     * @param imageList a list of <code>IIOImage</code> objects
-     * @param filename input file name. Needed only for training and reading a
-     * UNLV zone file.
-     * @param rect the bounding rectangle defines the region of the image to be
-     * recognized. A rectangle of zero dimension or <code>null</code> indicates
-     * the whole image.
-     * @return the recognized text
-     * @throws TesseractException
-     */
-    @Deprecated
-    default String doOCR(List<IIOImage> imageList, String filename, Rectangle rect) throws TesseractException {
-        return doOCR(imageList, filename, Arrays.asList(Arrays.asList(rect)));
-    }
-
-    /**
-     * Performs OCR operation.
-     *
-     * @param imageList a list of <code>IIOImage</code> objects
      * @param filename input file name. Needed only for training and reading a
      * UNLV zone file.
      * @param roiss list of list of the bounding rectangles defines the regions
@@ -173,50 +111,6 @@ public interface ITesseract {
      * @throws TesseractException
      */
     String doOCR(List<IIOImage> imageList, String filename, List<List<Rectangle>> roiss) throws TesseractException;
-
-    /**
-     * Performs OCR operation. Use <code>SetImage</code>, (optionally)
-     * <code>SetRectangle</code>, and one or more of the <code>Get*Text</code>
-     * functions.
-     *
-     * @param xsize width of image
-     * @param ysize height of image
-     * @param buf pixel data
-     * @param rect the bounding rectangle defines the region of the image to be
-     * recognized. A rectangle of zero dimension or <code>null</code> indicates
-     * the whole image.
-     * @param bpp bits per pixel, represents the bit depth of the image, with 1
-     * for binary bitmap, 8 for gray, and 24 for color RGB.
-     * @return the recognized text
-     * @throws TesseractException
-     */
-    @Deprecated
-    default String doOCR(int xsize, int ysize, ByteBuffer buf, Rectangle rect, int bpp) throws TesseractException {
-        return doOCR(xsize, ysize, buf, bpp, null, Arrays.asList(rect));
-    }
-
-    /**
-     * Performs OCR operation. Use <code>SetImage</code>, (optionally)
-     * <code>SetRectangle</code>, and one or more of the <code>Get*Text</code>
-     * functions.
-     *
-     * @param xsize width of image
-     * @param ysize height of image
-     * @param buf pixel data
-     * @param filename input file name. Needed only for training and reading a
-     * UNLV zone file.
-     * @param rect the bounding rectangle defines the region of the image to be
-     * recognized. A rectangle of zero dimension or <code>null</code> indicates
-     * the whole image.
-     * @param bpp bits per pixel, represents the bit depth of the image, with 1
-     * for binary bitmap, 8 for gray, and 24 for color RGB.
-     * @return the recognized text
-     * @throws TesseractException
-     */
-    @Deprecated
-    default String doOCR(int xsize, int ysize, ByteBuffer buf, String filename, Rectangle rect, int bpp) throws TesseractException {
-        return doOCR(xsize, ysize, buf, bpp, filename, Arrays.asList(rect));
-    }
 
     /**
      * Performs OCR operation. Use <code>SetImage</code>, (optionally)
@@ -265,20 +159,6 @@ public interface ITesseract {
      * @param mode the page segmentation mode to set
      */
     void setPageSegMode(int mode);
-
-    /**
-     * Sets the value of Tesseract's internal parameter.
-     *
-     * @param key variable name, e.g., <code>tessedit_create_hocr</code>,
-     * <code>tessedit_char_whitelist</code>, etc.
-     * @param value value for corresponding variable, e.g., "1", "0",
-     * "0123456789", etc.
-     * @deprecated Use {@link setVariable(String key, String value)} instead.
-     */
-    @Deprecated
-    default void setTessVariable(String key, String value) {
-        setVariable(key, value);
-    }
 
     /**
      * Sets the value of Tesseract's internal parameter.

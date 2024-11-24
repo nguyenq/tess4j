@@ -417,22 +417,7 @@ public class ImageIOHelper {
             }
         }
     }
-
-    /**
-     * Gets a list of <code>IIOImage</code> objects for a
-     * <code>BufferedImage</code>.
-     *
-     * @param bi input image
-     * @return a list of <code>IIOImage</code> objects
-     */
-    @Deprecated
-    public static List<IIOImage> getIIOImageList(BufferedImage bi) {
-        List<IIOImage> iioImageList = new ArrayList<>();
-        IIOImage oimage = new IIOImage(bi, null, null);
-        iioImageList.add(oimage);
-        return iioImageList;
-    }
-    
+   
     /**
      * Gets an <code>IIOImage</code> object for a <code>BufferedImage</code>.
      *

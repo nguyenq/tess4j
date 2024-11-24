@@ -128,19 +128,6 @@ public class ImageHelper {
     }
 
     /**
-     * A simple method to convert an image to binary or B/W image.
-     *
-     * @param image input image
-     * @return a monochrome image
-     * @deprecated As of release 1.1, renamed to
-     * {@link #convertImageToBinary(BufferedImage image)}
-     */
-    @Deprecated
-    public static BufferedImage convertImage2Binary(BufferedImage image) {
-        return convertImageToBinary(image);
-    }
-
-    /**
      * A simple method to convert an image to gray scale.
      *
      * @param image input image

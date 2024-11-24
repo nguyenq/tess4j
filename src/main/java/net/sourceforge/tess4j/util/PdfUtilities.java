@@ -48,27 +48,6 @@ public class PdfUtilities {
     /**
      * Splits PDF.
      *
-     * @deprecated As of Release 3.0.
-     *
-     * @param inputPdfFile input file
-     * @param outputPdfFile output file
-     * @param firstPage begin page
-     * @param lastPage end page
-     */
-    public static void splitPdf(String inputPdfFile, String outputPdfFile, String firstPage, String lastPage) {
-        if (firstPage.trim().isEmpty()) {
-            firstPage = "0";
-        }
-        if (lastPage.trim().isEmpty()) {
-            lastPage = "0";
-        }
-
-        splitPdf(new File(inputPdfFile), new File(outputPdfFile), Integer.parseInt(firstPage), Integer.parseInt(lastPage));
-    }
-
-    /**
-     * Splits PDF.
-     *
      * @param inputPdfFile input file
      * @param outputPdfFile output file
      * @param firstPage begin page
@@ -76,18 +55,6 @@ public class PdfUtilities {
      */
     public static void splitPdf(File inputPdfFile, File outputPdfFile, int firstPage, int lastPage) {
         PdfBoxUtilities.splitPdf(inputPdfFile, outputPdfFile, firstPage, lastPage);
-    }
-
-    /**
-     * Gets PDF Page Count.
-     *
-     * @deprecated As of Release 3.0.
-     *
-     * @param inputPdfFile input file
-     * @return number of pages
-     */
-    public static int getPdfPageCount(String inputPdfFile) {
-        return getPdfPageCount(new File(inputPdfFile));
     }
 
     /**
