@@ -1,5 +1,5 @@
 /**
- * Copyright @ 2024 Quan Nguyen
+ * Copyright @ 2014 Quan Nguyen
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -18,7 +18,7 @@ module net.sourceforge.tess4j {
     requires jai.imageio.core;
     requires java.desktop;
     requires java.xml;
-    requires org.jboss.vfs;
+    requires jboss.vfs;
     requires lept4j;
     requires org.apache.commons.io;
     requires org.apache.pdfbox;
