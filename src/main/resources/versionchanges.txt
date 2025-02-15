@@ -261,3 +261,7 @@ Version 5.14.0 (20 January 2025)
 - Upgrade to Tesseract 5.5.0
 - Update Leptonica 1.85.0 (lept4j-1.20.0)
 - Update plug-ins and dependencies
+
+Version 5.15.0 (15 February 2025)
+- Use SetImage method that takes Pix as input
+- Update dependencies
