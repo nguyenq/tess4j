@@ -373,26 +373,38 @@ public class Tesseract implements ITesseract {
     }
 
     /**
-     * A wrapper for {@link #setImage(int, int, ByteBuffer, int)}.
-     *
+     * Sets image to be processed.
+     * <br>
+     * <code>Pix</code> vs raw, which to use? <code>Pix</code> is the preferred
+     * input for efficiency, since raw buffers are copied.
+     * <br>
+     * <code>SetImage</code> for Pix clones its input, so the source pix may be
+     * <code>pixDestroyed</code> immediately after, but may not go away until
+     * after the Thresholder has finished with it.
+     * 
      * @param image a rendered image
      * @throws java.io.IOException
      */
     protected void setImage(RenderedImage image) throws IOException {
-        ByteBuffer buff = ImageIOHelper.getImageByteBuffer(image);
-        int bpp;
-        DataBuffer dbuff = image.getData(new Rectangle(1, 1)).getDataBuffer();
-        if (dbuff instanceof DataBufferByte) {
-            bpp = image.getColorModel().getPixelSize();
-        } else {
-            bpp = 8; // BufferedImage.TYPE_BYTE_GRAY image
+        Pix pix = null;
+        try {
+            pix = LeptUtils.convertImageToPix(image);
+            api.TessBaseAPISetImage2(handle, pix);
+        } finally {
+            LeptUtils.dispose(pix);
         }
-        setImage(image.getWidth(), image.getHeight(), buff, bpp);
     }
 
     /**
      * Sets image to be processed.
-     *
+     * <br>
+     * Greyscale of 8 and color of 24 or 32 bits per pixel may be given. Palette
+     * color images will not work properly and must be converted to 24 bit.
+     * <br>
+     * Binary images of 1 bit per pixel may also be given but they must be byte
+     * packed with the MSB of the first byte being the first pixel, and a one
+     * pixel is WHITE.
+     * 
      * @param xsize width of image
      * @param ysize height of image
      * @param buf pixel data
