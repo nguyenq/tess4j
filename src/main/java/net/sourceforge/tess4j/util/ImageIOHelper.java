@@ -29,6 +29,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -55,6 +56,7 @@ import com.github.jaiimageio.plugins.tiff.TIFFImageWriteParam;
 import com.github.jaiimageio.plugins.tiff.TIFFTag;
 import com.recognition.software.jdeskew.ImageDeskew;
 import com.recognition.software.jdeskew.ImageUtil;
+
 import org.apache.commons.io.FilenameUtils;
 
 public class ImageIOHelper {
@@ -298,6 +300,31 @@ public class ImageIOHelper {
     }
 
     /**
+     * Converts <code>RenderedImage</code> to <code>BufferedImage</code>.
+     *
+     * @param image Input RenderedImage
+     * @return BufferedImage
+     */
+    public static BufferedImage convertRenderedImage(RenderedImage image) {
+        if (image == null) {
+            return null;
+        } else if (image instanceof BufferedImage) {
+            return (BufferedImage) image;
+        }
+        ColorModel cm = image.getColorModel();
+        WritableRaster raster = cm.createCompatibleWritableRaster(image.getWidth(), image.getHeight());
+        image.copyData(raster);
+        Hashtable properties = new Hashtable();
+        String[] keys = image.getPropertyNames();
+        if (keys != null) {
+            for (String key : keys) {
+                properties.put(key, image.getProperty(key));
+            }
+        }
+        return new BufferedImage(cm, raster, cm.isAlphaPremultiplied(), properties);
+    }
+
+    /**
      * Gets image file format.
      *
      * @param imageFile input image file
@@ -417,7 +444,7 @@ public class ImageIOHelper {
             }
         }
     }
-   
+
     /**
      * Gets an <code>IIOImage</code> object for a <code>BufferedImage</code>.
      *
