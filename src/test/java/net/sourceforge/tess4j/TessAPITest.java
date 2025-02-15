@@ -16,6 +16,7 @@
 package net.sourceforge.tess4j;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -88,8 +89,8 @@ public class TessAPITest {
     public void testTessBaseAPIRect() throws Exception {
         logger.info("TessBaseAPIRect");
         String expResult = expOCRResult;
-        File tiff = new File(this.testResourcesDataPath, "eurotext.tif");
-        BufferedImage image = ImageIO.read(tiff); // require jai-imageio lib to read TIFF
+        File imageFile = new File(this.testResourcesDataPath, "eurotext.tif");
+        BufferedImage image = ImageIO.read(imageFile); // require jai-imageio lib to read TIFF
         ByteBuffer buf = ImageIOHelper.convertImageData(image);
         int bpp = image.getColorModel().getPixelSize();
         int bytespp = bpp / 8;
@@ -112,16 +113,16 @@ public class TessAPITest {
     public void testTessBaseAPIGetUTF8Text() throws Exception {
         logger.info("TessBaseAPIGetUTF8Text");
         String expResult = expOCRResult;
-        File tiff = new File(this.testResourcesDataPath, "eurotext.tif");
-        BufferedImage image = ImageIO.read(new FileInputStream(tiff)); // require jai-imageio lib to read TIFF
+        File imageFile = new File(this.testResourcesDataPath, "eurotext.tif");
+        BufferedImage image = ImageIO.read(new FileInputStream(imageFile)); // require jai-imageio lib to read TIFF
         ByteBuffer buf = ImageIOHelper.convertImageData(image);
         int bpp = image.getColorModel().getPixelSize();
         int bytespp = bpp / 8;
         int bytespl = (int) Math.ceil(image.getWidth() * bpp / 8.0);
         api.TessBaseAPIInit3(handle, datapath, language);
-        api.TessBaseAPISetPageSegMode(handle, TessPageSegMode.PSM_AUTO);
+//        api.TessBaseAPISetPageSegMode(handle, TessPageSegMode.PSM_AUTO);
         api.TessBaseAPISetImage(handle, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
-        api.TessBaseAPISetRectangle(handle, 0, 0, 1024, 800);
+//        api.TessBaseAPISetRectangle(handle, 0, 0, 1024, 800);
         Pointer utf8Text = api.TessBaseAPIGetUTF8Text(handle);
         String result = utf8Text.getString(0);
         api.TessDeleteText(utf8Text);
@@ -138,8 +139,10 @@ public class TessAPITest {
     public void testTessBaseAPIGetUTF8Text_Pix() throws Exception {
         logger.info("TessBaseAPIGetUTF8Text_Pix");
         String expResult = expOCRResult;
-        File tiff = new File(this.testResourcesDataPath, "eurotext.tif");
-        Pix pix = Leptonica1.pixRead(tiff.getPath());
+        File imageFile = new File(this.testResourcesDataPath, "eurotext.tif");
+        BufferedImage image = ImageIO.read(new FileInputStream(imageFile));
+        Pix pix = LeptUtils.convertImageToPix((RenderedImage)image);
+//        Pix pix = Leptonica1.pixRead(imageFile.getPath());
         api.TessBaseAPIInit3(handle, datapath, language);
         api.TessBaseAPISetImage2(handle, pix);
         Pointer utf8Text = api.TessBaseAPIGetUTF8Text(handle);
@@ -163,9 +166,9 @@ public class TessAPITest {
     @Test
     public void testTessBaseAPIGetComponentImages() throws Exception {
         logger.info("TessBaseAPIGetComponentImages");
-        File image = new File(this.testResourcesDataPath, "eurotext.png");
+        File imageFile = new File(this.testResourcesDataPath, "eurotext.png");
         int expResult = 12; // number of lines in the test image
-        Pix pix = Leptonica1.pixRead(image.getPath());
+        Pix pix = Leptonica1.pixRead(imageFile.getPath());
         api.TessBaseAPIInit3(handle, datapath, language);
         api.TessBaseAPISetImage2(handle, pix);
         PointerByReference pixa = null;
@@ -334,8 +337,8 @@ public class TessAPITest {
     public void testTessBaseAPIGetHOCRText() throws Exception {
         logger.info("TessBaseAPIGetHOCRText");
         String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
-        File tiff = new File(filename);
-        BufferedImage image = ImageIO.read(new FileInputStream(tiff)); // require jai-imageio lib to read TIFF
+        File imageFile = new File(filename);
+        BufferedImage image = ImageIO.read(new FileInputStream(imageFile)); // require jai-imageio lib to read TIFF
         ByteBuffer buf = ImageIOHelper.convertImageData(image);
         int bpp = image.getColorModel().getPixelSize();
         int bytespp = bpp / 8;
@@ -359,8 +362,8 @@ public class TessAPITest {
     public void testTessBaseAPIGetAltoText() throws Exception {
         logger.info("TessBaseAPIGetAltoText");
         String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
-        File tiff = new File(filename);
-        BufferedImage image = ImageIO.read(new FileInputStream(tiff));
+        File imageFile = new File(filename);
+        BufferedImage image = ImageIO.read(new FileInputStream(imageFile));
         ByteBuffer buf = ImageIOHelper.convertImageData(image);
         int bpp = image.getColorModel().getPixelSize();
         int bytespp = bpp / 8;
@@ -401,9 +404,9 @@ public class TessAPITest {
     @Test
     public void testTessBaseAPIAnalyseLayout() throws Exception {
         logger.info("TessBaseAPIAnalyseLayout");
-        File image = new File(testResourcesDataPath, "eurotext.png");
+        File imageFile = new File(testResourcesDataPath, "eurotext.png");
         int expResult = 12; // number of lines in the test image
-        Pix pix = Leptonica1.pixRead(image.getPath());
+        Pix pix = Leptonica1.pixRead(imageFile.getPath());
         api.TessBaseAPIInit3(handle, datapath, language);
         api.TessBaseAPISetImage2(handle, pix);
         int pageIteratorLevel = TessPageIteratorLevel.RIL_TEXTLINE;
@@ -438,9 +441,9 @@ public class TessAPITest {
     @Test
     public void testTessBaseAPIDetectOrientationScript() throws Exception {
         logger.info("TessBaseAPIDetectOrientationScript");
-        File image = new File(testResourcesDataPath, "eurotext90.png");
+        File imageFile = new File(testResourcesDataPath, "eurotext90.png");
         int expResult = TRUE;
-        Pix pix = Leptonica1.pixRead(image.getPath());
+        Pix pix = Leptonica1.pixRead(imageFile.getPath());
         api.TessBaseAPIInit3(handle, datapath, "osd");
         api.TessBaseAPISetImage2(handle, pix);
 
@@ -508,9 +511,9 @@ public class TessAPITest {
     @Test
     public void testTessBaseAPIGetGradient() throws Exception {
         logger.info("TessBaseAPIGetGradient");
-        File image = new File(testResourcesDataPath, "eurotext_deskew.png");
+        File imageFile = new File(testResourcesDataPath, "eurotext_deskew.png");
         float expResult = -0.38202247f;
-        Pix pix = Leptonica1.pixRead(image.getPath());
+        Pix pix = Leptonica1.pixRead(imageFile.getPath());
         api.TessBaseAPIInit3(handle, datapath, "eng");
         api.TessBaseAPISetImage2(handle, pix);
         api.TessBaseAPIAnalyseLayout(handle);
@@ -530,8 +533,8 @@ public class TessAPITest {
     @Test
     public void testResultIterator() throws Exception {
         logger.info("TessBaseAPIGetIterator");
-        File tiff = new File(this.testResourcesDataPath, "eurotext.tif");
-        BufferedImage image = ImageIO.read(new FileInputStream(tiff)); // require jai-imageio lib to read TIFF
+        File imageFile = new File(this.testResourcesDataPath, "eurotext.tif");
+        BufferedImage image = ImageIO.read(new FileInputStream(imageFile)); // require jai-imageio lib to read TIFF
         ByteBuffer buf = ImageIOHelper.convertImageData(image);
         int bpp = image.getColorModel().getPixelSize();
         int bytespp = bpp / 8;
@@ -609,8 +612,8 @@ public class TessAPITest {
     public void testChoiceIterator() throws Exception {
         logger.info("TessResultIteratorGetChoiceIterator");
         String filename = String.format("%s/%s", this.testResourcesDataPath, "eurotext.tif");
-        File tiff = new File(filename);
-        BufferedImage image = ImageIO.read(new FileInputStream(tiff)); // require jai-imageio lib to read TIFF
+        File imageFile = new File(filename);
+        BufferedImage image = ImageIO.read(new FileInputStream(imageFile)); // require jai-imageio lib to read TIFF
         ByteBuffer buf = ImageIOHelper.convertImageData(image);
         int bpp = image.getColorModel().getPixelSize();
         int bytespp = bpp / 8;
