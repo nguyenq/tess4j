@@ -139,7 +139,7 @@ public class TessAPI1Test {
         String expResult = expOCRResult;
         File imageFile = new File(this.testResourcesDataPath, "eurotext.tif");
         BufferedImage image = ImageIO.read(new FileInputStream(imageFile));
-        Pix pix = LeptUtils.convertImageToPix((RenderedImage)image);
+        Pix pix = LeptUtils.convertImageToPix(image);
 //        Pix pix = Leptonica1.pixRead(imageFile.getPath());
         TessAPI1.TessBaseAPIInit3(handle, datapath, language);
         TessAPI1.TessBaseAPISetImage2(handle, pix);

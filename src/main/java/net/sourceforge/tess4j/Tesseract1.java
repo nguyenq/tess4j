@@ -370,7 +370,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     protected void setImage(RenderedImage image) throws IOException {
         Pix pix = null;
         try {
-            pix = LeptUtils.convertImageToPix(image);
+            pix = LeptUtils.convertImageToPix((BufferedImage)image);
             TessBaseAPISetImage2(handle, pix);
         } finally {
             LeptUtils.dispose(pix);

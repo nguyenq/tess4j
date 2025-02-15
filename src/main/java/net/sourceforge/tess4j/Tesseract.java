@@ -388,7 +388,7 @@ public class Tesseract implements ITesseract {
     protected void setImage(RenderedImage image) throws IOException {
         Pix pix = null;
         try {
-            pix = LeptUtils.convertImageToPix(image);
+            pix = LeptUtils.convertImageToPix((BufferedImage)image);
             api.TessBaseAPISetImage2(handle, pix);
         } finally {
             LeptUtils.dispose(pix);
