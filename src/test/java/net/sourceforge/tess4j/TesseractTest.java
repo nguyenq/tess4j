@@ -407,4 +407,11 @@ public class TesseractTest {
         assertEquals("Latin", result.getScriptName());
         assertTrue(result.getScriptConf() > 0);
     }
+    
+    @Test
+    public void testSetDatapath() {
+        logger.info("testSetDatapath");
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () ->  instance.setDatapath("non-existent-datapath"));
+        assertEquals("Given datapath non-existent-datapath is not an existing directory.", e.getMessage());
+    }
 }

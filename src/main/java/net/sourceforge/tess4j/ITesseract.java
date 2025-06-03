@@ -136,6 +136,7 @@ public interface ITesseract {
      * Sets tessdata path.
      *
      * @param datapath the tessdata path to set
+     * @throws IllegalArgumentException if the given datapath is not an existing directory
      */
     void setDatapath(String datapath);
 
