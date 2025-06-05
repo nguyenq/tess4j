@@ -265,3 +265,7 @@ Version 5.14.0 (20 January 2025)
 Version 5.15.0 (15 February 2025)
 - Use SetImage method that takes Pix as input
 - Update dependencies
+
+Version 5.16.0 (5 June 2025)
+- Upgrade to Tesseract 5.5.1
+- Update plug-ins and dependencies

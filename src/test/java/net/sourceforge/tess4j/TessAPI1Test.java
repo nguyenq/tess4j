@@ -201,7 +201,7 @@ public class TessAPI1Test {
     @Test
     public void testTessVersion() {
         logger.info("TessVersion");
-        String expResult = "5.5.0";
+        String expResult = "5.5.1";
         String result = TessAPI1.TessVersion();
         logger.info(result);
         assertTrue(result.startsWith(expResult));
@@ -509,7 +509,7 @@ public class TessAPI1Test {
     public void testTessBaseAPIGetGradient() throws Exception {
         logger.info("TessBaseAPIGetGradient");
         File imageFile = new File(testResourcesDataPath, "eurotext_deskew.png");
-        float expResult = -0.38202247f;
+        float expResult = -0.38140163f;
         Pix pix = Leptonica1.pixRead(imageFile.getPath());
         TessAPI1.TessBaseAPIInit3(handle, datapath, "eng");
         TessAPI1.TessBaseAPISetImage2(handle, pix);
