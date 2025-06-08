@@ -381,14 +381,14 @@ public class Tesseract implements ITesseract {
      * <code>SetImage</code> for Pix clones its input, so the source pix may be
      * <code>pixDestroyed</code> immediately after, but may not go away until
      * after the Thresholder has finished with it.
-     * 
+     *
      * @param image a rendered image
      * @throws java.io.IOException
      */
     protected void setImage(RenderedImage image) throws IOException {
         Pix pix = null;
         try {
-            pix = LeptUtils.convertImageToPix((BufferedImage)image);
+            pix = LeptUtils.convertImageToPix((BufferedImage) image);
             api.TessBaseAPISetImage2(handle, pix);
         } finally {
             LeptUtils.dispose(pix);
@@ -404,7 +404,7 @@ public class Tesseract implements ITesseract {
      * Binary images of 1 bit per pixel may also be given but they must be byte
      * packed with the MSB of the first byte being the first pixel, and a one
      * pixel is WHITE.
-     * 
+     *
      * @param xsize width of image
      * @param ysize height of image
      * @param buf pixel data
@@ -437,6 +437,26 @@ public class Tesseract implements ITesseract {
      * @return the recognized text
      */
     protected String getOCRText(String filename, int pageNum) {
+        // check for valid datapath and language data existence
+        String dataPath = api.TessBaseAPIGetDatapath(handle);
+        if (!new File(dataPath).exists()) {
+            throw new IllegalArgumentException("Specified datapath " + dataPath + " does not exist.");
+        }
+
+        Pointer ptr = api.TessBaseAPIGetLoadedLanguagesAsVector(handle).getPointer();
+        String[] loadedLangs = ptr.getStringArray(0);
+        PointerByReference pref = new PointerByReference();
+        pref.setPointer(ptr);
+        api.TessDeleteTextArray(pref);
+        ptr = api.TessBaseAPIGetAvailableLanguagesAsVector(handle).getPointer();
+        String[] availLangs = ptr.getStringArray(0);
+        pref.setPointer(ptr);
+        api.TessDeleteTextArray(pref);
+
+        if (!Arrays.asList(availLangs).containsAll(Arrays.asList(loadedLangs))) {
+            throw new IllegalArgumentException("Specified language data does not exist.");
+        }
+
         if (filename != null && !filename.isEmpty()) {
             api.TessBaseAPISetInputName(handle, filename);
         }

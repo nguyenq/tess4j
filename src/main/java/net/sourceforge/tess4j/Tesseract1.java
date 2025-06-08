@@ -370,7 +370,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
     protected void setImage(RenderedImage image) throws IOException {
         Pix pix = null;
         try {
-            pix = LeptUtils.convertImageToPix((BufferedImage)image);
+            pix = LeptUtils.convertImageToPix((BufferedImage) image);
             TessBaseAPISetImage2(handle, pix);
         } finally {
             LeptUtils.dispose(pix);
@@ -419,6 +419,26 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
      * @return the recognized text
      */
     protected String getOCRText(String filename, int pageNum) {
+        // check for valid datapath and language data existence
+        String dataPath = TessBaseAPIGetDatapath(handle);
+        if (!new File(dataPath).exists()) {
+            throw new IllegalArgumentException("Specified datapath " + dataPath + " does not exist.");
+        }
+
+        Pointer ptr = TessBaseAPIGetLoadedLanguagesAsVector(handle).getPointer();
+        String[] loadedLangs = ptr.getStringArray(0);
+        PointerByReference pref = new PointerByReference();
+        pref.setPointer(ptr);
+        TessDeleteTextArray(pref);
+        ptr = TessBaseAPIGetAvailableLanguagesAsVector(handle).getPointer();
+        String[] availLangs = ptr.getStringArray(0);
+        pref.setPointer(ptr);
+        TessDeleteTextArray(pref);
+
+        if (!Arrays.asList(availLangs).containsAll(Arrays.asList(loadedLangs))) {
+            throw new IllegalArgumentException("Specified language data does not exist.");
+        }
+
         if (filename != null && !filename.isEmpty()) {
             TessBaseAPISetInputName(handle, filename);
         }
