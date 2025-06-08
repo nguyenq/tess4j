@@ -16,7 +16,6 @@
 package net.sourceforge.tess4j;
 
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,8 +24,8 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.Arrays;
-
 import javax.imageio.ImageIO;
+
 import com.ochafik.lang.jnaerator.runtime.NativeSize;
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
