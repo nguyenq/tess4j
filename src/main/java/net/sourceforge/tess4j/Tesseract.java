@@ -359,6 +359,32 @@ public class Tesseract implements ITesseract {
         if (psm > -1) {
             api.TessBaseAPISetPageSegMode(handle, psm);
         }
+                
+        validateDatapathAndLanguagePacks();
+    }
+    
+    /**
+     * Validates specified datapath and language data existence.
+     */
+    void validateDatapathAndLanguagePacks() {
+        String dataPath = api.TessBaseAPIGetDatapath(handle);
+        if (!new File(dataPath).exists()) {
+            throw new IllegalArgumentException("Specified datapath " + dataPath + " does not exist.");
+        }
+
+        Pointer ptr = api.TessBaseAPIGetLoadedLanguagesAsVector(handle).getPointer();
+        String[] loadedLangs = ptr.getStringArray(0);
+        PointerByReference pref = new PointerByReference();
+        pref.setPointer(ptr);
+        api.TessDeleteTextArray(pref);
+        ptr = api.TessBaseAPIGetAvailableLanguagesAsVector(handle).getPointer();
+        String[] availLangs = ptr.getStringArray(0);
+        pref.setPointer(ptr);
+        api.TessDeleteTextArray(pref);
+
+        if (!Arrays.asList(availLangs).containsAll(Arrays.asList(loadedLangs))) {
+            throw new IllegalArgumentException("Specified language data does not exist.");
+        }
     }
 
     /**
@@ -437,26 +463,6 @@ public class Tesseract implements ITesseract {
      * @return the recognized text
      */
     protected String getOCRText(String filename, int pageNum) {
-        // check for valid datapath and language data existence
-        String dataPath = api.TessBaseAPIGetDatapath(handle);
-        if (!new File(dataPath).exists()) {
-            throw new IllegalArgumentException("Specified datapath " + dataPath + " does not exist.");
-        }
-
-        Pointer ptr = api.TessBaseAPIGetLoadedLanguagesAsVector(handle).getPointer();
-        String[] loadedLangs = ptr.getStringArray(0);
-        PointerByReference pref = new PointerByReference();
-        pref.setPointer(ptr);
-        api.TessDeleteTextArray(pref);
-        ptr = api.TessBaseAPIGetAvailableLanguagesAsVector(handle).getPointer();
-        String[] availLangs = ptr.getStringArray(0);
-        pref.setPointer(ptr);
-        api.TessDeleteTextArray(pref);
-
-        if (!Arrays.asList(availLangs).containsAll(Arrays.asList(loadedLangs))) {
-            throw new IllegalArgumentException("Specified language data does not exist.");
-        }
-
         if (filename != null && !filename.isEmpty()) {
             api.TessBaseAPISetInputName(handle, filename);
         }
