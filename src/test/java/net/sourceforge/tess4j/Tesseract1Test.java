@@ -164,7 +164,7 @@ public class Tesseract1Test {
     public void testDoOCR_File_Rectangles1() throws Exception {
         logger.info("doOCR on a multipage image with defined ROI");
         File imageFile = new File(this.testResourcesDataPath, "multipage-pdf.pdf");
-        Rectangle rect = new Rectangle(283, 310, 70, 100); // Coordinates of page numbers
+        Rectangle rect = new Rectangle(283, 310, 68, 100); // Coordinates of page numbers
         String expResult = "1\n2\n3\n4\n5\n";
         instance.setPageSegMode(ITessAPI.TessPageSegMode.PSM_SINGLE_CHAR);
         String result = instance.doOCR(imageFile, Arrays.asList(rect));
