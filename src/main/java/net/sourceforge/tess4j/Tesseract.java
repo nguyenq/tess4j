@@ -87,6 +87,10 @@ public class Tesseract implements ITesseract {
                 datapath = "./";
             }
         }
+        File datapathFile = new File(datapath);
+        if (!datapathFile.exists() || !datapathFile.isDirectory()) {
+        	throw new IllegalArgumentException("Given datapath " + datapath + " is not an existing directory.");
+        }
     }
 
     /**
@@ -114,6 +118,10 @@ public class Tesseract implements ITesseract {
      */
     @Override
     public void setDatapath(String datapath) {
+        File datapathFile = new File(datapath);
+        if (!datapathFile.exists() || !datapathFile.isDirectory()) {
+        	throw new IllegalArgumentException("Given datapath " + datapath + " is not an existing directory.");
+        }
         this.datapath = datapath;
     }
 
