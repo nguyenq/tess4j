@@ -182,6 +182,10 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
                 reader.setInput(iis);
                 int imageTotal = reader.getNumImages(true);
 
+                if ("pdf".equals(org.apache.commons.io.FilenameUtils.getExtension(inputFile.getName()).toLowerCase())) {
+                    setVariable("user_defined_dpi", "300");
+                }
+
                 init();
                 setVariables();
 

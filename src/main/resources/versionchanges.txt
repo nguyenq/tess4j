@@ -270,3 +270,6 @@ Version 5.16.0 (8 June 2025)
 - Upgrade to Tesseract 5.5.1
 - Update plug-ins and dependencies
 - Validate specified datapath and language data existence
+
+Version 5.16.1 (2 August 2025)
+- Set DPI for PDF files
