@@ -114,7 +114,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.11.2</version>
+                <version>3.11.3</version>
                 <configuration>
                     <detectJavaApiLink>false</detectJavaApiLink>
                     <offlineLinks>
@@ -183,7 +183,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.13.3</version>
+            <version>5.13.4</version>
             <scope>test</scope>
         </dependency>
         <dependency>
