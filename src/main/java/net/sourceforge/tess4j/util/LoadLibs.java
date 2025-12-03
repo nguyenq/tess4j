@@ -71,6 +71,9 @@ public class LoadLibs {
                 System.setProperty(JNA_LIBRARY_PATH, userCustomizedPath + File.pathSeparator + targetTempFolder.getPath());
             }
         }
+        //Load for homebrew MacOS ARM tesseract
+        if (Platform.isMac() && Platform.isARM())
+            System.setProperty(JNA_LIBRARY_PATH,JNA_LIBRARY_PATH+File.pathSeparator+"/opt/homebrew/lib/");
     }
 
     /**
