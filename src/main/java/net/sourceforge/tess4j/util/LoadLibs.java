@@ -71,9 +71,16 @@ public class LoadLibs {
                 System.setProperty(JNA_LIBRARY_PATH, userCustomizedPath + File.pathSeparator + targetTempFolder.getPath());
             }
         }
-        //Load for homebrew MacOS ARM tesseract
-        if (Platform.isMac() && Platform.isARM())
-            System.setProperty(JNA_LIBRARY_PATH,JNA_LIBRARY_PATH+File.pathSeparator+"/opt/homebrew/lib/");
+
+        // Load for homebrew MacOS ARM
+        if (Platform.isMac() && Platform.isARM()) {
+            String userCustomizedPath = System.getProperty(JNA_LIBRARY_PATH);
+            if (null == userCustomizedPath || userCustomizedPath.isEmpty()) {
+                System.setProperty(JNA_LIBRARY_PATH, "/opt/homebrew/lib");
+            } else {
+                System.setProperty(JNA_LIBRARY_PATH, userCustomizedPath + File.pathSeparator + "/opt/homebrew/lib");
+            }       
+        }
     }
 
     /**
