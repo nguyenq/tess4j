@@ -682,9 +682,11 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
                 Leptonica1.boxDestroy(pRef);
             }
 
-            PointerByReference pRef = new PointerByReference();
-            pRef.setValue(boxes.getPointer());
-            Leptonica1.boxaDestroy(pRef);
+            if (boxes != null) {
+                PointerByReference pRef = new PointerByReference();
+                pRef.setValue(boxes.getPointer());
+                Leptonica1.boxaDestroy(pRef);                
+            }
 
             return list;
         } catch (IOException ioe) {
