@@ -271,7 +271,7 @@ Version 5.16.0 (8 June 2025)
 - Update plug-ins and dependencies
 - Validate specified datapath and language data existence
 
-Version 5.17.0 (2 December 2025)
+Version 5.17.0 (10 December 2025)
 - Set DPI for PDF files
 - Rebuild Tesseract Windows binaries
 - Update Leptonica 1.86.0 (lept4j-1.22.0)

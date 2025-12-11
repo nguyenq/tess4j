@@ -18,7 +18,7 @@ The library provides optical character recognition (OCR) support for:
 
 On Windows: Microsoft Visual C++ v14 Redistributable
 
-Since Tesseract and Leptonica Windows binaries were built using Visual Studio 2026 (v145) Platform Toolset, please ensure you have [Microsoft Visual C++ v14 Redistributable](https://visualstudio.microsoft.com/downloads/) installed.
+Since Tesseract and Leptonica Windows binaries were built using Visual Studio 2019 (v142) Platform Toolset, please ensure you have [Microsoft Visual C++ v14 Redistributable](https://visualstudio.microsoft.com/downloads/) installed.
 
 ## Tutorial
 
