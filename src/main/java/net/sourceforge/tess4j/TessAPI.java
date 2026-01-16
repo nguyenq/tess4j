@@ -31,7 +31,7 @@ import net.sourceforge.lept4j.Pix;
 import net.sourceforge.tess4j.util.LoadLibs;
 
 /**
- * A Java wrapper for <code>Tesseract OCR 5.5.1 API</code> using
+ * A Java wrapper for <code>Tesseract OCR 5.5.2 API</code> using
  * <code>JNA Interface Mapping</code>.
  */
 public interface TessAPI extends Library, ITessAPI {

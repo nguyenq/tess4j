@@ -276,3 +276,6 @@ Version 5.17.0 (10 December 2025)
 - Rebuild Tesseract Windows binaries
 - Update Leptonica 1.86.0 (lept4j-1.22.0)
 - Update dependencies & plugins
+
+Version 5.18.0 (15 January 2026)
+- Upgrade to Tesseract 5.5.2
