@@ -67,6 +67,9 @@ public class ImageIOHelper {
     public static final String JAI_IMAGE_WRITER_MESSAGE = "Need to install JAI Image I/O package.\nhttps://github.com/jai-imageio/jai-imageio-core";
     public static final String JAI_IMAGE_READER_MESSAGE = "Unsupported image format. May need to install JAI Image I/O package.\nhttps://github.com/jai-imageio/jai-imageio-core";
 
+    public static int IMG_DPI_X = 300;
+    public static int IMG_DPI_Y = 300;
+
     /**
      * Creates a list of TIFF image files from an image file. It basically
      * converts images of other formats to TIFF format, or a multi-page TIFF
@@ -589,8 +592,8 @@ public class ImageIOHelper {
         try (ImageOutputStream ios = ImageIO.createImageOutputStream(outputTiff)) {
             writer.setOutput(ios);
 
-            int dpiX = 300;
-            int dpiY = 300;
+            int dpiX = ImageIOHelper.IMG_DPI_X;
+            int dpiY = ImageIOHelper.IMG_DPI_Y;
 
             for (IIOImage iioImage : imageList) {
                 // Get the default image metadata.
