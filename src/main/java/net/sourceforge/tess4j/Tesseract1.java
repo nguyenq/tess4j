@@ -425,7 +425,7 @@ public class Tesseract1 extends TessAPI1 implements ITesseract {
      */
     protected void setImage(int xsize, int ysize, ByteBuffer buf, int bpp) {
         int bytespp = bpp / 8;
-        int bytespl = (int) Math.ceil(xsize * bpp / 8.0);
+        int bytespl = buf.capacity() / ysize;
         TessBaseAPISetImage(handle, buf, xsize, ysize, bytespp, bytespl);
     }
 
