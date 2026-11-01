@@ -289,3 +289,6 @@ Version 5.20.0 (27 July 2026)
 - Target Java 17
 - Remove Windows 32-bit support
 - Update dependencies
+
+Version 5.21.0 (1 November 2026)
+- Upgrade to Tesseract 5.5.4
