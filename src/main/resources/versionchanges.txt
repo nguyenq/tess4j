@@ -292,3 +292,4 @@ Version 5.20.0 (27 July 2026)
 
 Version 5.21.0 (1 November 2026)
 - Upgrade to Tesseract 5.5.4
+- Update dependencies
